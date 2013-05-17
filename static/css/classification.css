@@ -1,0 +1,87 @@
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.axis path {
+	display: none;
+}
+
+.a {
+	fill: #d62728;
+	stroke: black;
+	z-index: 1;
+}
+
+.b {
+	fill: #1f77b4;
+	stroke: black;
+	z-index: 1;
+}
+
+.c {
+	fill: #bcbd22;
+	stroke: black;
+	z-index: 1;
+}
+
+.d {
+	fill: #2ca02c;
+	stroke: black;
+	z-index: 1;
+}
+
+.box {
+	fill: none;
+	stroke: gray;
+	stroke-width: 1;
+}
+
+.path {
+	opacity: 0.1;
+}
+
+.button {
+	box-shadow:inset 0 1px 0 0 #ffffff;
+	background-color:#ededed;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#777777;
+	font-family:arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow: 1px 1px 0 #ffffff;
+}
+
+.button_on {
+	box-shadow:inset 0 1px 0 0 #ffffff;
+	background-color:#cccced;
+	border-radius:6px;
+	border:1px solid #dcdcdc;
+	display:inline-block;
+	color:#777777;
+	font-family:arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow: 1px 1px 0 #ffffff;
+}
+
+.button_on:hover {
+	background-color:#bbd;
+}
+
+.button:hover {
+	background-color:#ddd;
+}
+
+.button:active {
+	position:relative;
+	top:1px;
+}

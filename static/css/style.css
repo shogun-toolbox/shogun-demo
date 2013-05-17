@@ -1,0 +1,208 @@
+body {background-color:#E9E9E9; color:#000;}
+a {color:#000;}
+a:hover, a:active, a:focus {color:#ccad00;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Layout
+---------------------------------------------------------------------------------------------------------- */
+
+#header #nav a {color:#303030;}
+#header #nav a:hover, #header #nav a:hover span {color:#000;}
+#header #nav li.active a, #header #nav li.active a span {color:#fff;}
+#footer p.f-left, #footer p.f-left a {color:#7f7f7f;}
+#footer p.f-left strong, #footer p.f-left strong a {color:#3f3f3f;}
+#footer p.f-right, #footer p.f-right a {color:#7f7f7f;}
+#footer a:hover {color:#000 !important;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Page: Homepage
+---------------------------------------------------------------------------------------------------------- */
+
+.box-01 {background-color:#dfdfdf;}
+.box-02 .col h2 {color:#ccad00;}
+.box-02, .box-02-top, .box-02-bottom {background-color:#fff;}
+.box-03, .box-03-top, .box-03-bottom {background-color:#fff;}
+.box-04 {background-color:#dfdfdf;}
+.box-04 .box-04-title h3 {color:#fff;}
+.box-04 .box-04-links span {color:#afafaf;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Page: Subpage
+---------------------------------------------------------------------------------------------------------- */
+
+#title {background-color:#000;}
+#title h1 {color:#fff;}
+.cols, .cols-top, .cols-bottom {background-color:#fff;}
+.content .content-box {border-top:1px solid #d0d0d0; border-bottom:1px solid #d0d0d0; background:#f5f5f5;}
+.content .perex {border-bottom:1px solid #d0d0d0;}
+.content table {border:1px solid #d0d0d0;}
+.content table th, .content table td {border-right:1px solid #d0d0d0;}
+.content table th {background-color:#000; color:#fff;}
+.content table tr.odd td {background:#f0f0f0;}
+.content dt {color:#ccad00;}
+.aside h2 {color:#ccad00;}
+.aside .aside-box {border-top:1px solid #d0d0d0; border-bottom:1px solid #d0d0d0; background:#f5f5f5;}
+
+div#title ul#topnav {
+	margin: 0;
+	padding: 0;
+	float: left;
+	width: 970px;
+	list-style: none;
+	font-size: 1.2em;
+	/* Set relative positioning on the unordered list itself - not on the list item */
+	position: relative;
+	bottom: -45px;
+}
+
+div#title ul#topnav li {
+	float: left;
+	margin: 0;
+	padding: 0;
+}
+
+div#title ul#topnav li a {
+	padding: 10px 15px;
+	display: block;
+	color: #f0f0f0;
+	text-decoration: none;
+}
+
+div#title ul#topnav li a:hover {
+	color: #ffd700;
+}
+
+div#title ul#topnav li span#subnav {
+	float: left;
+	padding: 15px 0;
+	position: absolute;
+	left: 0;
+	top:30px;
+	width: 970px;
+	color: #fff;
+}
+
+div#title ul#topnav li span#subnav a {
+	/**
+	 * Since we declared a link style on the parent list
+	 * link we will correct it back to its original state
+	 */
+	display: inline;
+	color: #f0f0f0;
+} 
+
+div#title ul#topnav li span#subnav a:hover {
+	color: #ffd700;
+}
+
+/* shogun planet */
+.entrygroup { margin-right: -10px;}
+.entrygroup h4 {
+	font-family: "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+	font-size:200%;
+	font-weight: bold;
+}
+
+.entrygroup h4 a {
+	text-decoration: underline;
+	color: inherit;
+}
+
+.entrygroup img.face {
+	float: right;
+	margin-top: -3em;
+}
+
+.entrygroup .entry {
+	margin-bottom: 0;
+}
+
+.entrygroup .entry .date {
+	color: grey;
+}
+
+.entrygroup .entry .date a {
+	color: inherit;
+}
+
+/* irclogs */
+
+table.irclog {
+    width: 100%;
+}
+th.nick {
+    color: #ffffff;
+    padding: 1px 2px;
+}
+
+td.text {
+    width: 100%;
+    background: #eeeeee;
+	word-wrap: break-word;
+	word-break: break-all;
+}
+td.action {
+    background: #eeeeee;
+}
+
+.irclog table th, .content table td {border-right:0px;}
+
+table.irclog {
+    width: 100%;
+	margin: 2px 0;
+	border: 0;
+	border-spacing: 2px;
+	border-collapse: separate;
+}
+
+th.nick {
+    color: #ffffff;
+    padding: 1px 2px;
+}
+td.text {
+    width: 100%;
+    background: #eeeeee;
+}
+td.action {
+    background: #eeeeee;
+}
+
+a.time, a.time:visited {
+    text-decoration: none;
+    color: #8888cc;
+}
+a.time:active, a.time:hover {
+    text-decoration: none;
+    color: #9999dd;
+}
+a.time:before { content: "["; }
+a.time:after { content: "]"; }
+
+.nick { font-weight: bold; }
+
+.part { color: #000099; }
+.join { color: #009900; }
+.servermsg { color: #009900; }
+.nickchange { color: #009900; }
+.action { color: #cc00cc; }
+.other { color: #888888; }
+
+.part, .join, .servermsg, .nickchange, .other { font-size: smaller; }
+td.part + td, td.join + td, td.servermsg + td, td.nickchange + td,
+td.other + td { font-size: smaller; text-align: right; }
+
+
+.ideas table th, .ideas table tr, .ideas table, .ideas table td {vertical-align:middle; border: none; border-collapse:separate; border-spacing: 15px 15px; margin:0; padding:0;}
+.ideas h4 { margin-bottom:2px; }
+.ideas ul { margin-top:-2px; line-height: 1.5em; }
+table.ideas { border-spacing: 15px; border: none; border-collapse:separate; }
+.ideas tr:not(:first-child) td {border:1px solid #8cacbb;}
+td.ideas1 { padding:10px 10px 10px 20px;background-color: #fcfcfc; border: 1px solid #8cacbb;}
+td.ideas2 { padding:10px 10px 10px 20px;background-color: #f2f2f2; border: 1px solid #8cacbb;}
+td.ideas3 { padding:10px 10px 10px 20px;background-color: #dee7ec; border: 1px solid #8cacbb;}
+td.ideas4 { padding:10px 10px 10px 20px;background-color: #ced7dc; border: 1px solid #8cacbb;}
+
+span.easy { color: green; font-weight: bold;}
+span.medium { color: blue; font-weight: bold;}
+span.difficult { color: red; font-weight: bold;}
+.ideas h1 {font-size:150%; border-bottom: none; font-weight: bold; }

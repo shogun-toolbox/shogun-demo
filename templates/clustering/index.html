@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>
+        Clustering-Demo
+      </title>
+
+      <style>
+        body {
+          font: 10px sans-serif;
+        }
+
+        .axis path,
+        .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+        }
+
+        .cursor {
+          fill: none;
+          stroke: brown;
+          pointer-events: none;
+        }
+        select.btn {
+            -webkit-appearance: button;
+               -moz-appearance: button;
+                    appearance: button;
+            width: auto;
+        }
+
+        .dot {
+          stroke: #000;
+        }
+       .grid .tick {
+            stroke: lightgrey;
+            opacity: 0.7;
+        }
+        .grid path {
+              stroke-width: 0;
+        }
+
+      </style>
+      <script src="/static/js/d3.min.js"></script>
+      <script src="/static/js/jquery-1.9.1.min.js"></script>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1.0">
+      <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    </head>
+    <body id="main">
+      <div class="page-header"><h2>&nbsp;Clustering Demo <small>based on Shogun-Toolbox</small></h2></div>
+      <div class="row">
+      <div class="span9" style="display:inline;"></div>
+      <div class="span3" style="display:inline;">
+      <form name="argument">
+          <label> Distance </label>
+          <select name="distance_name" class="btn">
+                <option value="eucl" selected>Euclidean Distance</option>
+                <option value="manh">Manhattan Metric</option>
+                <option value="jens">Jensen Metric</option>
+             </select></br>
+          <label> Number of Clusters ( <500 )</label>
+          <input type="text" value="2" name="number_of_clusters" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"></br>
+        <div class="btn-group">
+        <button type="button" class="btn btn-small btn-primary"  onclick="cluster();">Cluster</button>
+        <button type="button" class="btn btn-small btn-primary" onclick="clear_canvas();">Clear</button>
+        </div>
+      </form>
+      </div>
+      </div>
+
+      <script>
+        var positive_dots = {"points" : []};
+        var negative_dots = {"points" : []};
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 660 - margin.left - margin.right,
+            height = 530 - margin.top - margin.bottom;
+
+        var x = d3.scale.linear()
+            .range([0, width]);
+
+        var y = d3.scale.linear()
+            .range([height, 0]);
+
+        var color = d3.scale.category10();
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        var svg = d3.select(".span9").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .on("mousemove", mousemove)
+            .on("contextmenu",rightmousedown)
+            .on("mousedown", mousedown)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+
+        x.domain([0,1]).nice();
+        y.domain([0,0.8]).nice();
+
+        function make_x_axis() {
+            return d3.svg.axis()
+                .scale(x)
+                 .orient("bottom")
+                 .ticks(10)
+        }
+        function make_y_axis() {
+            return d3.svg.axis()
+                .scale(y)
+                .orient("left")
+                .ticks(8)
+        }
+        
+        svg.append("g")
+            .attr("class", "grid")
+            .attr("transform", "translate(0," + height + ")")
+            .call(make_x_axis()
+                .tickSize(-height, 0, 0)
+                .tickFormat("")
+            )
+        svg.append("g")
+            .attr("class", "grid")
+            .call(make_y_axis()
+                .tickSize(-width, 0, 0)
+                .tickFormat("")
+            )
+
+        var cursor = svg.append("circle")
+            .attr("r", 5)
+            .attr("transform", "translate(-100,-100)")
+            .attr("class", "cursor");
+        
+        function mousemove() {
+          if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
+             return;
+          cursor.attr("transform", "translate(" +
+          (d3.mouse(this)[0]-margin.left) +","+
+          (d3.mouse(this)[1]-margin.top) +
+          ")");
+        }
+        function mousedown() {
+          if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
+             return;
+          var point = d3.mouse(this);
+          point[0]-=margin.left;
+          point[1]-=margin.top;
+          svg.append("circle")
+            .attr("class",  "dot")
+            .attr("r", 3.5)
+            .attr("cx", point[0])
+            .attr("cy", point[1])
+            .style("fill", "red");
+          positive_dots.points.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
+        }
+
+        d3.select("svg").node().oncontextmenu = function(){return false;}; //disable right click menu
+        function rightmousedown()
+        {
+          if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
+             return;
+          var point = d3.mouse(this);
+          point[0]-=margin.left;
+          point[1]-=margin.top;
+          svg.append("circle")
+            .attr("class",  "dot")
+            .attr("r", 3.5)
+            .attr("cx", point[0])
+            .attr("cy", point[1])
+            .style("fill", "blue");
+          negative_dots.points.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
+        }
+
+                   
+          svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis)
+             .append("text")
+              .attr("class", "label")
+              .attr("x", width)
+              .attr("y", -6)
+              .style("text-anchor", "end")
+              .text("X-axis");
+
+          svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+             .append("text")
+              .attr("class", "label")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("Y-axis");
+
+
+        function clear_canvas()
+        {
+           svg.selectAll(".dot").remove();
+           svg.selectAll(".line")
+              .transition()
+              .duration(1000)
+              .attr("r", function(d) {return x(0); })
+              .remove();
+           positive_dots = {"points" : []};
+           negative_dots = {"points" : []};
+        }
+        
+        function cluster()
+        {
+              if (positive_dots.points.length + negative_dots.points.length>0)
+              $.ajax(
+                    {
+                      url:"cluster",
+                      type: "POST",
+                      dataType: 'text',
+                      data: {positive: JSON.stringify(positive_dots),
+                             negative: JSON.stringify(negative_dots),
+                             number_of_clusters: document.argument.number_of_clusters.value,
+                             distance_name: document.argument.distance_name.value,
+                             csrfmiddlewaretoken: '{{ csrf_token }}'},
+                      success: function(data){
+                                  svg.selectAll(".line").remove();
+                                  var json = $.parseJSON(data);
+                                  svg.selectAll(".line").remove();
+                                 var circle = svg.selectAll(".line")
+                                   .data(json['circle'])
+                                   .enter();
+                                 circle.append("circle")
+                                   .attr("class", "line")
+                                   .attr("r",  function(d) { return x(0); })
+                                   .attr("cx", function(d) { return x(d.x); })
+                                   .attr("cy", function(d) { return y(d.y); })
+                                   .style("fill", "none")
+                                   .style("stroke", "green");
+                                 svg.selectAll(".line")
+                                   .transition()
+                                   .duration(1000)
+                                   .attr("r",  function(d) { return x(d.r); });
+
+                                 circle.append("line")
+                                   .attr("class","line")
+                                   .attr("x1", function(d) {return x(d.x+0.02);})
+                                   .attr("y1", function(d) {return y(d.y+0.02);})
+                                   .attr("x2", function(d) {return x(d.x-0.02);})
+                                   .attr("y2", function(d) {return y(d.y-0.02);})
+                                   .style("stroke", "gray");
+                                 circle.append("line")
+                                   .attr("class","line")
+                                   .attr("x1", function(d) {return x(d.x-0.02);})
+                                   .attr("y1", function(d) {return y(d.y+0.02);})
+                                   .attr("x2", function(d) {return x(d.x+0.02);})
+                                   .attr("y2", function(d) {return y(d.y-0.02);})
+                                   .style("stroke", "gray");
+        
+                               },
+        
+                      error: function(){
+                                   alert("Sorry! Got something wrong here, Check your input");
+                               }
+                    });
+        }
+
+        
+        </script>
+    </body>
+</html>

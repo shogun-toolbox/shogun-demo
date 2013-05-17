@@ -1,0 +1,24 @@
+* {margin:0; padding:0;}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote, th, td, img {border:0; outline:0; vertical-align:baseline; background:transparent;}
+address, caption, cite, code, dfn, th, var {font-style:normal; font-weight:normal;}
+h1, h2, h3, h4, h5, h6, table {font-size:100%; font-weight:normal;}
+ol, ul {list-style:none;}
+table {border-collapse:collapse; border-spacing:0;}
+table caption, table th {text-align:left;}
+.box {min-height:1px;}
+.box:after {display:block; visibility:hidden; clear:both; line-height:0; font-size:0; content:".";}
+.fix {float:none; clear:both; width:0; height:0; margin:0; padding:0; border:0; line-height:0; font-size:0;}
+.f-left {float:left !important;}
+.f-right {float:right !important;}
+.t-left {text-align:left !important;}
+.t-center {text-align:center !important;}
+.t-right {text-align:right !important;}
+.t-justify {text-align:justify !important;}
+.va-top {vertical-align:top !important;}
+.va-middle {vertical-align:middle !important;}
+.va-bottom {vertical-align:bottom !important;}
+.nom {margin:0 !important;}
+.nomt {margin-top:0 !important;}
+.nomb {margin-bottom:0 !important;}
+.hidden {position:absolute; left:-1000em; top:auto; width:1px; height:1px; overflow:hidden;}
+.noscreen {display:none;}

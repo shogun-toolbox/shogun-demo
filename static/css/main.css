@@ -1,0 +1,136 @@
+body {padding:35px 0; background:url("../design/bg.gif") 0 0 repeat-x; font:0.75em/1.6 "arial", sans-serif;}
+h1, h2, h3, h4, h5, h6, address, blockquote, dl, fieldset, ol, p, table, ul {margin:15px 0;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Layout
+---------------------------------------------------------------------------------------------------------- */
+
+#main {width:955px; margin:0 auto;}
+
+#header {position:relative; height:60px; overflow:hidden;}
+    #header #logo {position:absolute; right:25px; top:0;}
+    #header #logo p {position:relative; width:179px; height:35px; overflow:hidden; margin:0; padding:0;}
+    #header #logo p span {display:block; position:absolute; top:0; left:0; z-index:1; width:100%; height:100%; margin:0; padding:0; background:url("../design/logo.png") 0 0 no-repeat; cursor:pointer;}
+    #header #nav {position:absolute; left:25px; top:0; margin:0; padding:0; list-style-type:none; font-size:90%; font-weight:bold; text-transform:uppercase;}
+    #header #nav li {display:inline; margin:0; padding:0;}
+    #header #nav a {float:left; height:26px; margin-right:5px !important; padding-left:11px; background:url("../design/nav-l.gif") 0 0 no-repeat; text-decoration:none; cursor:pointer; overflow:hidden;}
+    #header #nav a span {float:left; display:block; padding:5px 15px 5px 4px; background:url("../design/nav-r.gif") 100% 0 no-repeat;}
+    #header #nav a:hover {background-position:0 -52px;}
+    #header #nav a:hover span {background-position:100% -52px;}
+    #header #nav li.active a {background-position:0 -26px;}
+    #header #nav li.active a span {background-position:100% -26px;}
+
+#footer {clear:both; padding:18px 25px 0 25px;}
+    #footer p {margin:0;}
+    #footer p.f-right .footer-rss {padding:5px 0 5px 27px; background:url("../design/footer-rss.gif") 0 0 no-repeat; font-weight:bold;}
+    
+/* ----------------------------------------------------------------------------------------------------------
+Page: Homepage
+---------------------------------------------------------------------------------------------------------- */
+
+.box-01 {position:relative; width:955px; height:347px; margin-bottom:18px; background:url("../design/box-01.png") 0 0 no-repeat; overflow:hidden;}
+    .box-01 #button {position:absolute; top:221px; left:143px; margin:0;}
+    .box-01 #ribbon {position:absolute; top:0; right:0; width:96px; height:96px; font-size:0; overflow:hidden;}
+    .box-01 #twitter {position:absolute; top:272px; left:750px; height:30px; padding-top:33px; padding-left:65px; background:url("../design/box-01-twitter.gif") 0 0 no-repeat;}
+    .box-01 #news {position:absolute; top:305px; right:255px;}
+    .box-01 #news strong {margin-right:5px;}
+    .box-01 #slogan {position:absolute; right:5px; top:95px;}
+    .box-01 #slogan h1 {position:relative; width:605px; height:110px; overflow:hidden; margin:0; padding:0; font-size:300%;}
+    .box-01 #slogan h1 span {display:block; position:absolute; top:0; left:0; z-index:1; width:100%; height:100%; margin:0; padding:0; background:url("../design/slogan.png") 0 0 no-repeat;}
+
+.box-02 {width:930px; padding:19px 0 0 25px; background:url("../design/box-02.gif") 0 0 repeat-y;}
+    .box-02-top {width:955px; height:6px; background:url("../design/box-02-top.gif") 0 0 no-repeat; font-size:0; line-height:0;}
+    .box-02-bottom {width:955px; height:8px; margin-bottom:18px; background:url("../design/box-02-bottom.gif") 0 0 no-repeat; font-size:0; line-height:0;}
+
+    .box-02 .col {position:relative; float:left; width:300px; padding-bottom:17px; margin-bottom:-6px; z-index:100; background-position:100% 100%; background-repeat:no-repeat;}
+    .box-02 .col.left {background-image:url("../design/image-01.jpg");}
+    .box-02 .col.center {background-image:url("../design/soc-logo-190.png");}
+    .box-02 .col .in {min-height:180px; height:auto;}
+    .box-02 .col h2 {margin:0; font-size:100%; font-weight:bold; text-transform:uppercase;}
+    .box-02 .col p {margin:15px 0;}
+    .box-02 .col.left h2, .box-02 .col.left p, .box-02 .col.left ul {padding-right:20px;}
+    .box-02 .col.center h2, .box-02 .col.center p, .box-02 .col.center ul {padding:0 20px;}
+    .box-02 .col.right h2, .box-02 .col.right p, .box-02 .col.right ul {padding-left:20px;}
+
+.box-03-top {width:955px; height:6px; background:url("../design/box-03-top.gif") 0 0 no-repeat; font-size:0; line-height:0;}
+    .box-03-bottom {width:955px; height:8px; margin-bottom:18px; background:url("../design/box-03-bottom.gif") 0 0 no-repeat; font-size:0; line-height:0;}
+    .box-03 {padding:19px 27px 17px 25px; background:url("../design/box-03.gif") 0 0 repeat-y;}
+    .box-03 #loopedSlider {position:relative;}
+    .box-03 #loopedSlider .container {width:800px; height:135px; margin-left:49px; overflow:hidden; position:relative;}
+    .box-03 #loopedSlider .slides {position:absolute; top:0; left:0;}
+    .box-03 #loopedSlider .slides div {display:none; position:absolute; top:0; width:800px;}
+    .box-03 #loopedSlider ul.pagination {list-style-type:none; margin:0; padding:0; margin:0; width:75px;}
+    .box-03 #loopedSlider ul.pagination li {float:left; margin:0 3px;}
+    .box-03 #loopedSlider ul.pagination a {display:block; width:8px; height:8px; overflow:hidden; background-image:url("../design/pagination.gif"); background-position:0 0; background-repeat:no-repeat;}
+    .box-03 #loopedSlider ul.pagination a span {display:none;}
+    .box-03 #loopedSlider ul.pagination li.active a {background-position:0 -8px;}
+    .box-03 #loopedSlider ul.list {margin:0;}
+    .box-03 #loopedSlider ul.list li {display:block; float:left; width:140px; margin:0 10px;}
+    .box-03 #loopedSlider ul.list li img {display:block;}
+    .box-03 #loopedSlider .previous {position:absolute; top:45px; left:0;}
+    .box-03 #loopedSlider .next {position:absolute; top:45px; right:0;}
+    .box-03 #loopedSlider .pagination {position:absolute; bottom:0; left:425px;}
+
+.box-04 {position:relative; width:905px; height:82px; padding:0px 25px; margin-bottom:18px; background:url("../design/box-04.gif") 0 0 no-repeat; overflow:hidden;}
+    .box-04 .box-04-title {float:left; display:block;padding-top:22px;}
+    .box-04 .box-04-title h3 {float:left; margin:0; padding-left:8px; height:36px; overflow:hidden; background:url("../design/box-04-title-l.gif") 0 0 no-repeat; font-weight:bold; text-transform:uppercase; font-size:100%;}
+    .box-04 .box-04-title h3 span {float:left; display:block; padding:9px 15px 9px 7px; background:url("../design/box-04-title-r.gif") 100% 0 no-repeat;}
+    .box-04 .box-04-links {float:left; margin:0; padding:30px 0 0 22px;}
+    .box-04 .box-04-links span {margin:0 10px;}
+	.box-04 .logo img {float:right; display:block;margin:0; padding:0;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Page: Subpage
+---------------------------------------------------------------------------------------------------------- */
+
+#title {position:relative; width:955px; height:122px; background:url("../design/title.jpg") 0 0 no-repeat; overflow:hidden;}
+#title h1 {margin:0; padding:10px 25px 0 25px; font-size:340%; font-weight:bold; letter-spacing:-1px;}
+
+#breadcrumbs {margin:0; padding:13px 25px;}
+
+.cols-top {width:955px; height:6px; background:url("../design/cols-top.gif") 0 0 no-repeat; font-size:0; line-height:0;}
+.cols-bottom {width:955px; height:8px; background:url("../design/cols-bottom.gif") 0 0 no-repeat; font-size:0; line-height:0;}
+.cols {background:url("../design/cols.gif") 0 0 repeat-y;}
+
+.content {float:left; width:595px; padding:0 25px 10px 25px;}
+.content ul {margin:15px 25px;}
+.content ul ul {margin:0 0 0 25px;}
+.content ul li {padding-left:13px; background:url("../design/ul.gif") 0 6px no-repeat;}
+.content ul ul li {padding-left:13px; background:url("../design/ul-ul.gif") 0 6px no-repeat;}
+.content table {margin:15px 0; border-collapse:collapse;}
+.content table th, .content table td {padding:7px 10px;}
+.content table th {text-align:center; background:url("../design/table-th.gif") 0 100% repeat-x;}
+.content dt {font-weight:bold;}
+.content dd {margin-left:25px; margin-bottom:15px;}
+.content h1 {font-size:200%;}
+.content h2 {font-size:150%; border-bottom: none; font-weight: bold; }
+.content h3 {font-size:125%; border-bottom: none; font-weight: bold; }
+.content h4 {font-size:110%; border-bottom: none; font-weight: bold; }
+.content h5, h6 {font-size:100%; border-bottom: none; font-weight: bold; }
+.content .content-box {margin:15px 0; margin-left:-25px; margin-right:-25px; padding:25px;}
+.content .perex {margin:0 -25px 25px -25px; padding:19px 25px 25px 25px; font-size:160%; font-weight:bold; letter-spacing:-1px;}
+.content .perex p {margin:0;}
+
+.aside {float:left; width:262px; padding:25px 22px 25px 21px;}
+.aside h2 {margin:0; font-size:100%; font-weight:bold; text-transform:uppercase;}
+.aside .aside-box {margin:10px 0 20px 0; margin-left:-20px; margin-right:-22px; padding:20px;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Porlet: News
+---------------------------------------------------------------------------------------------------------- */
+
+ul.ul-news {list-style:none;}
+ul.ul-news li {padding:2px 0;}
+ul.ul-news li strong {margin-right:3px; padding-right:17px; background:url("../design/ico-arrow.gif") 100% 50% no-repeat;}
+.ul-news th, .ul-news td {padding-left:7px; padding-right:7px;}
+.content .ul-news table {padding: 10px; border:0;}
+.content .ul-news table td {padding: 0 0 0 7px; border:0;}
+
+/* ----------------------------------------------------------------------------------------------------------
+Others
+---------------------------------------------------------------------------------------------------------- */
+
+img.f-right {margin-left:15px;}
+img.f-left {margin-right:15px;}
+.input {padding:7px; background:url("../design/input.gif") 0 0 no-repeat; font:100%/1 "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;}
+.smaller {font:90%/1.8 "tahoma",sans-serif;}

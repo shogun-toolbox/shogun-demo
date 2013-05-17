@@ -1,0 +1,263 @@
+  <!DOCTYPE html>
+  <html>
+      <head>
+        <title>
+          Kernel Matrix Visualizaion
+        </title>
+        <style>
+          body {
+            font: 10px sans-serif;
+          }
+
+          .axis path,
+          .axis line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
+          }
+          canvas {
+            position: relative;
+          }
+          svg {
+            position: absolute;
+          }
+          .cursor {
+            fill: none;
+            stroke: brown;
+            pointer-events: none;
+          }
+          select.btn {
+              -webkit-appearance: button;
+                 -moz-appearance: button;
+                      appearance: button;
+              width: auto;
+          }
+          .dot {
+            stroke: #000;
+          }
+          .grid .tick {
+              stroke: lightgrey;
+              opacity: 0.7;
+          }
+          .grid path{
+                stroke-width: 0;
+          }
+          div#legend{
+            border:1px solid black;
+            height:20px;
+          }
+        </style>
+        <script src="/static/js/d3.min.js"></script>
+        <script src="/static/js/jquery-1.9.1.min.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+      </head>
+      <body id="main">
+        <div class="page-header"><h2>&nbsp;Kernel Matrix Visualization <small>based on Shogun-Toolbox</small></h2></div>
+        <div class="row">
+          <div class="span9"></div>
+          <div class="span3">
+            <form name="argument">
+              <label> Sine Freq.  </label>
+              <input style="width:800" type="text" value="1.0" name="frequency" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+              <label> Amplitude </label>
+              <input type="text" value="1.0" name="amplitude" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+              <label> Noise Level </label>
+              <input type="text" value="0.3" name="noise_level" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+              <label> Kernel Function </label>
+              <select name="kernel" class="span3">
+                <option value="gaus" selected> Gaussian Kernel</option>
+                <option value="poly"> Polynomial Kernel</option>
+                <option value="line"> Linear Kernel</option>
+              </select><br/>
+              <label> Kernel Width </label>
+              <input type="text" value="0.3" name="kernel_width" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')">
+              <label> degree </label>
+              <input type="text" value="5" name="degree" onkeyup="value=value.replace(/[^\d]/g,'')">
+              <div class="btn-group">
+                <button type="button" class="btn btn-small btn-primary"  onclick="create_toy_data();">Generate Sine Data</button>
+                <button type="button" class="btn btn-small btn-primary"  onclick="generate_matrix();">Draw</button>
+                <button type="button" class="btn btn-small btn-primary"  onclick="clear_map();">Clear</button>
+              </div>
+              <label>legend</label>
+              <div id="legend"></div>
+            </form>
+          </div>
+        </div>
+
+        <script>
+          toy_data = [];
+          var margin = {top: 20, right: 20, bottom: 30, left: 40},
+              width = 660 - margin.left - margin.right,
+              height = 530 - margin.top - margin.bottom;
+
+          var x = d3.scale.linear()
+              .range([0, width]);
+
+          var y = d3.scale.linear()
+              .range([height, 0]);
+
+          var xAxis = d3.svg.axis()
+              .scale(x)
+              .orient("bottom");
+
+          var yAxis = d3.svg.axis()
+              .scale(y)
+              .orient("left");
+          
+          x.domain([-5,5]).nice();
+          y.domain([-4,4]).nice();
+
+          function make_x_axis() {
+              return d3.svg.axis()
+                  .scale(x)
+                   .orient("bottom")
+                   .ticks(10)
+          }
+          function make_y_axis() {
+              return d3.svg.axis()
+                  .scale(y)
+                  .orient("left")
+                  .ticks(8)
+          }
+          
+          var svg = d3.select(".span9").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          svg.append("g")
+              .attr("class", "grid")
+              .attr("transform", "translate(0," + height + ")")
+              .call(make_x_axis()
+                  .tickSize(-height, 0, 0)
+                  .tickFormat("")
+              )
+          svg.append("g")
+              .attr("class", "grid")
+              .call(make_y_axis()
+                  .tickSize(-width, 0, 0)
+                  .tickFormat("")
+              )
+          svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height/2 + ")")
+              .call(xAxis)
+             .append("text")
+              .attr("class", "label")
+              .attr("x", width)
+              .attr("y", -6)
+              .style("text-anchor", "end")
+              .text("X1");
+
+          svg.append("g")
+              .attr("class", "y axis")
+              .attr("transform", "translate(" +width/2 + ", 0)")
+              .call(yAxis)
+             .append("text")
+              .attr("class", "label")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em")
+              .style("text-anchor", "end")
+              .text("X2");
+
+          function clear_map()
+          {
+             svg.selectAll(".dot").remove();
+             $("#heatmap").remove();
+             toy_data = [];
+          }
+          function create_toy_data()
+          {
+                $.ajax(
+                      {
+                         url:"create_toy_data",
+                         type: "POST",
+                         dataType: 'text',
+                         data: {csrfmiddlewaretoken: '{{ csrf_token }}',
+                                amplitude: document.argument.amplitude.value ,
+                                frequency: document.argument.frequency.value,
+                                noise_level: document.argument.noise_level.value},
+                         success: function(data){
+                                     json = $.parseJSON(data)['data'];
+                                     svg.selectAll(".dot").remove();
+                                     toy_data = json;
+                                     svg.selectAll(".dot")
+                                        .data(json)
+                                        .enter().append("circle")
+                                         .attr("class", "dot")
+                                         .attr("r", 1.5)
+                                         .attr("cx", function(d) { return x(d.x); })
+                                         .attr("cy", function(d) { return y(d.y); })
+                                         .style("fill", "red")
+                                         .style("stroke", "none");
+                                  },
+                          error: function(){alert("Cannot connect to server");}
+                      });
+          }
+          var color = d3.scale.linear()
+              .domain([0,1])
+              .range(["blue","red"]);
+          function generate_matrix()
+          {
+              if (toy_data.length !=0)
+                $.ajax(
+                  {
+                        url: "generate_matrix",
+                        type: "POST",
+                        dataType: 'text',
+                        data: {
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                                toy_data: JSON.stringify(toy_data),
+                                kernel_width: document.argument.kernel_width.value,
+                                kernel: document.argument.kernel.value,
+                                degree: document.argument.degree.value
+                              },
+                        success:function(data){
+                                  heatmap = $.parseJSON(data);
+                                  $("#heatmap").remove();
+                                  var dx = heatmap[0].length,
+                                      dy = heatmap.length;
+
+                                  var canvas = d3.select(".span9").append("canvas")
+                                    .attr("id", "heatmap")
+                                    .attr("width", 100)
+                                    .attr("height", 100)
+                                    .style("width", width + "px")
+                                    .style("height", height + "px")
+                                    .style("left", margin.left + "px")
+                                    .style("top", margin.top + "px");
+
+                                  var context = canvas.node().getContext("2d"),
+                                      image = context.createImageData(dx, dy);
+                                  for (var y = 0, p = -1; y < dy; ++y)
+                                  {
+                                    for (var x = 0; x < dx; ++x) {
+                                      var c = d3.rgb(color(heatmap[y][x]));
+                                      image.data[++p] = c.r;
+                                      image.data[++p] = c.g;
+                                      image.data[++p] = c.b;
+                                      image.data[++p] = 128;
+                                    }
+                                  }
+                                  context.putImageData(image, 0, 0);
+                                },
+                        error: function(){
+                                     alert("Error Generated!");
+                               }
+                  });
+              else{
+                    alert("Sorry, there's no dots to train, generate some, pls");
+                  }
+          }
+          $('#legend').css("background-image",
+             "-webkit-gradient(linear, left top, right bottom, color-stop(0.00, " + color.range()[0] + "), color-stop(1.00, " + color.range()[1] + "))");
+
+          $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.round(color.domain()[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.round(color.domain()[1]) + "</span>") ;
+          </script>
+      </body>
+  </html>

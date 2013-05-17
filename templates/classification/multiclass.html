@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>GSoC demos</title>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/static/css/classification.css" rel="stylesheet">
+
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Shogun Demos</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Methods</li>
+              <li><a href="index">Home</a></li>
+              <li><a href="binary">Binary</a></li>
+              <li class="active"><a href="#">Multiclass</a></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span6">
+        <h1>Multiclass classification</h1>
+        <div class="svg-container"></div>
+        <div class="btn-group">
+          <button id="a_button" class="btn btn-primary" type="button" onclick="change_features('a')">A features</button>
+          <button id="b_button" class="btn" type="button" onclick="change_features('b')">B features</button>
+          <button id="c_button" class="btn" type="button" onclick="change_features('c')">C features</button>
+          <button id="d_button" class="btn" type="button" onclick="change_features('d')">D features</button>
+        </div>
+        </div><!--/span-->
+
+        <div class="span3">
+          <h3>Parameters</h3>
+          <form name="">
+            <label>Kernel</label>
+            <select id="kernel-param" class="span8">
+              <option value="gaussian" selected>GaussianKernel</option>
+              <option value="linear">LinearKernel</option>
+              <option value="poly">PolynomialKernel</option>
+            </select>
+            <label>C</label>
+            <input id="c-param" class="span8" type="text" value="1">
+            <label>Sigma</label>
+            <input id="sigma-param" class="span8" type="text" value="0.1">
+            <label>Degree</label>
+            <input id="degree-param" class="span8" type="text" value="2">
+          </form>
+          <div class="btn-group">
+            <button type="button" class="btn btn-success" onclick="classify('run_multiclass')">Classify</button>
+            <button type="button" class="btn btn" onclick="clear_demo()">Clear</button>
+          </div><!--/btn-group-->
+        </div><!--/span-->
+
+      </div><!--/row-->
+    <hr>
+      <footer>
+        <p>GSoC Demos.</p>
+      </footer>
+    </div><!--/.fluid-container-->
+  </body>
+
+  <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/static/js/d3.min.js"></script>
+  <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/conrec.js"></script>
+  <script type="text/javascript" src="/static/js/classification.js"></script>
+
+</html>
