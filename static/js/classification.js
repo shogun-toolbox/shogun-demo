@@ -22,12 +22,22 @@ var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
 
-var svg = d3.select("div.svg-container").append("svg")
+var svg = d3.select("div.svg-container")
+  .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .on("mousedown", mousedown)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svg1 = svg.append("g");
+var svg2 = svg.append("g");
+
+var colorbar_title = d3.select("h3.hide");
+var colorbar = d3.select("div.colorbar-container")
+  .append("svg")
+    .attr("width", 250)
+    .attr("height", 100);
 
 svg.append("g")
     .attr("class", "x axis")
@@ -37,7 +47,7 @@ svg.append("g")
     .attr("class", "label")
     .attr("x", width)
     .attr("y", -6)
-    .style("text-anchor", "end")
+    .style("text-anchor", "end");
 
 svg.append("g")
     .attr("class", "y axis")
@@ -47,7 +57,7 @@ svg.append("g")
     .attr("transform", "rotate(-90)")
     .attr("y", 6)
     .attr("dy", ".71em")
-    .style("text-anchor", "end")
+    .style("text-anchor", "end");
 
 function mousedown() {
     var point = d3.mouse(this);
@@ -113,7 +123,7 @@ function classify(url) {
         "height": JSON.stringify(height),
         "kernel": JSON.stringify(kernel),
         "sigma": JSON.stringify(sigma),
-        "degree": JSON.stringify(degree),
+        "degree": JSON.stringify(degree)
     };
     request_clasify(data, url);
 }
@@ -125,7 +135,7 @@ function request_clasify(message, url) {
         contentType: "application/json",
         dataType: 'text',
         data: message,
-        success: recv,
+        success: recv
     });
 }
 
@@ -140,19 +150,10 @@ function clear_demo() {
         .remove();
 }
 
-function recv(data) {
-    data = JSON.parse(data);
-
-    if (data["status"] != "ok") {
-        alert(data["status"]);
-        return;
-    }
-
-    // Grid data
-    z = data["z"];
-
+// Create conrec.js contour
+function getContour(z, minimum, maximum, dom) {
     // Generate contour
-    var cliff = -100;
+    cliff = -100;
     z.push(d3.range(z[0].length).map(function() { return cliff; }));
     z.unshift(d3.range(z[0].length).map(function() { return cliff; }));
     z.forEach(function(d) {
@@ -160,28 +161,132 @@ function recv(data) {
         d.unshift(cliff);
     });
 
-    var c = new Conrec(),
-        xs = d3.range(0, z.length),
-        ys = d3.range(0, z[0].length),
-        zs = d3.range(data["min"], data["max"], 0.1),
-        x = d3.scale.linear().range([0, width]).domain([0, z.length]),
-        y = d3.scale.linear().range([0, height]).domain([0, z[0].length]),
-        colours = d3.scale.linear().domain(data["domain"]).range(["blue", "red"]);
+    c = new Conrec();
+    xs = d3.range(0, z.length);
+    ys = d3.range(0, z[0].length);
+    zs = d3.range(minimum, maximum, 0.1);
+    x = d3.scale.linear().range([0, width]).domain([0, z.length]);
+    y = d3.scale.linear().range([0, height]).domain([0, z[0].length]);
+    colours = d3.scale.linear().domain(dom).range(["blue", "red"]);
 
     c.contour(z, 0, xs.length-1, 0, ys.length-1, xs, ys, zs.length, zs);
 
+    return {"c": c, "x": x, "y": y, "colours": colours};
+}
+
+// Creates colorbar for [minimum, maximum]
+function setColorBar(minimum, maximum) {
+    if (colorbar_title) {
+        colorbar_title.attr("class", "");
+
+        // Clean old state
+        colorbar.selectAll("rect")
+            .remove();
+        colorbar.selectAll("text")
+            .remove();
+
+        data1 = d3.range(40);
+        rects = colorbar.selectAll("rect")
+            .data(data1);
+        colorScale = d3.scale.linear()
+            .domain([d3.min(data1), d3.max(data1)])
+            .range(["#0000ff", "#ff0000"]);
+
+        // Create rectangles
+        rects.enter()
+            .append("rect")
+            .attr({
+                height: 50,
+                width: 5,
+                x: function(d,i) {
+                    return i * 5;
+                },
+                fill: function(d,i) {
+                    return colorScale(d);
+                }
+            });
+
+        colorbar
+            .append("text")
+            .attr('x',0)
+            .attr('y',70)
+            .attr('fill', 'black')
+            .text(minimum.toFixed(2));
+
+        colorbar
+            .append("text")
+            .attr('x',170)
+            .attr('y',70)
+            .attr('fill', 'black')
+            .text(maximum.toFixed(2));
+    }
+}
+
+
+function recv(data) {
+    data = JSON.parse(data);
+    // Error message
+    if (data["status"] != "ok") {
+        alert(data["status"]);
+        return;
+    }
+
+    // Grid data
+    z = data["z"];
+    minimum = data["min"];
+    maximum = data["max"];
+    dom = data["domain"];
+
+    result = getContour(z, minimum, maximum, dom);
+    c = result["c"];
+    x = result["x"];
+    y = result["y"];
+    colours = result["colours"];
+
     // Remove old paths
-    svg.selectAll("path")
+    svg1.selectAll("path")
+        .remove();
+    svg2.selectAll("path")
         .remove();
     // Create new paths
-    svg.selectAll("path").data(c.contourList())
-        .enter().append("svg:path")
-        .style("fill", function(d) { return colours(d.level);})
+    svg1.selectAll("path")
+        .data(c.contourList())
+        .enter()
+        .append("svg:path")
+        .style("fill", function(d) { return colours(d.level); })
+        .style("stroke", "black")
+        .style("stroke-width", "1")
+        .style("stroke-linecap", "round")
+        .style("stroke-linejoin", "round")
         .attr("class", "path")
-        .attr("d",d3.svg.line()
+        .attr("d", d3.svg.line()
             .x(function(d) { return x(d.x); })
             .y(function(d) { return y(d.y); })
         );
+
+    setColorBar(minimum, maximum);
+
+    // Create division for perceptron
+    if ("z2" in data) {
+        z2 = data["z2"];
+        result = getContour(z2, minimum, maximum, dom);
+        c2 = result["c"];
+        // Create new paths
+        svg2.selectAll("path").data(c2.contourList())
+            .enter().append("svg:path")
+            .style("fill", function(d) { return colours(d.level); })
+            .style("stroke", "black")
+            .style("stroke-width", "1")
+            .style("stroke-linecap", "round")
+            .style("stroke-linejoin", "round")
+            .attr("class", "path")
+            .style("opacity", "0.04")
+            .attr("d", d3.svg.line()
+                .x(function(d) { return x(d.x); })
+                .y(function(d) { return y(d.y); })
+            );
+    }
+
     // Sort points
     svg.selectAll("circle")
         .each(function(d, i) {

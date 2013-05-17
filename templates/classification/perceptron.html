@@ -49,40 +49,33 @@
               <li class="nav-header">Methods</li>
               <li><a href="index">Home</a></li>
               <li><a href="binary">Binary</a></li>
-              <li class="active"><a href="#">Multiclass</a></li>
-              <li><a href="perceptron">Perceptron</a></li>
+              <li><a href="multiclass">Multiclass</a></li>
+              <li class="active"><a href="#">Perceptron</a></li>
             </ul>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span6">
-        <h1>Multiclass classification</h1>
-        <div class="svg-container"></div>
-        <div class="btn-group">
-          <button id="a_button" class="btn btn-primary" type="button" onclick="change_features('a')">A features</button>
-          <button id="b_button" class="btn" type="button" onclick="change_features('b')">B features</button>
-          <button id="c_button" class="btn" type="button" onclick="change_features('c')">C features</button>
-          <button id="d_button" class="btn" type="button" onclick="change_features('d')">D features</button>
-        </div>
+          <h1>Perceptron</h1>
+          <div class="svg-container"></div>
+          <div class="btn-group">
+            <button id="a_button" class="btn btn-primary" type="button" onclick="change_features('a')">A features</button>
+            <button id="b_button" class="btn" type="button" onclick="change_features('b')">B features</button>
+          </div>
         </div><!--/span-->
 
         <div class="span3">
           <h3>Parameters</h3>
           <form name="">
-            <label>Kernel</label>
-            <select id="kernel-param" class="span8">
-              <option value="gaussian" selected>GaussianKernel</option>
-              <option value="linear">LinearKernel</option>
-              <option value="poly">PolynomialKernel</option>
+            <select id="kernel-param" class="hide">
             </select>
-            <label>C</label>
+            <label>Learn rate</label>
             <input id="c-param" class="span8" type="text" value="1">
-            <label>Sigma</label>
-            <input id="sigma-param" class="span8" type="text" value="0.1">
-            <label>Degree</label>
-            <input id="degree-param" class="span8" type="text" value="2">
+            <label>Bias</label>
+            <input id="sigma-param" class="span8" type="text" value="0">
+            <input id="degree-param" class="span8 hide">
           </form>
           <div class="btn-group">
-            <button type="button" class="btn btn-success" onclick="classify('run_multiclass')">Classify</button>
+            <button type="button" class="btn btn-success" onclick="classify('run_perceptron')">Classify</button>
             <button type="button" class="btn btn" onclick="clear_demo()">Clear</button>
           </div><!--/btn-group-->
           <h3 class="hide">Colorbar</h3>
@@ -99,8 +92,10 @@
 
   <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/static/js/d3.min.js"></script>
-  <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="/static/js/conrec.js"></script>
+  <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="/static/js/colorbar.js"></script>
   <script type="text/javascript" src="/static/js/classification.js"></script>
 
 </html>
+
