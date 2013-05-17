@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 
 import modshogun as sg
 import numpy as np
-import scipy as sp
+import numpy.random as rnd
 import json
 
 def entrance(request):
@@ -13,7 +13,10 @@ def entrance(request):
 def create_toy_data(request):
     xmin = -5
     xmax = 5
-    x = sp.arange(xmin, xmax, (xmax-xmin)/100.0)
+    n = 40
+    x = (xmax-xmin-2)*rnd.rand(n)+xmin
+    x.sort()
+    #x = np.linspace(-5,5,n)
     C = 0 #offset
     b = 0
     amplitude = 1
@@ -26,8 +29,8 @@ def create_toy_data(request):
     except:
         raise Http404
     
-    y = b*x + C + amplitude * sp.sin(frequency * x)
-    y += noise_level * np.random.randn(y.shape[0])
+    y = b*x + C + np.linspace(0,amplitude, len(x)) * np.sin(frequency * x)
+    y += noise_level*rnd.randn(y.shape[0])
 
     toy_data = { 'data': [] }
     for i in xrange(len(x)):
@@ -53,9 +56,10 @@ def _read_toy_data(request):
         y_set.append(float(pt["y"]))
         x_set.append(float(pt["x"]))
     kernel_width = float(request.POST['kernel_width'])
-    return (x_set, y_set, kernel_width)
+    noise_level = float(request.POST['noise_level'])
+    return (x_set, y_set, noise_level, kernel_width)
 
-def _process(x_set, y_set, kernel_width):
+def _process(x_set, y_set, noise_level, kernel_width):
     labels = np.array(y_set, dtype = np.float64)
     num = len(x_set)
     if num == 0:
@@ -68,8 +72,9 @@ def _process(x_set, y_set, kernel_width):
     n_dimensions = 1
 
     likelihood = sg.GaussianLikelihood()
-    covar_parms = sp.log([2])
-    hyperparams = {'covar': covar_parms, 'lik': sp.log([1])}
+    likelihood.set_sigma(noise_level)
+    covar_parms = np.log([2])
+    hyperparams = {'covar': covar_parms, 'lik': np.log([1])}
 
     # construct covariance function
     SECF = sg.GaussianKernel(feat_train, feat_train, kernel_width)
@@ -91,6 +96,6 @@ def _process(x_set, y_set, kernel_width):
     for i in xrange(len(feat_test.get_feature_matrix()[0])):
         result.append({'x': feat_test.get_feature_matrix()[0][i],
                        'y': predictions.get_labels()[i],
-                       'range_upper': predictions.get_labels()[i]+3*np.sqrt(covariance.get_labels()[i]),
-                       'range_lower': predictions.get_labels()[i]-3*np.sqrt(covariance.get_labels()[i])})
+                       'range_upper': predictions.get_labels()[i]+2*np.sqrt(covariance.get_labels()[i]),
+                       'range_lower': predictions.get_labels()[i]-2*np.sqrt(covariance.get_labels()[i])})
     return result
