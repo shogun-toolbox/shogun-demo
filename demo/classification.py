@@ -19,6 +19,10 @@ def index(request):
     return render_to_response("classification/index.html", context_instance=RequestContext(request))
 
 
+def perceptron(request):
+    return render_to_response("classification/perceptron.html", context_instance=RequestContext(request))
+
+
 def run_binary(request):
     points = json.loads(request.GET["points"])
     C = json.loads(request.GET["C"])
@@ -34,11 +38,11 @@ def run_binary(request):
         return HttpResponse(json.dumps({"status": e.message}))
 
     try:
-        x, y, z = classify(sg.LibSVM, features, labels, kernel, C=C)
+        x, y, z = classify_svm(sg.LibSVM, features, labels, kernel, C=C)
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 
-    data = {"status": "ok", "domain": [-1, 1], "max": np.max(z), "min": np.min(z), "z": z.tolist()}
+    data = {"status": "ok", "domain": [np.min(z), np.max(z)], "max": np.max(z), "min": np.min(z), "z": z.tolist()}
 
     return HttpResponse(json.dumps(data))
 
@@ -57,7 +61,8 @@ def run_multiclass(request):
         return HttpResponse(json.dumps({"status": e.message}))
 
     try:
-        x, y, z = classify(sg.GMNPSVM, features, labels, kernel, C=C)
+        x, y, z = classify_svm(sg.GMNPSVM, features, labels, kernel, C=C)
+
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 
@@ -65,6 +70,30 @@ def run_multiclass(request):
     z = z + np.random.rand(*z.shape) * 0.01
 
     data = {"status": "ok", "domain": [0, 4], "max": np.max(z), "min": np.min(z), "z": z.tolist()}
+
+    return HttpResponse(json.dumps(data))
+
+
+def run_perceptron(request):
+    points = json.loads(request.GET["points"])
+    learn = json.loads(request.GET["C"])
+    bias = json.loads(request.GET["sigma"])
+
+
+    try:
+        features, labels = _get_binary_features(points)
+    except ValueError as e:
+        return HttpResponse(json.dumps({"status": e.message}))
+
+    try:
+        z_value, z_label = classify_perceptron(sg.Perceptron, features, labels, learn, bias)
+    except Exception as e:
+        return HttpResponse(json.dumps({"status": repr(e)}))
+
+    mininum = np.min(z_value)
+    maximum = np.max(z_value)
+
+    data = {"status": "ok", "domain": [mininum, maximum], "max": maximum, "min": mininum, "z": z_value.tolist(), "z2": z_label.tolist()}
 
     return HttpResponse(json.dumps(data))
 
@@ -87,7 +116,8 @@ def _get_kernel(request, features):
 
     return kernel
 
-def classify(classifier, features, labels, kernel, C=1):
+
+def classify_svm(classifier, features, labels, kernel, C=1):
     svm = classifier(C, kernel, labels)
     svm.train(features)
 
@@ -106,6 +136,36 @@ def classify(classifier, features, labels, kernel, C=1):
     z = np.transpose(z)
 
     return x, y, z
+
+
+def classify_perceptron(classifier, features, labels, learn=1, bias=0):
+    perceptron = classifier(features, labels)
+    perceptron.set_learn_rate(learn)
+    perceptron.set_max_iter(1000)
+    perceptron.set_bias(bias)
+    perceptron.train()
+
+    size = 100
+    x1 = np.linspace(0, 1, size)
+    y1 = np.linspace(0, 1, size)
+    x, y = np.meshgrid(x1, y1)
+
+    test = sg.RealFeatures(np.array((np.ravel(x), np.ravel(y))))
+
+    outl = perceptron.apply(test).get_labels()
+    outv = perceptron.apply(test).get_values()
+
+    # Normalize output
+    outv /= np.max(outv)
+
+    z_value = outv.reshape((size, size))
+    z_value = np.transpose(z_value)
+
+    z_label = outl.reshape((size, size))
+    z_label = np.transpose(z_label)
+    z_label = z_label + np.random.rand(*z_label.shape) * 0.01
+
+    return z_value, z_label
 
 
 def _get_binary_features(data):
@@ -153,3 +213,4 @@ def _get_multi_features(data):
     labels = sg.MulticlassLabels(labels)
 
     return features, labels
+
