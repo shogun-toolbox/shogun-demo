@@ -116,8 +116,10 @@
         var svg = d3.select(".span9").append("svg")
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
+            .on("mouseover", function() { circle.attr("display", "red"); })
             .on("mousemove", mousemove)
             .on("mousedown", mousedown)
+            .on("mouseout", function() { circle.attr("display", "none"); })
           .append("g")
             .attr("transform", "translate(" + margin.left + "," +
             margin.top + ")")
@@ -140,14 +142,38 @@
             .attr("r", 5)
             .attr("transform", "translate(-100,-100)")
             .attr("class", "cursor");
-
+        var circle = svg.append("circle")
+            .attr("r", 3)
+            .attr("display", "none")
+            .style("fill", "red");
+        var coordinate = svg.append("text")
+            .attr("font-family", "sans-serif");
+        var dim2 = {};
+        var curve;
         function mousemove() {
           if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
              return;
-          cursor.attr("transform", "translate(" +
-            (d3.mouse(this)[0]-margin.left) +","+
-            (d3.mouse(this)[1]-margin.top) +
-          ")");
+          cursor.attr("transform", "translate(" + (d3.mouse(this)[0]-margin.left) +","+ (d3.mouse(this)[1]-margin.top) + ")");
+          var mouse_x = d3.mouse(this)[0]-margin.left;
+          if (mouse_x < width && curve)
+          {
+            var pos;
+            var pathEl = curve.node();            
+            for (var i = mouse_x; i < pathEl.getTotalLength(); i+=1) {
+              pos = pathEl.getPointAtLength(i);
+              if (pos.x >= mouse_x) {
+                break;
+              }
+            }
+            var coord_x = x.invert(mouse_x);
+            circle
+              .attr("cx", x(coord_x))
+              .attr("cy", pos.y);
+            coordinate
+              .text("("+x.invert(mouse_x).toFixed(2)+","+y.invert(pos.y).toFixed(2)+")")
+              .attr("x", x(coord_x)+4)
+              .attr("y", pos.y);
+          }
         }
         function mousedown() {
           if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
@@ -162,39 +188,32 @@
             .attr("cy", point[1]);
           new_points.points.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
         }
-        
 
-          new_points.points.forEach(function(d) {
-            d.x = +d.x;
-            d.y = +d.y;
-          });
+        svg.append("g")
+           .attr("class", "x axis")
+           .attr("transform", "translate(0," + height + ")")
+           .call(xAxis)
+           .append("text")
+           .attr("class", "label")
+           .attr("x", width)
+           .attr("y", -6)
+           .style("text-anchor", "end")
+           .text("X-axis");
 
-                   
-          svg.append("g")
-              .attr("class", "x axis")
-              .attr("transform", "translate(0," + height + ")")
-              .call(xAxis)
-             .append("text")
-              .attr("class", "label")
-              .attr("x", width)
-              .attr("y", -6)
-              .style("text-anchor", "end")
-              .text("X-axis");
+        svg.append("g")
+           .attr("class", "y axis")
+           .call(yAxis)
+           .append("text")
+           .attr("class", "label")
+           .attr("transform", "rotate(-90)")
+           .attr("y", 6)
+           .attr("dy", ".71em")
+           .style("text-anchor", "end")
+           .text("Y-axis");
 
-          svg.append("g")
-              .attr("class", "y axis")
-              .call(yAxis)
-             .append("text")
-              .attr("class", "label")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 6)
-              .attr("dy", ".71em")
-              .style("text-anchor", "end")
-              .text("Y-axis");
-
-          svg.selectAll(".dot")
-              .data(new_points.points)
-            .enter().append("circle")
+        svg.selectAll(".dot")
+           .data(new_points.points)
+           .enter().append("circle")
               .attr("class", "dot")
               .attr("r", 3.5)
               .attr("cx", function(d) { return x(d.x); })
@@ -213,11 +232,11 @@
            svg.selectAll(".dot").remove();
            new_points = {"points" : []};
         }
-       var line = d3.svg.line()
+        var line = d3.svg.line()
            .x(function (d) { return x(d.x_value); })
            .y(function (d) { return y(d.y_value); })
            .interpolate('basis')
-      var start = d3.svg.line()
+        var start = d3.svg.line()
            .x(function (d) {return x(d.x_value); })
            .y(function (d) {return y(0); })
            .interpolate('basis')
@@ -240,13 +259,13 @@
                              d: document.argument.d.value},
                       success: function(data){
                                   json = $.parseJSON(data);
-//                                  svg.selectAll(".line").remove();
                                   json.forEach(function(d) {
                                     d.x_value = +d.x_value;
                                     d.y_value = +d.y_value;
+                                    dim2[x(d.x_value).toFixed(0)] = d.y_value;
                                   });
                                  if (svg.selectAll(".line")[0].length == 0)
-                                 svg.append("path")
+                                 curve = svg.append("path")
                                     .attr("class", "line")
                                     .attr("d", start(json))
                                     .style("stroke-width", "2")
@@ -265,8 +284,6 @@
                   alert("Sorry, there's no dot input, click some, pls");
              }
         }
-
-        
         </script>
     </body>
 </html>
