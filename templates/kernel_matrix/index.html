@@ -77,8 +77,8 @@
               <label> degree </label>
               <input type="text" value="5" name="degree" onkeyup="value=value.replace(/[^\d]/g,'')">
               <div class="btn-group">
-                <button type="button" class="btn btn-small btn-primary"  onclick="create_toy_data();">Generate Sine Data</button>
-                <button type="button" class="btn btn-small btn-primary"  onclick="generate_matrix();">Draw</button>
+                <button type="button" class="btn btn-small btn-primary" id="generate" onclick="create_toy_data();">Generate Sine Data</button>
+                <button type="button" class="btn btn-small btn-primary" id="drawing" onclick="generate_matrix();">Draw</button>
                 <button type="button" class="btn btn-small btn-primary"  onclick="clear_map();">Clear</button>
               </div>
               <label>legend</label>
@@ -182,6 +182,9 @@
                                 amplitude: document.argument.amplitude.value ,
                                 frequency: document.argument.frequency.value,
                                 noise_level: document.argument.noise_level.value},
+                         beforeSend:function(){
+                                    $("#generate").attr('disabled', true);
+                                },
                          success: function(data){
                                      json = $.parseJSON(data)['data'];
                                      svg.selectAll(".dot").remove();
@@ -195,8 +198,9 @@
                                          .attr("cy", function(d) { return y(d.y); })
                                          .style("fill", "red")
                                          .style("stroke", "none");
+                                      $("#generate").attr('disabled', false)
                                   },
-                          error: function(){alert("Cannot connect to server");}
+                          error: function(){alert("Cannot connect to server"); $("#generate").attr('disabled',true);}
                       });
           }
           var color = d3.scale.linear()
@@ -216,6 +220,9 @@
                                 kernel_width: document.argument.kernel_width.value,
                                 kernel: document.argument.kernel.value,
                                 degree: document.argument.degree.value
+                              },
+                        beforeSend:function(){
+                                $("#drawing").attr('disabled', true);
                               },
                         success:function(data){
                                   heatmap = $.parseJSON(data);
@@ -245,8 +252,10 @@
                                     }
                                   }
                                   context.putImageData(image, 0, 0);
+                                  $("#drawing").attr('disabled', false);
                                 },
                         error: function(){
+                                     $("#drawing").attr('disabled', false);
                                      alert("Error Generated!");
                                }
                   });

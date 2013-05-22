@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 import modshogun as sg
 import numpy as np
 import numpy.random as rnd
+import h5py
 import json
 
 def entrance(request):
@@ -37,6 +38,10 @@ def create_toy_data(request):
         toy_data['data'].append( { 'x': x[i], 'y': y[i]})
     
     return HttpResponse(json.dumps(toy_data))
+def load_toy_data(request):
+    f = h5py.File('data/toy/australian.libsvm.h5')
+    data = f["/data/data"]
+    return HttpResponse(data)
 
 def train(request):
     result = []

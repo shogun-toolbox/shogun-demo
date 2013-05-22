@@ -63,7 +63,7 @@
           <label> Number of Clusters ( <500 )</label>
           <input type="text" value="2" name="number_of_clusters" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"></br>
         <div class="btn-group">
-        <button type="button" class="btn btn-small btn-primary"  onclick="cluster();">Cluster</button>
+        <button type="button" class="btn btn-small btn-primary" id="clust"  onclick="cluster();">Cluster</button>
         <button type="button" class="btn btn-small btn-primary" onclick="clear_canvas();">Clear</button>
         </div>
       </form>
@@ -221,6 +221,7 @@
                       url:"cluster",
                       type: "POST",
                       dataType: 'text',
+                      beforeSend: function(){$("#clust").attr('disabled', true);},
                       data: {positive: JSON.stringify(positive_dots),
                              negative: JSON.stringify(negative_dots),
                              number_of_clusters: document.argument.number_of_clusters.value,
@@ -259,11 +260,13 @@
                                    .attr("x2", function(d) {return x(d.x+0.02);})
                                    .attr("y2", function(d) {return y(d.y-0.02);})
                                    .style("stroke", "gray");
+                                 $("#clust").attr('disabled', false);
         
                                },
         
                       error: function(){
                                    alert("Sorry! Got something wrong here, Check your input");
+                                   $("#clust").attr('disabled', false);
                                }
                     });
         }

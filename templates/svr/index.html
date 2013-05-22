@@ -68,7 +68,7 @@
           <label> d </label>
           <input type="text" value="5" name="d" onkeyup="value=value.replace(/[^\d]/g,'')">
         <div class="btn-group">
-        <button type="button" class="btn btn-small btn-primary"  onclick="regression();">Regression</button>
+        <button type="button" class="btn btn-small btn-primary" id="regress"  onclick="regression();">Regression</button>
         <button type="button" class="btn btn-small btn-primary" onclick="clear_map();">Clear</button>
         </div>
       </form>
@@ -257,6 +257,9 @@
                              kernel: document.argument.kernel.value,
                              sigma: document.argument.sigma.value,
                              d: document.argument.d.value},
+                      beforeSend: function(){
+                             $("#regress").attr('disabled', true);
+                             },
                       success: function(data){
                                   json = $.parseJSON(data);
                                   json.forEach(function(d) {
@@ -274,10 +277,12 @@
                                  svg.selectAll(".line")
                                     .transition().duration(1000)
                                     .attr("d", line(json));
+                                 $("#regress").attr('disabled', false);
                                },
         
                       error: function(){
                                    alert("Error Generated!");
+                                   $("#regress").attr('disabled', false);
                                }
                     });
              else{
