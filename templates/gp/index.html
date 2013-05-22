@@ -62,8 +62,8 @@
           <label> Kernel Width </label>
           <input type="text" value="2.0" name="kernel_width" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')">
         <div class="btn-group">
-        <button type="button" class="btn btn-small btn-primary"  onclick="create_toy_data();">Generate Sine Data</button>
-        <button type="button" class="btn btn-small btn-primary"  onclick="train();">Train GP</button>
+        <button type="button" class="btn btn-small btn-primary" id="id_create" onclick="create_toy_data();">Generate Sine Data</button>
+        <button type="button" class="btn btn-small btn-primary" id="id_train" onclick="train();">Train GP</button>
         <button type="button" class="btn btn-small btn-primary"  onclick="clear_map();">Clear</button>
         </div>
       </form>
@@ -184,6 +184,7 @@
                               amplitude: document.argument.amplitude.value ,
                               frequency: document.argument.frequency.value,
                               noise_level: document.argument.noise_level.value},
+                       beforeSend: function(){$("#id_create").attr('disabled',true);},
                        success: function(data){
                                    json = $.parseJSON(data)['data'];
                                    svg.selectAll(".dot").remove();
@@ -197,8 +198,10 @@
                                        .attr("cy", function(d) { return y(d.y); })
                                        .style("fill", "red")
                                        .style("stroke", "none");
+                                   $("#id_create").attr('disabled', false);
                                 },
-                        error: function(){alert("Cannot connect to server");}
+                        error: function(){alert("Cannot connect to server");
+                                          $("#id_create").attr('disabled', false);}
                      });
         }
         var area_end = d3.svg.area()
@@ -217,6 +220,7 @@
                              toy_data: JSON.stringify(toy_data),
                              noise_level: document.argument.noise_level.value,
                              kernel_width: document.argument.kernel_width.value},
+                      beforeSend: function(){$("#id_train").attr('disabled', true);},
                       success: function(data){
                                  json = $.parseJSON(data);
                                  if (svg.selectAll(".line")[0].length == 0)
@@ -236,9 +240,11 @@
                                   .attr("class", "area")
                                   .attr("d", area_end(json))
                                   .style("fill", "rgba(128, 128, 128, 0.25)");
+                                $("#id_train").attr('disabled', false);
                                },
                       error: function(){
                                    alert("Error Generated!");
+                                   $("#id_train").attr('disabled', false);
                                }
                     });
              else{
