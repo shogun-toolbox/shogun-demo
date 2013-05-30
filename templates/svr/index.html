@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-      <title>
-        Support Vector Regression Demo
-      </title>
-
+{% extends "default.html" %}
+{% block stylesheet %} 
       <style>
         body {
           font: 10px sans-serif;
@@ -39,20 +34,10 @@
         .grid path{
               stroke-width: 0;
         }
-      </style>
-      <script src="/static/js/d3.min.js"></script>
-      <script src="/static/js/jquery-1.9.1.min.js"></script>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1.0">
-      <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-      <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-    </head>
-    <body id="main">
-      <div class="page-header"><h2>&nbsp;Support Vector Regression Demo <small>based on Shogun-Toolbox</small></h2></div>
-      <div class="row">
-      <div class="span9" style="display:inline;"></div>
-      <div class="span3" style="display:inline;">
-      <form name="argument">
+        </style>
+{% endblock %}
+{% block arguments %}
+      <form name="arguments">
           <label> Kernel Function </label>
           <select name="kernel" class="span3">
                 <option value="gaus" selected>GaussianKernel</option>
@@ -72,9 +57,8 @@
         <button type="button" class="btn btn-small btn-primary" onclick="clear_map();">Clear</button>
         </div>
       </form>
-      </div>
-      </div>
-
+{% endblock %}
+{% block javascript %}
       <script>
         var new_points = {"points" : []};
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -252,11 +236,11 @@
                       dataType: 'text',
                       data: {csrfmiddlewaretoken: '{{ csrf_token }}',
                              data: JSON.stringify(new_points),
-                             C: document.argument.C.value,
-                             tube: document.argument.tube.value,
-                             kernel: document.argument.kernel.value,
-                             sigma: document.argument.sigma.value,
-                             d: document.argument.d.value},
+                             C: document.arguments.C.value,
+                             tube: document.arguments.tube.value,
+                             kernel: document.arguments.kernel.value,
+                             sigma: document.arguments.sigma.value,
+                             d: document.arguments.d.value},
                       beforeSend: function(){
                              $("#regress").attr('disabled', true);
                              },
@@ -290,5 +274,4 @@
              }
         }
         </script>
-    </body>
-</html>
+{% endblock %}

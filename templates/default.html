@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>{{ title }}</title>
+      {% block stylesheet %} {% endblock %}
+      <script src="/static/js/d3.min.js"></script>
+      <script src="/static/js/jquery-1.9.1.min.js"></script>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1.0">
+      <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    </head>
+    <body id="main">
+      <div class="page-header"><h2>&nbsp;{{ title }} <small>based on Shogun-Toolbox</small></h2></div>
+      <div class="row">
+        <!-- canvas -->
+        <div class="span9" style="display:inline;"></div>
+        <!-- arguments -->
+        <div class="span3" style="display:inline;">
+          {% block arguments %} {% endblock %}
+        </div>
+      </div>
+      {% block javascript %} {% endblock %}
+    </body>
+</html>
