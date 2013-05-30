@@ -8,7 +8,10 @@ import scipy as sp
 import json
 
 def entrance(request):
-    return render_to_response("kernel_matrix/index.html", context_instance = RequestContext(request))
+    properties = { 'title': 'Kernel Matrix Visualization' }
+    return render_to_response("kernel_matrix/index.html",
+                              properties,
+                              context_instance = RequestContext(request))
 
 def create_toy_data(request):
     xmin = -5

@@ -9,7 +9,8 @@ import h5py
 import json
 
 def entrance(request):
-    return render_to_response("gp/index.html", context_instance = RequestContext(request))
+    properties = { 'title': 'Gaussian Process Regression Demo' }
+    return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
 
 def create_toy_data(request):
     xmin = -5
