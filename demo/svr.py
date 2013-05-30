@@ -7,7 +7,8 @@ import numpy as np
 import json
 
 def entrance(request):
-    return render_to_response("svr/index.html",context_instance=RequestContext(request))
+    properties = { 'title': 'Supported Vector Regression Demo' }
+    return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     
 def point(request):
     try:

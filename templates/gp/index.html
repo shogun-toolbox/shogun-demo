@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html>
-    <head>
-      <title>
-        Gaussian Process Regression Demo
-      </title>
-
+{% extends "default.html" %}
+{% block stylesheet %}
       <style>
         body {
           font: 10px sans-serif;
@@ -40,19 +35,9 @@
               stroke-width: 0;
         }
       </style>
-      <script src="/static/js/d3.min.js"></script>
-      <script src="/static/js/jquery-1.9.1.min.js"></script>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1.0">
-      <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-      <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-    </head>
-    <body id="main">
-      <div class="page-header"><h2>&nbsp;Gaussian Process Regression Demo <small>based on Shogun-Toolbox</small></h2></div>
-      <div class="row">
-      <div class="span9" style="display:inline;"></div>
-      <div class="span3" style="display:inline;">
-      <form name="argument">
+{% endblock %}
+{% block arguments %}
+      <form name="arguments">
           <label> Sine Freq.  </label>
           <input style="width:800" type="text" value="2.0" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
           <label> Amplitude </label>
@@ -67,9 +52,8 @@
         <button type="button" class="btn btn-small btn-primary"  onclick="clear_map();">Clear</button>
         </div>
       </form>
-      </div>
-      </div>
-
+{% endblock %}
+{% block javascript %}
       <script>
         toy_data = [];
         var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -181,9 +165,9 @@
                        type: "POST",
                        dataType: 'text',
                        data: {csrfmiddlewaretoken: '{{ csrf_token }}',
-                              amplitude: document.argument.amplitude.value ,
-                              frequency: document.argument.frequency.value,
-                              noise_level: document.argument.noise_level.value},
+                              amplitude: document.arguments.amplitude.value ,
+                              frequency: document.arguments.frequency.value,
+                              noise_level: document.arguments.noise_level.value},
                        beforeSend: function(){$("#id_create").attr('disabled',true);},
                        success: function(data){
                                    json = $.parseJSON(data)['data'];
@@ -218,8 +202,8 @@
                       dataType: 'text',
                       data: {csrfmiddlewaretoken: '{{ csrf_token }}',
                              toy_data: JSON.stringify(toy_data),
-                             noise_level: document.argument.noise_level.value,
-                             kernel_width: document.argument.kernel_width.value},
+                             noise_level: document.arguments.noise_level.value,
+                             kernel_width: document.arguments.kernel_width.value},
                       beforeSend: function(){$("#id_train").attr('disabled', true);},
                       success: function(data){
                                  json = $.parseJSON(data);
@@ -254,5 +238,4 @@
 
         
         </script>
-    </body>
-</html>
+{% endblock %}

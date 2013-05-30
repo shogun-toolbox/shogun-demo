@@ -7,7 +7,8 @@ import numpy as np
 import json
 
 def entrance(request):
-    return render_to_response("clustering/index.html", context_instance=RequestContext(request))
+    properties = { 'title': 'Clustering Demo' }
+    return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 
 def cluster(request):
     try:
