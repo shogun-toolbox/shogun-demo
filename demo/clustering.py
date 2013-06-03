@@ -7,7 +7,25 @@ import numpy as np
 import json
 
 def entrance(request):
-    properties = { 'title': 'Clustering Demo' }
+    arguments = [
+        {
+            'argument_type': 'select',
+            'argument_label': 'Distance',
+            'argument_name': 'distance',
+            'argument_items': ['EuclideanDistance',
+                             'ManhattanMetric',
+                             'JensenMetric']},
+        {
+            'argument_type': 'integer',
+            'argument_name': 'number_of_clusters',
+            'argument_label': 'Number of Clusters (<500)',
+            'argument_default': '2'},
+        {
+            'argument_type': 'button-group',
+            'argument_items': ['cluster', 'clear']
+        }]
+    properties = { 'title': 'Clustering Demo' ,
+                   'arguments': arguments}
     return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 
 def cluster(request):
@@ -31,7 +49,7 @@ def _read_data(request):
         raise TypeError
     positive = json.loads(request.POST['positive'])['points']
     negative = json.loads(request.POST['negative'])['points']
-    distance_name = request.POST['distance_name']
+    distance_name = request.POST['distance']
         
     if len(positive) == 0 and len(negative) == 0:
         raise TypeError
@@ -54,11 +72,11 @@ def _train_clustering(positive, negative, distance_name, k):
     lab = sg.BinaryLabels(labels)
     train = sg.RealFeatures(features)
              
-    if distance_name == "eucl":
+    if distance_name == "EuclideanDistance":
         distance = sg.EuclideanDistance(train, train)
-    elif distance_name == "manh":
+    elif distance_name == "ManhattanMetric":
         distance = sg.ManhattanMetric(train, train)
-    elif distance_name == "jens":
+    elif distance_name == "JensenMetric":
         distance = sg.JensenMetric(train, train)
     else:
        raise TypeError
