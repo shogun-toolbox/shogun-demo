@@ -9,7 +9,34 @@ import h5py
 import json
 
 def entrance(request):
-    properties = { 'title': 'Gaussian Process Regression Demo' }
+    arguments = [
+        {
+            'argument_type': 'decimal',
+            'argument_label': 'Sine Freq.',
+            'argument_name': 'frequency',
+            'argument_default': '2.0'},
+        {
+            'argument_type': 'decimal',
+            'argument_label': 'Amplitude',
+            'argument_name': 'amplitude',
+            'argument_default': '2.0'},
+        {
+            'argument_type': 'decimal',
+            'argument_label': 'Noise Level',
+            'argument_name': 'noise_level',
+            'argument_default': '0.1'},
+        {
+            'argument_type': 'decimal',
+            'argument_label': 'Kernel Width',
+            'argument_name': 'kernel_width',
+            'argument_default': '2.0'},
+        {
+            'argument_type': 'button-group',
+            'argument_items': ['GenerateToyData', 'TrainGP', 'Clear']
+        }
+    ]
+    properties = { 'title': 'Gaussian Process Regression Demo' ,
+                   'arguments': arguments }
     return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
 
 def create_toy_data(request):

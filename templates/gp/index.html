@@ -36,23 +36,6 @@
         }
       </style>
 {% endblock %}
-{% block arguments %}
-      <form name="arguments">
-          <label> Sine Freq.  </label>
-          <input style="width:800" type="text" value="2.0" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-          <label> Amplitude </label>
-          <input type="text" value="2.0" name="amplitude" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-          <label> Noise Level </label>
-          <input type="text" value="0.1" name="noise_level" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-          <label> Kernel Width </label>
-          <input type="text" value="2.0" name="kernel_width" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')">
-        <div class="btn-group">
-        <button type="button" class="btn btn-small btn-primary" id="id_create" onclick="create_toy_data();">Generate Sine Data</button>
-        <button type="button" class="btn btn-small btn-primary" id="id_train" onclick="train();">Train GP</button>
-        <button type="button" class="btn btn-small btn-primary"  onclick="clear_map();">Clear</button>
-        </div>
-      </form>
-{% endblock %}
 {% block javascript %}
       <script>
         toy_data = [];
@@ -135,7 +118,7 @@
               .style("text-anchor", "end")
               .text("Y-axis");
 
-        function clear_map()
+        function Clear_action()
         {
            svg.selectAll(".line")
             .transition()
@@ -157,7 +140,7 @@
            .y(function (d) {return y(0); })
            .interpolate('basis')
 
-        function create_toy_data()
+        function GenerateToyData_action()
         {
               $.ajax(
                     {
@@ -168,7 +151,7 @@
                               amplitude: document.arguments.amplitude.value ,
                               frequency: document.arguments.frequency.value,
                               noise_level: document.arguments.noise_level.value},
-                       beforeSend: function(){$("#id_create").attr('disabled',true);},
+                       beforeSend: function(){$("#GenerateToyData").attr('disabled',true);},
                        success: function(data){
                                    json = $.parseJSON(data)['data'];
                                    svg.selectAll(".dot").remove();
@@ -182,17 +165,17 @@
                                        .attr("cy", function(d) { return y(d.y); })
                                        .style("fill", "red")
                                        .style("stroke", "none");
-                                   $("#id_create").attr('disabled', false);
+                                   $("#GenerateToyData").attr('disabled', false);
                                 },
                         error: function(){alert("Cannot connect to server");
-                                          $("#id_create").attr('disabled', false);}
+                                          $("#GenerateToyData").attr('disabled', false);}
                      });
         }
         var area_end = d3.svg.area()
           .x(function(d) { return x(d.x);})
           .y0(function(d) { return y(d.range_lower);})
           .y1(function(d) { return y(d.range_upper);});
-        function train()
+        function TrainGP_action()
         {
             if (toy_data.length !=0)
               $.ajax(
@@ -204,7 +187,7 @@
                              toy_data: JSON.stringify(toy_data),
                              noise_level: document.arguments.noise_level.value,
                              kernel_width: document.arguments.kernel_width.value},
-                      beforeSend: function(){$("#id_train").attr('disabled', true);},
+                      beforeSend: function(){$("#TrainGP").attr('disabled', true);},
                       success: function(data){
                                  json = $.parseJSON(data);
                                  if (svg.selectAll(".line")[0].length == 0)
@@ -224,18 +207,17 @@
                                   .attr("class", "area")
                                   .attr("d", area_end(json))
                                   .style("fill", "rgba(128, 128, 128, 0.25)");
-                                $("#id_train").attr('disabled', false);
+                                $("#TrainGP").attr('disabled', false);
                                },
                       error: function(){
                                    alert("Error Generated!");
-                                   $("#id_train").attr('disabled', false);
+                                   $("#TrainGP").attr('disabled', false);
                                }
                     });
              else{
                   alert("Sorry, there's no dots to train, generate some, pls");
              }
         }
-
         
         </script>
 {% endblock %}

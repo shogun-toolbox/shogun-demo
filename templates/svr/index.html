@@ -36,28 +36,6 @@
         }
         </style>
 {% endblock %}
-{% block arguments %}
-      <form name="arguments">
-          <label> Kernel Function </label>
-          <select name="kernel" class="span3">
-                <option value="gaus" selected>GaussianKernel</option>
-                <option value="poly">PolynomialKernel</option>
-                <option value="line">LinearKernel</option>
-             </select></br>
-          <label> C  </label>
-          <input style="width:800" type="text" value="1.2" name="C" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-          <label> tube </label>
-          <input type="text" value="0.04" name="tube" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-          <label>sigma</label>
-          <input type="text" value="0.3" name="sigma" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-          <label> d </label>
-          <input type="text" value="5" name="d" onkeyup="value=value.replace(/[^\d]/g,'')">
-        <div class="btn-group">
-        <button type="button" class="btn btn-small btn-primary" id="regress"  onclick="regression();">Regression</button>
-        <button type="button" class="btn btn-small btn-primary" onclick="clear_map();">Clear</button>
-        </div>
-      </form>
-{% endblock %}
 {% block javascript %}
       <script>
         var new_points = {"points" : []};
@@ -206,7 +184,7 @@
 
 
         json = {}
-        function clear_map()
+        function clear_action()
         {
            svg.selectAll(".line")
             .transition()
@@ -226,7 +204,7 @@
            .interpolate('basis')
    
         
-        function regression()
+        function regress_action()
         {
             if (new_points.points.length !=0)
               $.ajax(
