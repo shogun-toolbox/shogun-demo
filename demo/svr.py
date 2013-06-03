@@ -7,7 +7,41 @@ import numpy as np
 import json
 
 def entrance(request):
-    properties = { 'title': 'Supported Vector Regression Demo' }
+    arguments = [
+        {
+            'argument_type': 'select',
+            'argument_name': 'kernel',
+            'argument_items': ['GaussianKernel', 'PolynomialKernel', 'LinearKernel' ],
+            'argument_default': 'GaussianKernel'
+        },
+        {
+            'argument_type': 'decimal',
+            'argument_name': 'C',
+            'argument_default': '1.2'
+        },
+        {
+            'argument_type': 'decimal',
+            'argument_name': 'tube',
+            'argument_default': '0.04'
+        },
+        {
+            'argument_type': 'decimal',
+            'argument_name': 'sigma',
+            'argument_default': '0.3'
+        },
+        {
+            'argument_type': 'integer',
+            'argument_name': 'd',
+            'argument_default': '5'
+        },
+        {
+            'argument_type': 'button-group',
+            'argument_items': ['regress', 'clear']
+        }
+        ]
+        
+    properties = { 'title': 'Supported Vector Regression Demo',
+                   'arguments': arguments }
     return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     
 def point(request):
@@ -50,13 +84,13 @@ def _train_svr(cost, tubeeps, degree, width, kernel_name, labels, features):
     lab = sg.RegressionLabels(labels)
     train = sg.RealFeatures(examples)
                 
-    if kernel_name == "line":
+    if kernel_name == "LinearKernel":
         gk = sg.LinearKernel(train, train)
         gk.set_normalizer(sg.IdentityKernelNormalizer())
-    elif kernel_name == "poly":
+    elif kernel_name == "PolynomialKernel":
         gk = sg.PolyKernel(train, train, degree, True)
         gk.set_normalizer(sg.IdentityKernelNormalizer())
-    elif kernel_name == "gaus":
+    elif kernel_name == "GaussianKernel":
         gk = sg.GaussianKernel(train, train, width)
     else:
         raise TypeError

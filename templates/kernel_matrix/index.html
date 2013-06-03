@@ -44,33 +44,6 @@
           }
         </style>
 {% endblock %}
-{% block arguments %}
-            <form name="arguments">
-              <label> Sine Freq.  </label>
-              <input style="width:800" type="text" value="1.0" name="frequency" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-              <label> Amplitude </label>
-              <input type="text" value="1.0" name="amplitude" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-              <label> Noise Level </label>
-              <input type="text" value="0.3" name="noise_level" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-              <label> Kernel Function </label>
-              <select name="kernel" class="span3">
-                <option value="gaus" selected> Gaussian Kernel</option>
-                <option value="poly"> Polynomial Kernel</option>
-                <option value="line"> Linear Kernel</option>
-              </select><br/>
-              <label> Kernel Width </label>
-              <input type="text" value="0.3" name="kernel_width" class="span3" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')">
-              <label> degree </label>
-              <input type="text" value="5" name="degree" onkeyup="value=value.replace(/[^\d]/g,'')">
-              <div class="btn-group">
-                <button type="button" class="btn btn-small btn-primary" id="generate" onclick="create_toy_data();">Generate Sine Data</button>
-                <button type="button" class="btn btn-small btn-primary" id="drawing" onclick="generate_matrix();">Draw</button>
-                <button type="button" class="btn btn-small btn-primary"  onclick="clear_map();">Clear</button>
-              </div>
-              <label>legend</label>
-              <div id="legend"></div>
-            </form>
-{% endblock %}           
 {% block javascript %}
         <script>
           toy_data = [];
@@ -150,13 +123,13 @@
               .style("text-anchor", "end")
               .text("X2");
 
-          function clear_map()
+          function Clear_action()
           {
              svg.selectAll(".dot").remove();
              $("#heatmap").remove();
              toy_data = [];
           }
-          function create_toy_data()
+          function CreateToyData_action()
           {
                 $.ajax(
                       {
@@ -168,7 +141,7 @@
                                 frequency: document.arguments.frequency.value,
                                 noise_level: document.arguments.noise_level.value},
                          beforeSend:function(){
-                                    $("#generate").attr('disabled', true);
+                                    $("#CreateToyData").attr('disabled', true);
                                 },
                          success: function(data){
                                      json = $.parseJSON(data)['data'];
@@ -183,15 +156,15 @@
                                          .attr("cy", function(d) { return y(d.y); })
                                          .style("fill", "red")
                                          .style("stroke", "none");
-                                      $("#generate").attr('disabled', false)
+                                      $("#CreateToyData").attr('disabled', false)
                                   },
-                          error: function(){alert("Cannot connect to server"); $("#generate").attr('disabled',true);}
+                          error: function(){alert("Cannot connect to server"); $("#CreateToyData").attr('disabled',true);}
                       });
           }
           var color = d3.scale.linear()
               .domain([0,1])
               .range(["blue","red"]);
-          function generate_matrix()
+          function Draw_action()
           {
               if (toy_data.length !=0)
                 $.ajax(
@@ -207,7 +180,7 @@
                                 degree: document.arguments.degree.value
                               },
                         beforeSend:function(){
-                                $("#drawing").attr('disabled', true);
+                                $("#Draw").attr('disabled', true);
                               },
                         success:function(data){
                                   heatmap = $.parseJSON(data);
@@ -237,10 +210,10 @@
                                     }
                                   }
                                   context.putImageData(image, 0, 0);
-                                  $("#drawing").attr('disabled', false);
+                                  $("#Draw").attr('disabled', false);
                                 },
                         error: function(){
-                                     $("#drawing").attr('disabled', false);
+                                     $("#Draw").attr('disabled', false);
                                      alert("Error Generated!");
                                }
                   });
