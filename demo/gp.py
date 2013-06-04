@@ -35,7 +35,8 @@ def entrance(request):
             'argument_items': ['GenerateToyData', 'TrainGP', 'Clear']
         }
     ]
-    properties = { 'title': 'Gaussian Process Regression Demo' ,
+    properties = { 'title': 'Gaussian Process Regression Demo',
+                   'template': 'coordinate-2dims',
                    'arguments': arguments }
     return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
 
@@ -77,7 +78,7 @@ def train(request):
         arguments = _read_toy_data(request)
         result = _process(*arguments)
     except:
-        return HttpResponseNotFound()
+        raise Http404()
 
     return HttpResponse(json.dumps(result))
 

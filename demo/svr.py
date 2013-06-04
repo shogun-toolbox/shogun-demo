@@ -41,6 +41,7 @@ def entrance(request):
         ]
         
     properties = { 'title': 'Supported Vector Regression Demo',
+                   'template': 'coordinate-2dims',
                    'arguments': arguments }
     return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     
