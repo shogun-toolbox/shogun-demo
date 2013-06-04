@@ -1,49 +1,4 @@
 {% extends "default.html" %}
-{% block stylesheet %}
-        <style>
-          body {
-            font: 10px sans-serif;
-          }
-
-          .axis path,
-          .axis line {
-            fill: none;
-            stroke: #000;
-            shape-rendering: crispEdges;
-          }
-          canvas {
-            position: relative;
-          }
-          svg {
-            position: absolute;
-          }
-          .cursor {
-            fill: none;
-            stroke: brown;
-            pointer-events: none;
-          }
-          select.btn {
-              -webkit-appearance: button;
-                 -moz-appearance: button;
-                      appearance: button;
-              width: auto;
-          }
-          .dot {
-            stroke: #000;
-          }
-          .grid .tick {
-              stroke: lightgrey;
-              opacity: 0.7;
-          }
-          .grid path{
-                stroke-width: 0;
-          }
-          div#legend{
-            border:1px solid black;
-            height:20px;
-          }
-        </style>
-{% endblock %}
 {% block javascript %}
         <script>
           toy_data = [];

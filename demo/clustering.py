@@ -24,7 +24,8 @@ def entrance(request):
             'argument_type': 'button-group',
             'argument_items': ['cluster', 'clear']
         }]
-    properties = { 'title': 'Clustering Demo' ,
+    properties = { 'title': 'Clustering Demo',
+                   'template': 'coordinate-2dims',
                    'arguments': arguments}
     return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 
