@@ -25,7 +25,13 @@ def entrance(request):
             'argument_items': ['cluster', 'clear']
         }]
     properties = { 'title': 'Clustering Demo',
-                   'template': 'coordinate-2dims',
+                   'template': {'type': 'coordinate-2dims',
+                                'coordinate_range': {'horizontal': [0 ,1],
+                                                     'vertical': [0, 0.8]},
+                                'horizontal_axis': {'position': 'bottom',
+                                                    'label': 'X-axis'},
+                                'vertical_axis': {'position': 'left',
+                                                  'label': 'Y-axis'}},
                    'arguments': arguments}
     return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 

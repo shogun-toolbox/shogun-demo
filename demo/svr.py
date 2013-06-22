@@ -41,7 +41,13 @@ def entrance(request):
         ]
         
     properties = { 'title': 'Supported Vector Regression Demo',
-                   'template': 'coordinate-2dims',
+                   'template': {'type': 'coordinate-2dims',
+                                'coordinate_range': {'horizontal': [0, 1],
+                                                     'vertical': [0, 0.8]},
+                                'horizontal_axis': {'position': 'bottom',
+                                                    'label': 'x-axis'},
+                                'vertical_axis': {'position': 'left',
+                                                    'label': 'y-axis'}},
                    'arguments': arguments }
     return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     

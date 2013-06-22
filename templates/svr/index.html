@@ -2,66 +2,12 @@
 {% block javascript %}
       <script>
         var new_points = {"points" : []};
-        var margin = {top: 20, right: 20, bottom: 30, left: 40},
-            width = 660 - margin.left - margin.right,
-            height = 530 - margin.top - margin.bottom;
-
-        var x = d3.scale.linear()
-            .range([0, width]);
-
-        var y = d3.scale.linear()
-            .range([height, 0]);
-
-        var color = d3.scale.category10();
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient("bottom");
-
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .orient("left");
         
-        x.domain([0,1]).nice();
-        y.domain([0,0.8]).nice();
-
-        function make_x_axis() {
-            return d3.svg.axis()
-                .scale(x)
-                 .orient("bottom")
-                 .ticks(10)
-        }
-        function make_y_axis() {
-            return d3.svg.axis()
-                .scale(y)
-                .orient("left")
-                .ticks(8)
-        }
-        
-        var svg = d3.select(".span9").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
+        canvas_div
             .on("mouseover", function() { circle.attr("display", "red"); })
             .on("mousemove", mousemove)
             .on("mousedown", mousedown)
-            .on("mouseout", function() { circle.attr("display", "none"); })
-          .append("g")
-            .attr("transform", "translate(" + margin.left + "," +
-            margin.top + ")")
-
-        svg.append("g")
-            .attr("class", "grid")
-            .attr("transform", "translate(0," + height + ")")
-            .call(make_x_axis()
-                .tickSize(-height, 0, 0)
-                .tickFormat("")
-            )
-        svg.append("g")
-            .attr("class", "grid")
-            .call(make_y_axis()
-                .tickSize(-width, 0, 0)
-                .tickFormat("")
-            )
+            .on("mouseout", function() { circle.attr("display", "none"); });
 
         var cursor = svg.append("circle")
             .attr("r", 5)
@@ -71,8 +17,6 @@
             .attr("r", 3)
             .attr("display", "none")
             .style("fill", "red");
-        var coordinate = svg.append("text")
-            .attr("font-family", "sans-serif");
         var dim2 = {};
         var curve;
         function mousemove() {
@@ -113,28 +57,6 @@
             .attr("cy", point[1]);
           new_points.points.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
         }
-
-        svg.append("g")
-           .attr("class", "x axis")
-           .attr("transform", "translate(0," + height + ")")
-           .call(xAxis)
-           .append("text")
-           .attr("class", "label")
-           .attr("x", width)
-           .attr("y", -6)
-           .style("text-anchor", "end")
-           .text("X-axis");
-
-        svg.append("g")
-           .attr("class", "y axis")
-           .call(yAxis)
-           .append("text")
-           .attr("class", "label")
-           .attr("transform", "rotate(-90)")
-           .attr("y", 6)
-           .attr("dy", ".71em")
-           .style("text-anchor", "end")
-           .text("Y-axis");
 
         svg.selectAll(".dot")
            .data(new_points.points)
