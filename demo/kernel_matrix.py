@@ -48,7 +48,9 @@ def entrance(request):
             'argument_id': 'legend'}
         ]
     properties = { 'title': 'Kernel Matrix Visualization',
-                   'template': 'coordinate-2dims',
+                   'template': {'type': 'coordinate-2dims',
+                                'coordinate_range': { 'horizontal': [-5.0, 5.0],
+                                                      'vertical': [-4.0, 4.0] }},
                    'arguments': arguments }
     return render_to_response("kernel_matrix/index.html",
                               properties,

@@ -36,7 +36,9 @@ def entrance(request):
         }
     ]
     properties = { 'title': 'Gaussian Process Regression Demo',
-                   'template': 'coordinate-2dims',
+                   'template': {'type': 'coordinate-2dims',
+                                'coordinate_range': {'horizontal': [-5, 5],
+                                                     'vertical': [-4, 4]}},
                    'arguments': arguments }
     return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
 
