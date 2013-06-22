@@ -6,9 +6,6 @@
       <script src="/static/js/jquery-1.9.1.min.js"></script>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1.0">
-      {% if template == 'coordinate-2dims' %}
-      <link href="/static/css/coordinate_2dims.css" rel="stylesheet" media="screen">
-      {% endif %}
       <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
       <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     </head>
@@ -22,6 +19,13 @@
           {% include "arguments_form.html" %}
         </div>
       </div>
+      {% if template.type == 'coordinate-2dims' %}
+      <link href="/static/css/coordinate_2dims.css" rel="stylesheet" media="screen">
+      <script>
+        {% include "coordinate_2dims.js" %}
+      </script>
+      {% endif %}
       {% block javascript %} {% endblock %}
+
     </body>
 </html>
