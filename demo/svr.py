@@ -42,12 +42,19 @@ def entrance(request):
         
     properties = { 'title': 'Supported Vector Regression Demo',
                    'template': {'type': 'coordinate-2dims',
+                                'heatmap': False,
                                 'coordinate_range': {'horizontal': [0, 1],
                                                      'vertical': [0, 0.8]},
                                 'horizontal_axis': {'position': 'bottom',
                                                     'label': 'x-axis'},
                                 'vertical_axis': {'position': 'left',
-                                                    'label': 'y-axis'}},
+                                                  'label': 'y-axis'},
+                                'mouse_click_enabled': 'left'},
+                   'panels': [
+                       {
+                           'panel_name': 'arguments',
+                           'panel_label': 'Arguments'
+                       }],
                    'arguments': arguments }
     return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     
@@ -73,7 +80,7 @@ def _read_data(request):
     degree = int(request.POST['d'])
     width = float(request.POST['sigma'])
     kernel_name = request.POST['kernel']
-    for pt in data["points"]:
+    for pt in data:
         labels.append(float(pt["y"]))
         features.append(float(pt["x"]))
     return (cost, tubeeps, degree, width, kernel_name, labels, features)

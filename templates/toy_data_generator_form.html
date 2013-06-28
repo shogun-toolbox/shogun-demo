@@ -1,0 +1,44 @@
+<form name="toy_data_generator">
+  <fieldset>
+    <label> Sine Freq. </label>
+    <input type="text" value="2.0" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <label> Amplitude </label>
+    <input type="text" value="2.0" name="amplitude" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <label> Noise Level </label>
+    <input type="text" value="0.1" name="noise_level" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action();">Create Toy Data</button>
+  </fieldset>
+</form>
+<script>
+    function CreateToyData_action()
+    {
+        $.ajax(
+            {
+                url:"/toy_data/generator/generate",
+                type: "POST",
+                dataType: 'text',
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}',
+                       amplitude: document.toy_data_generator.amplitude.value ,
+                       frequency: document.toy_data_generator.frequency.value,
+                       noise_level: document.toy_data_generator.noise_level.value},
+                beforeSend: function(){$("#CreateToyData").attr('disabled',true);},
+                success: function(data){
+                    json = $.parseJSON(data);
+                    svg.selectAll(".dot").remove();
+                    toy_data = json;
+                    svg.selectAll(".dot")
+                        .data(json)
+                        .enter().append("circle")
+                        .attr("class", "dot")
+                        .attr("r", 1.5)
+                        .attr("cx", function(d) { return x(d.x); })
+                        .attr("cy", function(d) { return y(d.y); })
+                        .style("fill", "red")
+                        .style("stroke", "none");
+                    $("#CreateToyData").attr('disabled', false);
+                },
+                error: function(){alert("Cannot connect to server");
+                                  $("#CreateToyData").attr('disabled', false);}
+            });
+    }
+</script>

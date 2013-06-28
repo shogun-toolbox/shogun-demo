@@ -12,67 +12,29 @@ def entrance(request):
     arguments = [
         {
             'argument_type': 'decimal',
-            'argument_label': 'Sine Freq.',
-            'argument_name': 'frequency',
-            'argument_default': '2.0'},
-        {
-            'argument_type': 'decimal',
-            'argument_label': 'Amplitude',
-            'argument_name': 'amplitude',
-            'argument_default': '2.0'},
-        {
-            'argument_type': 'decimal',
-            'argument_label': 'Noise Level',
-            'argument_name': 'noise_level',
-            'argument_default': '0.1'},
-        {
-            'argument_type': 'decimal',
             'argument_label': 'Kernel Width',
             'argument_name': 'kernel_width',
             'argument_default': '2.0'},
         {
             'argument_type': 'button-group',
-            'argument_items': ['GenerateToyData', 'TrainGP', 'Clear']
+            'argument_items': ['TrainGP', 'Clear']
         }
     ]
     properties = { 'title': 'Gaussian Process Regression Demo',
                    'template': {'type': 'coordinate-2dims',
                                 'coordinate_range': {'horizontal': [-5, 5],
                                                      'vertical': [-4, 4]}},
+                   'panels': [
+                       {
+                           'panel_name': 'arguments',
+                           'panel_label': 'Arguments'
+                       },
+                       {
+                           'panel_name': 'toy_data_generator',
+                           'panel_label': 'Toy Data'
+                        }], 
                    'arguments': arguments }
     return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
-
-def create_toy_data(request):
-    xmin = -5
-    xmax = 5
-    n = 40
-    x = (xmax-xmin-2)*rnd.rand(n)+xmin
-    x.sort()
-    #x = np.linspace(-5,5,n)
-    C = 0 #offset
-    b = 0
-    amplitude = 1
-    frequency = 1
-    noise_level = 0.1
-    try:
-        amplitude = float(request.POST['amplitude'])
-        frequency = float(request.POST['frequency'])
-        noise_level = float(request.POST['noise_level'])
-    except:
-        raise Http404
-    
-    y = b*x + C + np.linspace(0,amplitude, len(x)) * np.sin(frequency * x)
-    y += noise_level*rnd.randn(y.shape[0])
-
-    toy_data = { 'data': [] }
-    for i in xrange(len(x)):
-        toy_data['data'].append( { 'x': x[i], 'y': y[i]})
-    
-    return HttpResponse(json.dumps(toy_data))
-def load_toy_data(request):
-    f = h5py.File('data/toy/australian.libsvm.h5')
-    data = f["/data/data"]
-    return HttpResponse(data)
 
 def train(request):
     result = []

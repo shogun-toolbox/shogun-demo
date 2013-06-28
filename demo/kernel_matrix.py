@@ -10,21 +10,6 @@ import json
 def entrance(request):
     arguments = [
         {
-            'argument_type': 'decimal',
-            'argument_name': 'frequency',
-            'argument_label': 'Sine Freq.',
-            'argument_default': '1.0'},
-        {
-            'argument_type': 'decimal',
-            'argument_name': 'amplitude',
-            'argument_label': 'Amplitude',
-            'argument_default': '1.0'},
-        {
-            'argument_type': 'decimal',
-            'argument_name': 'noise_level',
-            'argument_label': 'Noise Level',
-            'argument_default': '0.3'},
-        {
             'argument_type': 'select',
             'argument_label': 'Kernel Function',
             'argument_name': 'kernel',
@@ -41,45 +26,26 @@ def entrance(request):
             'argument_default': '5'},
         {
             'argument_type': 'button-group',
-            'argument_items': ['CreateToyData', 'Draw', 'Clear']},
-        {
-            'argument_type': 'div',
-            'argument_label': 'Legend',
-            'argument_id': 'legend'}
+            'argument_items': ['Draw', 'Clear']},
         ]
     properties = { 'title': 'Kernel Matrix Visualization',
                    'template': {'type': 'coordinate-2dims',
+                                'heatmap': True,
                                 'coordinate_range': { 'horizontal': [-5.0, 5.0],
                                                       'vertical': [-4.0, 4.0] }},
-                   'arguments': arguments }
+                   'panels': [
+                        {
+                            'panel_name': 'arguments',
+                            'panel_label': 'Arguments'
+                        },
+                        {
+                            'panel_name': 'toy_data_generator',
+                            'panel_label': 'Toy Data'
+                        }],
+                   'arguments': arguments}
     return render_to_response("kernel_matrix/index.html",
                               properties,
                               context_instance = RequestContext(request))
-
-def create_toy_data(request):
-    xmin = -5
-    xmax = 5
-    x = sp.arange(xmin, xmax, (xmax-xmin)/100.0)
-    C = 0 #offset
-    b = 0
-    amplitude = 1
-    frequency = 1
-    noise_level = 0.1
-    try:
-        amplitude = float(request.POST['amplitude'])
-        frequency = float(request.POST['frequency'])
-        noise_level = float(request.POST['noise_level'])
-    except:
-        raise Http404
-    
-    y = b*x + C + amplitude * sp.sin(frequency * x)
-    y += noise_level * np.random.randn(y.shape[0])
-
-    toy_data = { 'data': [] }
-    for i in xrange(len(x)):
-        toy_data['data'].append( { 'x': x[i], 'y': y[i]})
-    
-    return HttpResponse(json.dumps(toy_data))
 
 def generate_matrix(request):
     result = []

@@ -1,5 +1,6 @@
 <form name="arguments">
-  {% for argument in arguments %}
+  <fieldset>
+    {% for argument in arguments %}
     {% if argument.argument_label %}
     <label> {{ argument.argument_label }} </label>
     {% elif argument.argument_name %}
@@ -29,4 +30,5 @@
          ></div>
     {% endif %}
   {% endfor %}
+  </fieldset>
 </form>
