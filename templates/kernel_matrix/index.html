@@ -1,107 +1,60 @@
 {% extends "default.html" %}
 {% block javascript %}
 <script>
-          function Clear_action()
-          {
-             svg.selectAll(".dot").remove();
-             $("#heatmap").remove();
-             toy_data = [];
-          }
-          function CreateToyData_action()
-          {
-                $.ajax(
-                      {
-                         url:"create_toy_data",
-                         type: "POST",
-                         dataType: 'text',
-                         data: {csrfmiddlewaretoken: '{{ csrf_token }}',
-                                amplitude: document.arguments.amplitude.value ,
-                                frequency: document.arguments.frequency.value,
-                                noise_level: document.arguments.noise_level.value},
-                         beforeSend:function(){
-                                    $("#CreateToyData").attr('disabled', true);
-                                },
-                         success: function(data){
-                                     json = $.parseJSON(data)['data'];
-                                     svg.selectAll(".dot").remove();
-                                     toy_data = json;
-                                     svg.selectAll(".dot")
-                                        .data(json)
-                                        .enter().append("circle")
-                                         .attr("class", "dot")
-                                         .attr("r", 1.5)
-                                         .attr("cx", function(d) { return x(d.x); })
-                                         .attr("cy", function(d) { return y(d.y); })
-                                         .style("fill", "red")
-                                         .style("stroke", "none");
-                                      $("#CreateToyData").attr('disabled', false)
-                                  },
-                          error: function(){alert("Cannot connect to server"); $("#CreateToyData").attr('disabled',true);}
-                      });
-          }
-          var color = d3.scale.linear()
-              .domain([0,1])
-              .range(["blue","red"]);
-          function Draw_action()
-          {
-              if (toy_data.length !=0)
-                $.ajax(
-                  {
-                        url: "generate_matrix",
-                        type: "POST",
-                        dataType: 'text',
-                        data: {
-                                csrfmiddlewaretoken: '{{ csrf_token }}',
-                                toy_data: JSON.stringify(toy_data),
-                                kernel_width: document.arguments.kernel_width.value,
-                                kernel: document.arguments.kernel.value,
-                                degree: document.arguments.degree.value
-                              },
-                        beforeSend:function(){
-                                $("#Draw").attr('disabled', true);
-                              },
-                        success:function(data){
-                                  heatmap = $.parseJSON(data);
-                                  $("#heatmap").remove();
-                                  var dx = heatmap[0].length,
-                                      dy = heatmap.length;
+function Clear_action()
+{
+    svg.selectAll(".dot").remove();
+    $("#heatmap").remove();
+    toy_data = [];
+}
+function Draw_action()
+{
+    if (toy_data.length !=0)
+        $.ajax(
+            {
+                url: "generate_matrix",
+                type: "POST",
+                dataType: 'text',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    toy_data: JSON.stringify(toy_data),
+                    kernel_width: document.arguments.kernel_width.value,
+                    kernel: document.arguments.kernel.value,
+                    degree: document.arguments.degree.value
+                },
+                beforeSend:function(){
+                    $("#Draw").attr('disabled', true);
+                },
+                success:function(data){
+                    heatmap = $.parseJSON(data);
+                    $("#heatmap").remove();
+                    var dx = heatmap[0].length,
+                        dy = heatmap.length;
+                    
 
-                                  var canvas = d3.select(".span9").append("canvas")
-                                    .attr("id", "heatmap")
-                                    .attr("width", 100)
-                                    .attr("height", 100)
-                                    .style("width", width + "px")
-                                    .style("height", height + "px")
-                                    .style("left", margin.left + "px")
-                                    .style("top", margin.top + "px");
-
-                                  var context = canvas.node().getContext("2d"),
-                                      image = context.createImageData(dx, dy);
-                                  for (var y = 0, p = -1; y < dy; ++y)
-                                  {
-                                    for (var x = 0; x < dx; ++x) {
-                                      var c = d3.rgb(color(heatmap[y][x]));
-                                      image.data[++p] = c.r;
-                                      image.data[++p] = c.g;
-                                      image.data[++p] = c.b;
-                                      image.data[++p] = 128;
-                                    }
-                                  }
-                                  context.putImageData(image, 0, 0);
-                                  $("#Draw").attr('disabled', false);
-                                },
-                        error: function(){
-                                     $("#Draw").attr('disabled', false);
-                                     alert("Error Generated!");
-                               }
-                  });
-              else{
-                    alert("Sorry, there's no dots to train, generate some, pls");
-                  }
-          }
-          $('#legend').css("background-image",
-             "-webkit-gradient(linear, left top, right bottom, color-stop(0.00, " + color.range()[0] + "), color-stop(1.00, " + color.range()[1] + "))");
-
-          $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.round(color.domain()[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.round(color.domain()[1]) + "</span>") ;
-          </script>
+                    var context = canvas.node().getContext("2d"),
+                        image = context.createImageData(dx, dy);
+                    for (var y = 0, p = -1; y < dy; ++y)
+                    {
+                        for (var x = 0; x < dx; ++x) {
+                            var c = d3.rgb(color(heatmap[y][x]));
+                            image.data[++p] = c.r;
+                            image.data[++p] = c.g;
+                            image.data[++p] = c.b;
+                            image.data[++p] = 128;
+                        }
+                    }
+                    context.putImageData(image, 0, 0);
+                    $("#Draw").attr('disabled', false);
+                },
+                error: function(){
+                    $("#Draw").attr('disabled', false);
+                    alert("Error Generated!");
+                }
+            });
+    else{
+        alert("Sorry, there's no dots to train, generate some, pls");
+    }
+}
+</script>
 {% endblock %}
