@@ -31,7 +31,13 @@ def entrance(request):
                                 'horizontal_axis': {'position': 'bottom',
                                                     'label': 'X-axis'},
                                 'vertical_axis': {'position': 'left',
-                                                  'label': 'Y-axis'}},
+                                                  'label': 'Y-axis'},
+                                'mouse_click_enabled': 'both'},
+                   'panels': [
+                       {
+                           'panel_name': 'arguments',
+                           'panel_label': 'Arguments'
+                       }], 
                    'arguments': arguments}
     return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 
@@ -54,8 +60,8 @@ def _read_data(request):
     k = int(request.POST['number_of_clusters'])
     if k > 500:
         raise TypeError
-    positive = json.loads(request.POST['positive'])['points']
-    negative = json.loads(request.POST['negative'])['points']
+    positive = json.loads(request.POST['positive'])
+    negative = json.loads(request.POST['negative'])
     distance_name = request.POST['distance']
         
     if len(positive) == 0 and len(negative) == 0:

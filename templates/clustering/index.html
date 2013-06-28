@@ -1,129 +1,75 @@
 {% extends "default.html" %}
 {% block javascript %}
-      <script>
-        var positive_dots = {"points" : []};
-        var negative_dots = {"points" : []};
+<script>
+function clear_action()
+{
+    svg.selectAll(".dot").remove();
+    svg.selectAll(".line")
+        .transition()
+        .duration(1000)
+        .attr("r", function(d) {return x(0); })
+        .remove();
+    mouse_left_click_point_set = [];
+    mouse_left_click_point_set = [];
+}
 
-        canvas_div
-            .on("mousemove", mousemove)
-            .on("contextmenu",rightmousedown)
-            .on("mousedown", mousedown)
+function cluster_action()
+{
+    if (mouse_left_click_point_set.length + mouse_right_click_point_set.length>0)
+        $.ajax(
+            {
+                url:"cluster",
+                type: "POST",
+                dataType: 'text',
+                beforeSend: function(){$("#cluster").attr('disabled', true);},
+                data: {
+                    positive: JSON.stringify(mouse_left_click_point_set),
+                    negative: JSON.stringify(mouse_right_click_point_set),
+                    number_of_clusters: document.arguments.number_of_clusters.value,
+                    distance: document.arguments.distance.value,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'},
+                success: function(data){
+                    svg.selectAll(".line").remove();
+                    var json = $.parseJSON(data);
+                    svg.selectAll(".line").remove();
+                    var circle = svg.selectAll(".line")
+                            .data(json['circle'])
+                            .enter();
+                    circle.append("circle")
+                        .attr("class", "line")
+                        .attr("r",  function(d) { return x(0); })
+                        .attr("cx", function(d) { return x(d.x); })
+                        .attr("cy", function(d) { return y(d.y); })
+                        .style("fill", "none")
+                        .style("stroke", "green");
+                    svg.selectAll(".line")
+                        .transition()
+                        .duration(1000)
+                        .attr("r",  function(d) { return x(d.r); });
 
-        var cursor = svg.append("circle")
-            .attr("r", 5)
-            .attr("transform", "translate(-100,-100)")
-            .attr("class", "cursor");
-        
-        function mousemove() {
-          if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
-             return;
-          cursor.attr("transform", "translate(" +
-          (d3.mouse(this)[0]-margin.left) +","+
-          (d3.mouse(this)[1]-margin.top) +
-          ")");
-        }
-        function mousedown() {
-          if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
-             return;
-          var point = d3.mouse(this);
-          point[0]-=margin.left;
-          point[1]-=margin.top;
-          svg.append("circle")
-            .attr("class",  "dot")
-            .attr("r", 3.5)
-            .attr("cx", point[0])
-            .attr("cy", point[1])
-            .style("fill", "red");
-          positive_dots.points.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
-        }
-
-        d3.select("svg").node().oncontextmenu = function(){return false;}; //disable right click menu
-        function rightmousedown()
-        {
-          if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
-             return;
-          var point = d3.mouse(this);
-          point[0]-=margin.left;
-          point[1]-=margin.top;
-          svg.append("circle")
-            .attr("class",  "dot")
-            .attr("r", 3.5)
-            .attr("cx", point[0])
-            .attr("cy", point[1])
-            .style("fill", "blue");
-          negative_dots.points.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
-        }
-
-        function clear_action()
-        {
-           svg.selectAll(".dot").remove();
-           svg.selectAll(".line")
-              .transition()
-              .duration(1000)
-              .attr("r", function(d) {return x(0); })
-              .remove();
-           positive_dots = {"points" : []};
-           negative_dots = {"points" : []};
-        }
-        
-        function cluster_action()
-        {
-              if (positive_dots.points.length + negative_dots.points.length>0)
-              $.ajax(
-                    {
-                      url:"cluster",
-                      type: "POST",
-                      dataType: 'text',
-                      beforeSend: function(){$("#cluster").attr('disabled', true);},
-                      data: {positive: JSON.stringify(positive_dots),
-                             negative: JSON.stringify(negative_dots),
-                             number_of_clusters: document.arguments.number_of_clusters.value,
-                             distance: document.arguments.distance.value,
-                             csrfmiddlewaretoken: '{{ csrf_token }}'},
-                      success: function(data){
-                                  svg.selectAll(".line").remove();
-                                  var json = $.parseJSON(data);
-                                  svg.selectAll(".line").remove();
-                                 var circle = svg.selectAll(".line")
-                                   .data(json['circle'])
-                                   .enter();
-                                 circle.append("circle")
-                                   .attr("class", "line")
-                                   .attr("r",  function(d) { return x(0); })
-                                   .attr("cx", function(d) { return x(d.x); })
-                                   .attr("cy", function(d) { return y(d.y); })
-                                   .style("fill", "none")
-                                   .style("stroke", "green");
-                                 svg.selectAll(".line")
-                                   .transition()
-                                   .duration(1000)
-                                   .attr("r",  function(d) { return x(d.r); });
-
-                                 circle.append("line")
-                                   .attr("class","line")
-                                   .attr("x1", function(d) {return x(d.x+0.02);})
-                                   .attr("y1", function(d) {return y(d.y+0.02);})
-                                   .attr("x2", function(d) {return x(d.x-0.02);})
-                                   .attr("y2", function(d) {return y(d.y-0.02);})
-                                   .style("stroke", "gray");
-                                 circle.append("line")
-                                   .attr("class","line")
-                                   .attr("x1", function(d) {return x(d.x-0.02);})
-                                   .attr("y1", function(d) {return y(d.y+0.02);})
-                                   .attr("x2", function(d) {return x(d.x+0.02);})
-                                   .attr("y2", function(d) {return y(d.y-0.02);})
-                                   .style("stroke", "gray");
-                                 $("#cluster").attr('disabled', false);
-        
-                               },
-        
-                      error: function(){
-                                   alert("Sorry! Got something wrong here, Check your input");
-                                   $("#cluster").attr('disabled', false);
-                               }
-                    });
-        }
-
-        
-        </script>
+                    circle.append("line")
+                        .attr("class","line")
+                        .attr("x1", function(d) {return x(d.x+0.02);})
+                        .attr("y1", function(d) {return y(d.y+0.02);})
+                        .attr("x2", function(d) {return x(d.x-0.02);})
+                        .attr("y2", function(d) {return y(d.y-0.02);})
+                        .style("stroke", "gray");
+                    circle.append("line")
+                        .attr("class","line")
+                        .attr("x1", function(d) {return x(d.x-0.02);})
+                        .attr("y1", function(d) {return y(d.y+0.02);})
+                        .attr("x2", function(d) {return x(d.x+0.02);})
+                        .attr("y2", function(d) {return y(d.y-0.02);})
+                        .style("stroke", "gray");
+                    $("#cluster").attr('disabled', false);
+                    
+                },
+                
+                error: function(){
+                    alert("Sorry! Got something wrong here, Check your input");
+                    $("#cluster").attr('disabled', false);
+                }
+            });
+}
+</script>
 {% endblock %}

@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^kernel_matrix/entrance', 'demo.kernel_matrix.entrance'),
     url(r'^kernel_matrix/create_toy_data', 'demo.kernel_matrix.create_toy_data'),
     url(r'^kernel_matrix/generate_matrix', 'demo.kernel_matrix.generate_matrix'),
+    url(r'^toy_data/generator/generate', 'toy_data.generator.generate'),
                                                             
     # url(r'^shogun_demo/', include('shogun_demo.foo.urls')),
 

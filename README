@@ -1,0 +1,21 @@
+Author : Shogun.
+Description : Shogun demos, done in django.
+
+Explanation of directory content
+================================
+
+  - /demos	: Handles the requests, present the demos
+  - /toy_data	: Handles the requests, and generate/import toy data.
+  - /static	: css, js used by demo
+  - /template	: All templates for each different page.
+  - /shogun_demo:
+	- settings.py	: Configuration.
+	- urls.py	: Urls and method in demos.
+
+Currently available demos
+=========================
+
+  - http://<addr>:<port>/svr/entrance		: A demo for support vector regression
+  - http://<addr>:<port>/clustering/entrance	: A demo for clustering
+  - http://<addr>:<port>/gp/entrance		: A demo for gaussian process requession
+  - http://<addr>:<port>/kernel_matrix/entrance	: A demo for kernel matrix visualization
