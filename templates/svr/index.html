@@ -8,60 +8,32 @@ function clear_action()
     svg.selectAll(".dot").remove();
     mouse_left_click_point_set = [];
 }
+var line = d3.svg.line()
+        .x(function (d) { return x(d.x_value); })
+        .y(function (d) { return y(d.y_value); })
+        .interpolate('basis');
+var start = d3.svg.line()
+        .x(function (d) {return x(d.x_value); })
+        .y(function (d) {return y(0); })
+            .interpolate('basis');
         
-function regress_action()
-{
-    var line = d3.svg.line()
-            .x(function (d) { return x(d.x_value); })
-            .y(function (d) { return y(d.y_value); })
-            .interpolate('basis');
-    var start = d3.svg.line()
-            .x(function (d) {return x(d.x_value); })
-            .y(function (d) {return y(0); })
-            .interpolate('basis');
-
-    if (mouse_left_click_point_set.length != 0)
-        $.ajax(
-            {
-                url:"point",
-                type: "POST",
-                dataType: 'text',
-                data: {csrfmiddlewaretoken: '{{ csrf_token }}',
-                       data: JSON.stringify(mouse_left_click_point_set),
-                       C: document.arguments.C.value,
-                       tube: document.arguments.tube.value,
-                       kernel: document.arguments.kernel.value,
-                       sigma: document.arguments.sigma.value,
-                       d: document.arguments.d.value},
-                beforeSend: function(){
-                    $("#regress").attr('disabled', true);
-                },
-                success: function(data){
-                    var json = $.parseJSON(data);
-                    json.forEach(function(d) {
-                        d.x_value = +d.x_value;
-                        d.y_value = +d.y_value;
-                    });
-                    if (svg.selectAll(".line")[0].length == 0)
-                        curve = svg.append("path")
-                        .attr("class", "line")
-                        .attr("d", start(json))
-                        .style("stroke-width", "2")
-                        .style("stroke", "green")
-                        .style("fill", "none");
-                    svg.selectAll(".line")
-                        .transition().duration(1000)
-                        .attr("d", line(json));
-                    $("#regress").attr('disabled', false);
-                },
-                error: function(){
-                    alert("Error Generated!");
-                    $("#regress").attr('disabled', false);
-                }
-            });
-    else{
-        alert("Sorry, there's no dot input, click some, pls");
-    }
+function regress(data){
+    var json = $.parseJSON(data);
+    json.forEach(function(d) {
+        d.x_value = +d.x_value;
+        d.y_value = +d.y_value;
+    });
+    if (svg.selectAll(".line")[0].length == 0)
+        curve = svg.append("path")
+        .attr("class", "line")
+        .attr("d", start(json))
+        .style("stroke-width", "2")
+        .style("stroke", "green")
+        .style("fill", "none");
+    svg.selectAll(".line")
+        .transition().duration(1000)
+        .attr("d", line(json));
+    $("#regress").attr('disabled', false);
 }
 </script>
 {% endblock %}

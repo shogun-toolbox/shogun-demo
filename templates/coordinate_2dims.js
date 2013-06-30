@@ -1,20 +1,18 @@
 var margin = {top: 20, right: 20, bottom: 30, left: 40};
 var width = 660 - margin.left - margin.right;
-var height = 530 - margin.top - margin.bottom;
+var height = 610 - margin.top - margin.bottom;
 
 var x = d3.scale.linear().range( [0, width] );
 var y = d3.scale.linear().range( [height, 0] );
 
-var mouse_left_click_point_set=[];
-var mouse_right_click_point_set=[];
 
-{% if template.coordinate_range.horizontal %}
-x.domain({{ template.coordinate_range.horizontal }}).nice();
+{% if template.coordinate_system.horizontal_axis.range %}
+x.domain({{ template.coordinate_system.horizontal_axis.range }}).nice();
 {% else %}
 x.domain([0, 1]);
 {% endif %}
-{% if template.coordinate_range.vertical %}
-y.domain({{ template.coordinate_range.vertical }}).nice();
+{% if template.coordinate_system.vertical_axis.range %}
+y.domain({{ template.coordinate_system.vertical_axis.range }}).nice();
 {% else %}
 y.domain([0,0.8]);
 {% endif %}
@@ -52,9 +50,9 @@ svg.append("g")
 
 svg.append("g")
     .attr("class", "axis")
-{% if template.horizontal_axis.position == 'bottom' %}
+{% if template.coordinate_system.horizontal_axis.position == 'bottom' %}
     .attr("transform", "translate(0," + height + ")")
-{% elif template.horizontal_axis.position == 'top' %}
+{% elif template.coordinate_system.horizontal_axis.position == 'top' %}
     .attr("transform", "translate(0," + 0 + ")")
 {% else %}
     .attr("transform", "translate(0," + height/2 + ")")
@@ -66,12 +64,12 @@ svg.append("g")
     .attr("x", width)
     .attr("y", -6)
     .style("text-anchor", "end")
-    .text("{{ template.horizontal_axis.label }}");
+    .text("{{ template.coordinate_system.horizontal_axis.label }}");
 
 svg.append("g")
     .attr("class", "axis")
-{% if template.vertical_axis.position == 'left' %}
-{% elif template.vertical_axis.position == 'right' %}
+{% if template.coordinate_system.vertical_axis.position == 'left' %}
+{% elif template.coordinate_system.vertical_axis.position == 'right' %}
     .attr("transform", "translate(" + width + ")")
 {% else %}
     .attr("transform", "translate(" + width/2 + ")")
@@ -83,24 +81,16 @@ svg.append("g")
     .attr("y", 6)
     .attr("dy", ".71em")
     .style("text-anchor", "end")
-    .text("{{ template.vertical_axis.label }}");
+    .text("{{ template.coordinate_system.vertical_axis.label }}");
 
 {% if template.heatmap %}
-var canvas = d3.select(".span9").append("canvas")
-        .attr("id", "heatmap")
-        .attr("width", 100)
-        .attr("height", 100);
-/*        .style("width", width + "px")
-        .style("height", height + "px")
-        .style("left", margin.left + "px")
-        .style("top", margin.top + "px");*/
-
 var color = d3.scale.linear()
     .domain([0,1])
     .range(["blue","red"]);
-var canvas_legend = document.createElement("div");
-$('.span9').append(canvas_legend);
-canvas_legend.id = "legend";
+var heatmap_legend = document.createElement("div");
+$('.span9').append(heatmap_legend);
+heatmap_legend.id = "legend";
 $('#legend').css("background-image", "-webkit-gradient(linear, left top, right bottom, color-stop(0.00, " + color.range()[0] + "), color-stop(1.00, " + color.range()[1] + "))");
 $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.round(color.domain()[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.round(color.domain()[1]) + "</span>") ;
+{% include "heatmap.js" %}
 {% endif %}

@@ -17,23 +17,24 @@ def entrance(request):
             'argument_default': '2.0'},
         {
             'argument_type': 'button-group',
-            'argument_items': ['TrainGP', 'Clear']
+            'argument_items': [{'button_name': 'TrainGP'},
+                               {'button_name': 'Clear'}]
         }
     ]
     properties = { 'title': 'Gaussian Process Regression Demo',
                    'template': {'type': 'coordinate-2dims',
-                                'coordinate_range': {'horizontal': [-5, 5],
-                                                     'vertical': [-4, 4]}},
+                                'coordinate_system': {'horizontal_axis': {'range': [-5, 5]},
+                                                      'vertical_axis': {'range': [-5, 5]}}},
                    'panels': [
                        {
                            'panel_name': 'arguments',
-                           'panel_label': 'Arguments'
+                           'panel_label': 'Arguments',
+                           'panel_property': arguments
                        },
                        {
                            'panel_name': 'toy_data_generator',
                            'panel_label': 'Toy Data'
-                        }], 
-                   'arguments': arguments }
+                       }]}
     return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
 
 def train(request):

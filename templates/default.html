@@ -8,10 +8,11 @@
       <meta name="viewport" content="width=device-width,initial-scale=1.0">
       <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
       <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+      <script src="/static/js/conrec.js"></script>
     </head>
     <body id="main">
       <div class="container-narrow">
-      <div class="page-header"><h2>&nbsp;{{ title }} <small>based on Shogun-Toolbox</small></h2></div>
+      <div class="page-header"><h2>&nbsp;{{ title }} <small>based on shogun-toolbox</small></h2></div>
         <!-- canvas -->
         <div class="span9" style="display:inline;"></div>
         <!-- arguments -->
@@ -39,6 +40,7 @@
       <link href="/static/css/coordinate_2dims.css" rel="stylesheet" media="screen">
       <script>
         {% include "coordinate_2dims.js" %}
+        {% include 'button.js' %}
       </script>
       {% endif %}
       {% block javascript %} {% endblock %}

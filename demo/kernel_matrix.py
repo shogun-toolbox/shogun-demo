@@ -36,13 +36,13 @@ def entrance(request):
                    'panels': [
                         {
                             'panel_name': 'arguments',
-                            'panel_label': 'Arguments'
+                            'panel_label': 'Arguments',
+                            'panel_property': arguments
                         },
                         {
                             'panel_name': 'toy_data_generator',
                             'panel_label': 'Toy Data'
-                        }],
-                   'arguments': arguments}
+                        }]}
     return render_to_response("kernel_matrix/index.html",
                               properties,
                               context_instance = RequestContext(request))

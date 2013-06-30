@@ -1,6 +1,6 @@
 <form name="arguments">
   <fieldset>
-    {% for argument in arguments %}
+    {% for argument in panel.panel_property %}
     {% if argument.argument_label %}
     <label> {{ argument.argument_label }} </label>
     {% elif argument.argument_name %}
@@ -19,8 +19,8 @@
     {% elif argument.argument_type == 'button-group' %}
     <div class="btn-group">
       {% for item in argument.argument_items %}
-      <button type="button" class="btn btn-small btn-primary" id="{{ item }}" onclick="{{ item }}_action();">
-        {{ item }}
+      <button type="button" class="btn btn-small btn-primary" id="{{ item.button_name }}" onclick="{{ item.button_name }}_action();">
+        {{ item.button_name }}
       </button>
       {% endfor %}
     </div>

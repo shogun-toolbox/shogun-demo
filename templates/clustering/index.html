@@ -12,64 +12,40 @@ function clear_action()
     mouse_left_click_point_set = [];
     mouse_left_click_point_set = [];
 }
-
-function cluster_action()
-{
-    if (mouse_left_click_point_set.length + mouse_right_click_point_set.length>0)
-        $.ajax(
-            {
-                url:"cluster",
-                type: "POST",
-                dataType: 'text',
-                beforeSend: function(){$("#cluster").attr('disabled', true);},
-                data: {
-                    positive: JSON.stringify(mouse_left_click_point_set),
-                    negative: JSON.stringify(mouse_right_click_point_set),
-                    number_of_clusters: document.arguments.number_of_clusters.value,
-                    distance: document.arguments.distance.value,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'},
-                success: function(data){
-                    svg.selectAll(".line").remove();
-                    var json = $.parseJSON(data);
-                    svg.selectAll(".line").remove();
-                    var circle = svg.selectAll(".line")
-                            .data(json['circle'])
-                            .enter();
-                    circle.append("circle")
-                        .attr("class", "line")
-                        .attr("r",  function(d) { return x(0); })
-                        .attr("cx", function(d) { return x(d.x); })
-                        .attr("cy", function(d) { return y(d.y); })
-                        .style("fill", "none")
-                        .style("stroke", "green");
-                    svg.selectAll(".line")
-                        .transition()
-                        .duration(1000)
-                        .attr("r",  function(d) { return x(d.r); });
-
-                    circle.append("line")
-                        .attr("class","line")
-                        .attr("x1", function(d) {return x(d.x+0.02);})
-                        .attr("y1", function(d) {return y(d.y+0.02);})
-                        .attr("x2", function(d) {return x(d.x-0.02);})
-                        .attr("y2", function(d) {return y(d.y-0.02);})
-                        .style("stroke", "gray");
-                    circle.append("line")
-                        .attr("class","line")
-                        .attr("x1", function(d) {return x(d.x-0.02);})
-                        .attr("y1", function(d) {return y(d.y+0.02);})
-                        .attr("x2", function(d) {return x(d.x+0.02);})
-                        .attr("y2", function(d) {return y(d.y-0.02);})
-                        .style("stroke", "gray");
-                    $("#cluster").attr('disabled', false);
-                    
-                },
-                
-                error: function(){
-                    alert("Sorry! Got something wrong here, Check your input");
-                    $("#cluster").attr('disabled', false);
-                }
-            });
+function cluster(data){
+    svg.selectAll(".line").remove();
+    var json = $.parseJSON(data);
+    svg.selectAll(".line").remove();
+    var circle = svg.selectAll(".line")
+            .data(json['circle'])
+            .enter();
+    circle.append("circle")
+        .attr("class", "line")
+        .attr("r",  function(d) { return x(0); })
+        .attr("cx", function(d) { return x(d.x); })
+        .attr("cy", function(d) { return y(d.y); })
+        .style("fill", "none")
+        .style("stroke", "green");
+    svg.selectAll(".line")
+        .transition()
+        .duration(1000)
+        .attr("r",  function(d) { return x(d.r); });
+    
+    circle.append("line")
+        .attr("class","line")
+        .attr("x1", function(d) {return x(d.x+0.02);})
+        .attr("y1", function(d) {return y(d.y+0.02);})
+        .attr("x2", function(d) {return x(d.x-0.02);})
+        .attr("y2", function(d) {return y(d.y-0.02);})
+        .style("stroke", "gray");
+    circle.append("line")
+        .attr("class","line")
+        .attr("x1", function(d) {return x(d.x-0.02);})
+        .attr("y1", function(d) {return y(d.y+0.02);})
+        .attr("x2", function(d) {return x(d.x+0.02);})
+        .attr("y2", function(d) {return y(d.y-0.02);})
+        .style("stroke", "gray");
+    $("#cluster").attr('disabled', false);
 }
 </script>
 {% endblock %}
