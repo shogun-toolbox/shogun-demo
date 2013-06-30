@@ -1,6 +1,7 @@
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+from common.kernel import get_kernel
 
 import modshogun as sg
 import numpy as np
@@ -36,26 +37,28 @@ def entrance(request):
         },
         {
             'argument_type': 'button-group',
-            'argument_items': ['regress', 'clear']
+            'argument_items': [{'button_name': 'regress',
+                                'button_type': 'json_up_down_load'},
+                               {'button_name': 'clear'}]
         }
         ]
         
     properties = { 'title': 'Supported Vector Regression Demo',
                    'template': {'type': 'coordinate-2dims',
                                 'heatmap': False,
-                                'coordinate_range': {'horizontal': [0, 1],
-                                                     'vertical': [0, 0.8]},
-                                'horizontal_axis': {'position': 'bottom',
-                                                    'label': 'x-axis'},
-                                'vertical_axis': {'position': 'left',
-                                                  'label': 'y-axis'},
+                                'coordinate_system': {'horizontal_axis': {'position': 'bottom',
+                                                                          'label': 'x-axis',
+                                                                          'range': [0, 1]},
+                                                      'vertical_axis': {'position': 'left',
+                                                                        'label': 'y-axis',
+                                                                        'range': [0, 1]}},
                                 'mouse_click_enabled': 'left'},
                    'panels': [
                        {
                            'panel_name': 'arguments',
-                           'panel_label': 'Arguments'
-                       }],
-                   'arguments': arguments }
+                           'panel_label': 'Arguments',
+                           'panel_property': arguments
+                       }]}
     return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     
 def point(request):
@@ -69,12 +72,12 @@ def point(request):
             line_dot.append({'x_value' : x[i], 'y_value' : y[i]})
         return HttpResponse(json.dumps(line_dot))
     except:
-        return HttpResponseNotFound()
+        raise Http404
             
 def _read_data(request):
     labels = []
     features = []
-    data = json.loads(request.POST['data'])
+    data = json.loads(request.POST['mouse_left_click_point_set'])
     cost = float(request.POST['C'])
     tubeeps = float(request.POST['tube'])
     degree = int(request.POST['d'])
@@ -83,33 +86,22 @@ def _read_data(request):
     for pt in data:
         labels.append(float(pt["y"]))
         features.append(float(pt["x"]))
-    return (cost, tubeeps, degree, width, kernel_name, labels, features)
-                
-def _train_svr(cost, tubeeps, degree, width, kernel_name, labels, features):
     labels = np.array(labels, dtype=np.float64)
     num = len(features)
     if num == 0:
         raise TypeError
     examples = np.zeros((1,num))
-                
+    
     for i in xrange(num):
         examples[0,i] = features[i]
-                    
+        
     lab = sg.RegressionLabels(labels)
     train = sg.RealFeatures(examples)
+    kernel = get_kernel(request, train)
+    return (cost, tubeeps, lab, kernel)
                 
-    if kernel_name == "LinearKernel":
-        gk = sg.LinearKernel(train, train)
-        gk.set_normalizer(sg.IdentityKernelNormalizer())
-    elif kernel_name == "PolynomialKernel":
-        gk = sg.PolyKernel(train, train, degree, True)
-        gk.set_normalizer(sg.IdentityKernelNormalizer())
-    elif kernel_name == "GaussianKernel":
-        gk = sg.GaussianKernel(train, train, width)
-    else:
-        raise TypeError
-                    
-    svm = sg.LibSVR(cost, tubeeps, gk, lab)
+def _train_svr(cost, tubeeps, lab, kernel):
+    svm = sg.LibSVR(cost, tubeeps, kernel, lab)
     svm.train()
     svm.set_epsilon(1e-2)
     return svm

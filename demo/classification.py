@@ -8,7 +8,7 @@ import json
 
 
 def binary(request):
-    return render_to_response("classification/binary.html", context_instance=RequestContext(request))
+    return render_to_response("classification/binary_old.html", context_instance=RequestContext(request))
 
 
 def multiclass(request):
