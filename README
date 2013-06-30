@@ -15,7 +15,9 @@ Explanation of directory content
 Currently available demos
 =========================
 
-  - http://<addr>:<port>/svr/entrance		: A demo for support vector regression
-  - http://<addr>:<port>/clustering/entrance	: A demo for clustering
-  - http://<addr>:<port>/gp/entrance		: A demo for gaussian process requession
-  - http://<addr>:<port>/kernel_matrix/entrance	: A demo for kernel matrix visualization
+  - http://<addr>:<port>/svr/entrance				: A demo for support vector regression
+  - http://<addr>:<port>/clustering/entrance			: A demo for clustering
+  - http://<addr>:<port>/gp/entrance				: A demo for gaussian process requession
+  - http://<addr>:<port>/kernel_matrix/entrance			: A demo for kernel matrix visualization
+  - http://<addr>:<port>/classification/binary/entrance		: A demo for binary classification
+  - http://<addr>:<port>/classification/perceptron/entrance	: A demo for binary perceptron

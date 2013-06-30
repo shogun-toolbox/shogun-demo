@@ -11,33 +11,22 @@ import json
 def entrance(request):
     arguments = [
         {
-            'argument_type': 'select',
-            'argument_label': 'Kernel Function',
-            'argument_name': 'kernel',
-            'argument_items': ['GaussianKernel',
-                               'LinearKernel',
-                               'PolynomialKernel']},
+            'argument_type': 'decimal',
+            'argument_name': 'rate',
+            'argument_label': 'learning rate',
+            'argument_default': '1'},
         {
             'argument_type': 'decimal',
-            'argument_name': 'C',
-            'argument_default': '1.2'},
-        {
-            'argument_type': 'decimal',
-            'argument_name': 'sigma',
-            'argument_label': 'Sigma',
-            'argument_default' : '0.1'},
-        {
-            'argument_type': 'integer',
-            'argument_name': 'degree',
-            'argument_label': 'Degree',
-            'argument_default': '2'},
+            'argument_name': 'bias',
+            'argument_label': 'bias',
+            'argument_default' : '0'},
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
                                 'button_type': 'json_up_down_load'},
                                {'button_name': 'clear'}]
         }]
-    properties = { 'title': 'Binary Classification',
+    properties = { 'title': 'Perceptron(binary)',
                    'template': {'type': 'coordinate-2dims',
                                 'coordinate_system': {'horizontal_axis': {'position': 'bottom',
                                                                           'label': 'x1',
@@ -64,24 +53,22 @@ def classify(request):
         return HttpResponse(json.dumps({"status": e.message}))
 
     try:
-        kernel = get_kernel(request, features)
-    except ValueError as e:
-        return HttpResponse(json.dumps({"status": e.message}))
-
-    try:
-        C = float(request.POST["C"])
-        x, y, z = classify_svm(sg.LibSVM, features, labels, kernel, C=C)
+        rate = float(request.POST["rate"])
+        bias = float(request.POST['bias'])
+        z_value, z_label = classify_perceptron(sg.Perceptron, features, labels, rate, bias)
     except Exception as e:
-        import traceback
-        return HttpResponse(json.dumps({"status": repr(traceback.format_exc())}))
+        return HttpResponse(json.dumps({"status": e}))
 
     return HttpResponse(json.dumps({ 'status': 'ok',
-                                     'domain': [np.min(z), np.max(z)],
-                                     'z': z.tolist() }))
+                                     'domain': [np.min(z_value), np.max(z_value)],
+                                     'z': z_value.tolist() }))
 
-def classify_svm(classifier, features, labels, kernel, C=1):
-    svm = classifier(C, kernel, labels)
-    svm.train(features)
+def classify_perceptron(classifier, features, labels, learn=1, bias=0):
+    perceptron = classifier(features, labels)
+    perceptron.set_learn_rate(learn)
+    perceptron.set_max_iter(1000)
+    perceptron.set_bias(bias)
+    perceptron.train()
     
     size = 100
     x1 = np.linspace(0, 1, size)
@@ -89,11 +76,18 @@ def classify_svm(classifier, features, labels, kernel, C=1):
     x, y = np.meshgrid(x1, y1)
     
     test = sg.RealFeatures(np.array((np.ravel(x), np.ravel(y))))
-    kernel.init(features, test)
     
-    out = svm.apply(test).get_values()
-    if not len(out):
-        out = svm.apply(test).get_labels()
-    z = out.reshape((size, size))
-    z = np.transpose(z)
-    return x, y, z
+    outl = perceptron.apply(test).get_labels()
+    outv = perceptron.apply(test).get_values()
+    
+    # Normalize output
+    outv /= np.max(outv)
+    
+    z_value = outv.reshape((size, size))
+    z_value = np.transpose(z_value)
+    
+    z_label = outl.reshape((size, size))
+    z_label = np.transpose(z_label)
+    z_label = z_label + np.random.rand(*z_label.shape) * 0.01
+    
+    return z_value, z_label
