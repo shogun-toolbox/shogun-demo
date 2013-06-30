@@ -1,14 +1,11 @@
 canvas_div
 {% if template.mouse_click_enabled == 'left' or template.mouse_click_enabled == 'both' %}
-    .on("mousedown", mouse_left_click)
+    .on("click", mouse_left_click)
 {% endif %}
 {% if template.mouse_click_enabled == 'both' %}
     .on("contextmenu", mouse_right_click)
 {% endif %}
     .on("mousemove", mouse_move);
-
-//    .style("left", margin.left + "px")
-//    .style("top", margin.top + "px");
 var mouse_cursor = svg.append("circle")
         .attr("r", 3.5)
         .attr("transform", "translate(-100,-100)")
@@ -21,10 +18,14 @@ function mouse_move() {
                 (d3.mouse(this)[1]-margin.top) + ")");
 }
 {% if template.mouse_click_enabled == 'left' or template.mouse_click_enabled == 'both' %}
-function mouse_left_click() {
+var mouse_left_click_point_set=[];
+function mouse_left_click(event) {
     if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
         return;
     var point = d3.mouse(this);
+    var e = window.event || d3.event;
+    if(e.button == 2 || e.button == 3)
+        return;
     point[0]-=margin.left;
     point[1]-=margin.top;
     svg.append("circle")
@@ -39,6 +40,7 @@ function mouse_left_click() {
 }
 {% endif %}
 {% if template.mouse_click_enabled == 'both' %}
+var mouse_right_click_point_set=[];
 function mouse_right_click()
 {
     if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)

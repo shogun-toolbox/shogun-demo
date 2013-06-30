@@ -13,8 +13,8 @@ def entrance(request):
             'argument_label': 'Distance',
             'argument_name': 'distance',
             'argument_items': ['EuclideanDistance',
-                             'ManhattanMetric',
-                             'JensenMetric']},
+                               'ManhattanMetric',
+                               'JensenMetric']},
         {
             'argument_type': 'integer',
             'argument_name': 'number_of_clusters',
@@ -22,23 +22,27 @@ def entrance(request):
             'argument_default': '2'},
         {
             'argument_type': 'button-group',
-            'argument_items': ['cluster', 'clear']
+            'argument_items': [{'button_name': 'cluster',
+                                'button_type': 'json_up_down_load'},
+                               {'button_name': 'clear'}]
         }]
-    properties = { 'title': 'Clustering Demo',
+    properties = { 'title': 'Clustering',
                    'template': {'type': 'coordinate-2dims',
-                                'coordinate_range': {'horizontal': [0 ,1],
+                                'coordinate_range': {'horizontal': [0, 1],
                                                      'vertical': [0, 0.8]},
-                                'horizontal_axis': {'position': 'bottom',
-                                                    'label': 'X-axis'},
-                                'vertical_axis': {'position': 'left',
-                                                  'label': 'Y-axis'},
+                                'coordinate_system': {'horizontal_axis': {'position': 'bottom',
+                                                                          'label': 'X-axis',
+                                                                          'range': [0, 1]},
+                                                      'vertical_axis': {'position': 'left',
+                                                                         'label': 'Y-axis',
+                                                                         'range': [0, 1]}},
                                 'mouse_click_enabled': 'both'},
                    'panels': [
                        {
                            'panel_name': 'arguments',
-                           'panel_label': 'Arguments'
-                       }], 
-                   'arguments': arguments}
+                           'panel_label': 'Arguments',
+                           'panel_property': arguments
+                       }]}
     return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 
 def cluster(request):
@@ -60,8 +64,8 @@ def _read_data(request):
     k = int(request.POST['number_of_clusters'])
     if k > 500:
         raise TypeError
-    positive = json.loads(request.POST['positive'])
-    negative = json.loads(request.POST['negative'])
+    positive = json.loads(request.POST['mouse_left_click_point_set'])
+    negative = json.loads(request.POST['mouse_right_click_point_set'])
     distance_name = request.POST['distance']
         
     if len(positive) == 0 and len(negative) == 0:

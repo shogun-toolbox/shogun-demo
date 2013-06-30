@@ -1,105 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>GSoC demos</title>
+{% extends "default.html" %}
+{% block javascript %}
+<script>
+function classify(data)
+{
+    $('#classify').attr('disabled', false);
 
-    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="/static/css/classification.css" rel="stylesheet">
+    data = JSON.parse(data);
+    if (data['status'] != 'ok'){
+        alert(data['status']);
+        return;
+    }
 
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
+    var z = data['z'];
+    var domain = data['domain'];
+    var minimum = domain[0];
+    var maximum = domain[1];
 
-      @media (max-width: 980px) {
-        /* Enable use of floated navbar text */
-        .navbar-text.pull-right {
-          float: none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-    </style>
+    var result = getContour(z, minimum, maximum, domain);
+    var contour = result['contour'];
+    var x_scale = result['x_scale'];
+    var y_scale = result['y_scale'];
+    var color_scale = result['color_scale'];
 
-  <body>
+    svg.selectAll(".heatmap").remove();
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">Shogun Demos</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Methods</li>
-              <li><a href="index">Home</a></li>
-              <li class="active"><a href="#">Binary</a></li>
-              <li><a href="multiclass">Multiclass</a></li>
-              <li><a href="perceptron">Perceptron</a></li>
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-        <div class="span6">
-          <h1>Binary classification</h1>
-          <div class="svg-container"></div>
-          <div class="btn-group">
-            <button id="a_button" class="btn btn-primary" type="button" onclick="change_features('a')">A features</button>
-            <button id="b_button" class="btn" type="button" onclick="change_features('b')">B features</button>
-          </div>
-        </div><!--/span-->
-
-        <div class="span3">
-          <h3>Parameters</h3>
-          <form name="">
-            <label>Kernel</label>
-            <select id="kernel-param" class="span8">
-              <option value="gaussian" selected>GaussianKernel</option>
-              <option value="linear">LinearKernel</option>
-              <option value="poly">PolynomialKernel</option>
-            </select>
-            <label>C</label>
-            <input id="c-param" class="span8" type="text" value="1">
-            <label>Sigma</label>
-            <input id="sigma-param" class="span8" type="text" value="0.1">
-            <label>Degree</label>
-            <input id="degree-param" class="span8" type="text" value="2">
-          </form>
-          <div class="btn-group">
-            <button type="button" class="btn btn-success" onclick="classify('run_binary')">Classify</button>
-            <button type="button" class="btn btn" onclick="clear_demo()">Clear</button>
-          </div><!--/btn-group-->
-          <h3 class="hide">Colorbar</h3>
-          <div class="colorbar-container"></div>
-        </div><!--/span-->
-
-      </div><!--/row-->
-    <hr>
-      <footer>
-        <p>GSoC Demos.</p>
-      </footer>
-    </div><!--/.fluid-container-->
-  </body>
-
-  <script type="text/javascript" src="/static/bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="/static/js/d3.min.js"></script>
-  <script type="text/javascript" src="/static/js/conrec.js"></script>
-  <script type="text/javascript" src="/static/js/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript" src="/static/js/classification.js"></script>
-
-</html>
-
+    svg.selectAll(".heatmap")
+        .data(contour.contourList())
+        .enter()
+        .append("path")
+        .style("fill", function(d) {return color_scale(d.level); })
+        .style("stroke", "black")
+        .style("stroke-width", "1")
+        .attr("class", "heatmap")
+        .attr("d", d3.svg.line()
+              .x(function(d){ return x_scale(d.x); })
+              .y(function(d){ return y_scale(d.y); })
+             );
+    svg.selectAll(".grid")
+        .each(function(d, i) {
+            this.parentNode.appendChild(this);
+        });
+    svg.selectAll(".axis")
+        .each(function(d,i) {
+            this.parentNode.appendChild(this);
+        });
+    svg.selectAll("circle")
+        .each(function(d, i) {
+            this.parentNode.appendChild(this);
+        });
+    svg.selectAll(".grid .tick.major line")
+        .style("stroke", "grey");
+}
+function clear_action()
+{
+    mouse_left_click_point_set = [];
+    mouse_right_click_point_set = [];
+    svg.selectAll("circle").remove();
+    svg.selectAll(".heatmap").remove();
+    svg.selectAll(".grid .tick.major line")
+        .style("stroke", "lightgrey");
+}
+</script>
+{% endblock %}
