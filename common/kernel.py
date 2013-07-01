@@ -21,7 +21,7 @@ def get_kernel(request, features):
         except:
             raise ValueError("degree is not correct")
         kernel = sg.PolyKernel(features, features, degree, True)
-        kernel.set_normalizer(sg.VarianceKernelNormalizer())
+        kernel.set_normalizer(sg.IdentityKernelNormalizer())
     else:
         raise ValueError("Unknown kernel")
     
