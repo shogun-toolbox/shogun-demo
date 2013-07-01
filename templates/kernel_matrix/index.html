@@ -7,54 +7,55 @@ function Clear_action()
     $("#heatmap").remove();
     toy_data = [];
 }
-function Draw_action()
+function generate(data)
 {
-    if (toy_data.length !=0)
-        $.ajax(
-            {
-                url: "generate_matrix",
-                type: "POST",
-                dataType: 'text',
-                data: {
-                    csrfmiddlewaretoken: '{{ csrf_token }}',
-                    toy_data: JSON.stringify(toy_data),
-                    kernel_width: document.arguments.kernel_width.value,
-                    kernel: document.arguments.kernel.value,
-                    degree: document.arguments.degree.value
-                },
-                beforeSend:function(){
-                    $("#Draw").attr('disabled', true);
-                },
-                success:function(data){
-                    heatmap = $.parseJSON(data);
-                    $("#heatmap").remove();
-                    var dx = heatmap[0].length,
-                        dy = heatmap.length;
-                    
+    $('#generate').attr('disabled', false);
 
-                    var context = canvas.node().getContext("2d"),
-                        image = context.createImageData(dx, dy);
-                    for (var y = 0, p = -1; y < dy; ++y)
-                    {
-                        for (var x = 0; x < dx; ++x) {
-                            var c = d3.rgb(color(heatmap[y][x]));
-                            image.data[++p] = c.r;
-                            image.data[++p] = c.g;
-                            image.data[++p] = c.b;
-                            image.data[++p] = 128;
-                        }
-                    }
-                    context.putImageData(image, 0, 0);
-                    $("#Draw").attr('disabled', false);
-                },
-                error: function(){
-                    $("#Draw").attr('disabled', false);
-                    alert("Error Generated!");
-                }
-            });
-    else{
-        alert("Sorry, there's no dots to train, generate some, pls");
+    data = JSON.parse(data);
+    if (data['status'] != 'ok'){
+        alert(data['status']);
+        return;
     }
+
+    var z = data['z'];
+    var domain = data['domain'];
+    var minimum = domain[0];
+    var maximum = domain[1];
+
+    var result = getContour(z, minimum, maximum, domain);
+    var contour = result['contour'];
+    var x_scale = result['x_scale'];
+    var y_scale = result['y_scale'];
+    var color_scale = result['color_scale'];
+
+    svg.selectAll(".heatmap").remove();
+
+    svg.selectAll(".heatmap")
+        .data(contour.contourList())
+        .enter()
+        .append("path")
+        .style("fill", function(d) {return color_scale(d.level); })
+        .style("stroke", "black")
+        .style("stroke-width", "1")
+        .attr("class", "heatmap")
+        .attr("d", d3.svg.line()
+              .x(function(d){ return x_scale(d.x); })
+              .y(function(d){ return y_scale(d.y); })
+             );
+    svg.selectAll(".grid")
+        .each(function(d, i) {
+            this.parentNode.appendChild(this);
+        });
+    svg.selectAll(".axis")
+        .each(function(d,i) {
+            this.parentNode.appendChild(this);
+        });
+    svg.selectAll("circle")
+        .each(function(d, i) {
+            this.parentNode.appendChild(this);
+        });
+    svg.selectAll(".grid .tick.major line")
+        .style("stroke", "grey");
 }
 </script>
 {% endblock %}

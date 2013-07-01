@@ -26,13 +26,18 @@ def entrance(request):
             'argument_default': '5'},
         {
             'argument_type': 'button-group',
-            'argument_items': ['Draw', 'Clear']},
+            'argument_items': [{'button_name': 'generate',
+                                'button_type': 'json_up_down_load'},
+                               {'button_name': 'Clear'}]},
         ]
     properties = { 'title': 'Kernel Matrix Visualization',
                    'template': {'type': 'coordinate-2dims',
-                                'heatmap': True,
-                                'coordinate_range': { 'horizontal': [-5.0, 5.0],
-                                                      'vertical': [-4.0, 4.0] }},
+                                'mouse_click_enabled': 'left',
+                                'heatmap': { 'contour': True },
+                                'coordinate_system': {'horizontal_axis': {'range':[-5.0, 5.0],
+                                                                          'position': 'bottom'},
+                                                      'vertical_axis': {'range':[-4.0, 4.0],
+                                                                        'position': 'left'}}},
                    'panels': [
                         {
                             'panel_name': 'arguments',
@@ -42,12 +47,13 @@ def entrance(request):
                         {
                             'panel_name': 'toy_data_generator',
                             'panel_label': 'Toy Data'
-                        }]}
+                        },
+                        ]
     return render_to_response("kernel_matrix/index.html",
                               properties,
                               context_instance = RequestContext(request))
 
-def generate_matrix(request):
+def generate(request):
     result = []
     try:
         arguments = _read_toy_data(request)
@@ -57,13 +63,15 @@ def generate_matrix(request):
         print traceback.format_exc()
         raise Http404
 
-    return HttpResponse(json.dumps(result))
+    return HttpResponse(json.dumps({'status': 'ok',
+                                    'domain': [np.min(result), np.max(result)],
+                                    'z': result}))
 
 def _read_toy_data(request):
     y_set = []
     x_set = []
-    toy_data = json.loads(request.POST['toy_data'])
-    for pt in toy_data:
+    data = json.loads(request.POST['mouse_left_click_point_set'])
+    for pt in data:
         y_set.append(float(pt["y"]))
         x_set.append(float(pt["x"]))
     kernel_width = float(request.POST['kernel_width'])
