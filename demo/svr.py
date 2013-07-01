@@ -32,7 +32,7 @@ def entrance(request):
         },
         {
             'argument_type': 'integer',
-            'argument_name': 'd',
+            'argument_name': 'degree',
             'argument_default': '5'
         },
         {
@@ -80,8 +80,6 @@ def _read_data(request):
     data = json.loads(request.POST['mouse_left_click_point_set'])
     cost = float(request.POST['C'])
     tubeeps = float(request.POST['tube'])
-    degree = int(request.POST['d'])
-    width = float(request.POST['sigma'])
     kernel_name = request.POST['kernel']
     for pt in data:
         labels.append(float(pt["y"]))

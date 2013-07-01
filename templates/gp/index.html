@@ -4,6 +4,7 @@
 toy_data = [];
 function Clear_action()
 {
+    mouse_left_click_point_set = [];
     svg.selectAll(".line")
         .transition()
         .duration(1000)
@@ -12,41 +13,8 @@ function Clear_action()
     svg.selectAll(".area")
         .remove();
     svg.selectAll(".dot").remove();
-    new_points = {"points" : []};
-    toy_data = [];
 }
 
-function GenerateToyData_action()
-{
-    $.ajax(
-        {
-            url:"create_toy_data",
-            type: "POST",
-            dataType: 'text',
-            data: {csrfmiddlewaretoken: '{{ csrf_token }}',
-                   amplitude: document.arguments.amplitude.value ,
-                   frequency: document.arguments.frequency.value,
-                   noise_level: document.arguments.noise_level.value},
-            beforeSend: function(){$("#GenerateToyData").attr('disabled',true);},
-            success: function(data){
-                json = $.parseJSON(data)['data'];
-                svg.selectAll(".dot").remove();
-                toy_data = json;
-                svg.selectAll(".dot")
-                    .data(json)
-                    .enter().append("circle")
-                    .attr("class", "dot")
-                    .attr("r", 1.5)
-                    .attr("cx", function(d) { return x(d.x); })
-                    .attr("cy", function(d) { return y(d.y); })
-                    .style("fill", "red")
-                    .style("stroke", "none");
-                $("#GenerateToyData").attr('disabled', false);
-            },
-            error: function(){alert("Cannot connect to server");
-                              $("#GenerateToyData").attr('disabled', false);}
-        });
-}
 function TrainGP_action()
 {
     var area_end = d3.svg.area()
@@ -62,7 +30,7 @@ function TrainGP_action()
             .y(function (d) {return y(0); })
             .interpolate('basis');
 
-    if (toy_data.length !=0)
+    if (mouse_left_click_point_set.length !=0)
         $.ajax(
             {
                 url:"train",
@@ -70,9 +38,11 @@ function TrainGP_action()
                 dataType: 'text',
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
-                    toy_data: JSON.stringify(toy_data),
+                    mouse_left_click_point_set: JSON.stringify(mouse_left_click_point_set),
                     noise_level: document.toy_data_generator.noise_level.value,
-                    kernel_width: document.arguments.kernel_width.value
+                    sigma: document.arguments.sigma.value,
+                    degree: document.arguments.degree.value,
+                    kernel: document.arguments.kernel.value
                 },
                 beforeSend: function(){$("#TrainGP").attr('disabled', true);},
                 success: function(data){

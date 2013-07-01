@@ -23,18 +23,18 @@
                        noise_level: document.toy_data_generator.noise_level.value},
                 beforeSend: function(){$("#CreateToyData").attr('disabled',true);},
                 success: function(data){
+                    mouse_left_click_point_set=[];
                     json = $.parseJSON(data);
                     svg.selectAll(".dot").remove();
-                    toy_data = json;
                     svg.selectAll(".dot")
                         .data(json)
                         .enter().append("circle")
                         .attr("class", "dot")
-                        .attr("r", 1.5)
+                        .attr("r", 2.5)
                         .attr("cx", function(d) { return x(d.x); })
-                        .attr("cy", function(d) { return y(d.y); })
-                        .style("fill", "red")
-                        .style("stroke", "none");
+                        .attr("cy", function(d) { return y(d.y); });
+                    mouse_left_click_point_set = mouse_left_click_point_set.concat(json);
+    
                     $("#CreateToyData").attr('disabled', false);
                 },
                 error: function(){alert("Cannot connect to server");
