@@ -6,22 +6,23 @@ function clear_action()
     svg.selectAll(".line")
         .remove();
     svg.selectAll(".dot").remove();
-    mouse_left_click_point_set = [];
+    point_set = [];
+    reset_axis();
 }
 var line = d3.svg.line()
-        .x(function (d) { return x(d.x_value); })
-        .y(function (d) { return y(d.y_value); })
+        .x(function (d) { return x(d.x); })
+        .y(function (d) { return y(d.y); })
         .interpolate('basis');
 var start = d3.svg.line()
-        .x(function (d) {return x(d.x_value); })
+        .x(function (d) {return x(d.x); })
         .y(function (d) {return y(0); })
             .interpolate('basis');
         
 function regress(data){
     var json = $.parseJSON(data);
     json.forEach(function(d) {
-        d.x_value = +d.x_value;
-        d.y_value = +d.y_value;
+        d.x = +d.x;
+        d.y = +d.y;
     });
     if (svg.selectAll(".line")[0].length == 0)
         curve = svg.append("path")

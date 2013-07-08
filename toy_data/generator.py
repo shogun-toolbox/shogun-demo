@@ -27,6 +27,7 @@ def generate(request):
     
     toy_data = []
     for i in xrange(len(x)):
-        toy_data.append( { 'x': x[i], 'y': y[i]})
-        
+        toy_data.append( { 'x': x[i],
+                           'y': y[i],
+                           'label': '1'})
     return HttpResponse(json.dumps(toy_data))

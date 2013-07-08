@@ -13,8 +13,8 @@ function classify(data)
 
     var z = data['z'];
     var domain = data['domain'];
-    var minimum = domain[0];
-    var maximum = domain[1];
+    var minimum = Math.floor(domain[0]);
+    var maximum = Math.ceil(domain[1]);
 
     var result = getContour(z, minimum, maximum, domain);
     var contour = result['contour'];
@@ -50,11 +50,13 @@ function classify(data)
         });
     svg.selectAll(".grid .tick.major line")
         .style("stroke", "grey");
+    $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.floor(domain[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.ceil(domain[1]) + "</span>") ;
+
 }
 function clear_action()
 {
-    mouse_left_click_point_set = [];
-    mouse_right_click_point_set = [];
+    point_set = [];
+    point_set = [];
     svg.selectAll("circle").remove();
     svg.selectAll(".heatmap").remove();
     svg.selectAll(".grid .tick.major line")

@@ -41,7 +41,10 @@ def entrance(request):
                            'panel_name': 'arguments',
                            'panel_label': 'Arguments',
                            'panel_property': arguments
-                       }]}
+                       },
+                       {
+                           'panel_name': 'toy_data',
+                           'panel_label': 'Toy Data'}]}
     return render_to_response("classification/binary.html",
                               properties,
                               context_instance = RequestContext(request))

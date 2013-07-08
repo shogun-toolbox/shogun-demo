@@ -26,7 +26,7 @@
           <div class="tab-content">
             {% for panel in panels %}
             <div class="tab-pane{% if forloop.first %} active{% endif %}" id="{{ panel.panel_name }}">
-              {% if panel.panel_name == 'toy_data_generator' %}
+              {% if panel.panel_name == 'toy_data' %}
                 {% include "toy_data_generator_form.html" %}
               {% elif panel.panel_name == 'arguments' %}
                 {% include "arguments_form.html" %}
