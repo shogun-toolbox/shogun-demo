@@ -25,10 +25,11 @@ urlpatterns = patterns('',
     url(r'^gp/entrance', 'demo.gp.entrance'),
     url(r'^gp/create_toy_data', 'demo.gp.create_toy_data'),
     url(r'^gp/load_toy_data', 'demo.gp.load_toy_data'),
-    url(r'^gp/train', 'demo.gp.train'),
+    url(r'^gp/TrainGP', 'demo.gp.train'),
     url(r'^kernel_matrix/entrance', 'demo.kernel_matrix.entrance'),
     url(r'^kernel_matrix/generate', 'demo.kernel_matrix.generate'),
     url(r'^toy_data/generator/generate', 'toy_data.generator.generate'),
+    url(r'^toy_data/importer/dump', 'toy_data.importer.dump'),
                                                             
     # url(r'^shogun_demo/', include('shogun_demo.foo.urls')),
 

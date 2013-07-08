@@ -58,6 +58,10 @@ def entrance(request):
                            'panel_name': 'arguments',
                            'panel_label': 'Arguments',
                            'panel_property': arguments
+                       },
+                       {
+                           'panel_name': 'toy_data',
+                           'panel_label': 'toy data',
                        }]}
     return render_to_response("svr/index.html", properties, context_instance=RequestContext(request))
     
@@ -65,11 +69,12 @@ def point(request):
     try:
         arguments=_read_data(request)
         svm=_train_svr(*arguments)
-        x=np.linspace(0, 1, 100)
+        domain = json.loads(request.POST['axis_domain'])
+        x=np.linspace(domain['horizontal'][0], domain['horizontal'][1], 100)
         y=np.array(svm.apply(sg.RealFeatures(np.array([x]))).get_labels(), dtype=np.float64)
         line_dot = []
         for i in xrange(len(x)):
-            line_dot.append({'x_value' : x[i], 'y_value' : y[i]})
+            line_dot.append({'x' : x[i], 'y' : y[i]})
         return HttpResponse(json.dumps(line_dot))
     except:
         raise Http404
@@ -77,7 +82,7 @@ def point(request):
 def _read_data(request):
     labels = []
     features = []
-    data = json.loads(request.POST['mouse_left_click_point_set'])
+    data = json.loads(request.POST['point_set'])
     cost = float(request.POST['C'])
     tubeeps = float(request.POST['tube'])
     kernel_name = request.POST['kernel']
@@ -92,7 +97,7 @@ def _read_data(request):
     
     for i in xrange(num):
         examples[0,i] = features[i]
-        
+    
     lab = sg.RegressionLabels(labels)
     train = sg.RealFeatures(examples)
     kernel = get_kernel(request, train)

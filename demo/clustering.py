@@ -28,6 +28,7 @@ def entrance(request):
         }]
     properties = { 'title': 'Clustering',
                    'template': {'type': 'coordinate-2dims',
+                                'feature': 'binary',
                                 'coordinate_range': {'horizontal': [0, 1],
                                                      'vertical': [0, 0.8]},
                                 'coordinate_system': {'horizontal_axis': {'position': 'bottom',
@@ -42,7 +43,10 @@ def entrance(request):
                            'panel_name': 'arguments',
                            'panel_label': 'Arguments',
                            'panel_property': arguments
-                       }]}
+                       },
+                       {
+                           'panel_name': 'toy_data',
+                           'panel_label': 'toy data'}]}
     return render_to_response("clustering/index.html", properties, context_instance=RequestContext(request))
 
 def cluster(request):
@@ -52,40 +56,37 @@ def cluster(request):
         centers = kmeans.get_cluster_centers()
         radi = kmeans.get_radiuses()
         result = {'circle': []}
-        for i in xrange(arguments[3]): # arguments[3] is k
+        for i in xrange(arguments[2]): # arguments[3] is k
             result['circle'].append({'x': centers[0,i],
                                      'y': centers[1,i],
                                      'r': radi[i]})
         return HttpResponse(json.dumps(result))
     except:
+        import traceback
+        print traceback.format_exc()
         return HttpResponseNotFound()
     
 def _read_data(request):
     k = int(request.POST['number_of_clusters'])
     if k > 500:
         raise TypeError
-    positive = json.loads(request.POST['mouse_left_click_point_set'])
-    negative = json.loads(request.POST['mouse_right_click_point_set'])
+    point_set = json.loads(request.POST['point_set'])
     distance_name = request.POST['distance']
-        
-    if len(positive) == 0 and len(negative) == 0:
+
+    if len(point_set) == 0:
         raise TypeError
-    return (positive, negative, distance_name, k)
+    return (point_set, distance_name, k)
    
-def _train_clustering(positive, negative, distance_name, k):
-    labels = np.array([1]*len(positive) + [-1]*len(negative), dtype=np.float64)
-    num_pos = len(positive)
-    num_neg = len(negative)
-    features = np.zeros((2, num_pos+num_neg))
-    
-    for i in xrange(num_pos):
-        features[0, i] = positive[i]['x']
-        features[1, i] = positive[i]['y']
-         
-    for i in xrange(num_neg):
-        features[0, i+num_pos] = negative[i]['x']
-        features[1, i+num_pos] = negative[i]['y']
-                 
+def _train_clustering(point_set, distance_name, k):
+    labels = np.array([0]*len(point_set))
+    features = np.zeros((2, len(point_set)))
+
+    print labels
+    for i in xrange(len(point_set)):
+        features[0, i] = point_set[i]['x']
+        features[1, i] = point_set[i]['y']
+        labels[i] = point_set[i]['label']
+
     lab = sg.BinaryLabels(labels)
     train = sg.RealFeatures(features)
              
@@ -96,7 +97,7 @@ def _train_clustering(positive, negative, distance_name, k):
     elif distance_name == "JensenMetric":
         distance = sg.JensenMetric(train, train)
     else:
-       raise TypeError
+        raise TypeError
                   
     kmeans = sg.KMeans(k, distance)
     kmeans.train()

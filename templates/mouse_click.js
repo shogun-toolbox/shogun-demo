@@ -18,7 +18,7 @@ function mouse_move() {
                 (d3.mouse(this)[1]-margin.top) + ")");
 }
 {% if template.mouse_click_enabled == 'left' or template.mouse_click_enabled == 'both' %}
-var mouse_left_click_point_set=[];
+var point_set=[];
 function mouse_left_click(event) {
     if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
         return;
@@ -30,17 +30,18 @@ function mouse_left_click(event) {
     point[1]-=margin.top;
     svg.append("circle")
         .attr("class",  "dot")
-        .attr("r", 2.5)
+        .attr("r", 1.5)
     {%if template.mouse_click_enabled == 'both' %}
         .style("fill", "red")
     {% endif %}
         .attr("cx", point[0])
         .attr("cy", point[1]);
-    mouse_left_click_point_set.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
+    point_set.push( {"x": x.invert(point[0]).toFixed(3),
+                     "y": y.invert(point[1]).toFixed(3),
+                     "label": +1});
 }
 {% endif %}
 {% if template.mouse_click_enabled == 'both' %}
-var mouse_right_click_point_set=[];
 function mouse_right_click()
 {
     if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
@@ -50,11 +51,13 @@ function mouse_right_click()
     point[1]-=margin.top;
     svg.append("circle")
         .attr("class",  "dot")
-        .attr("r", 2.5)
+        .attr("r", 1.5)
         .attr("cx", point[0])
         .attr("cy", point[1])
         .style("fill", "blue");
-    mouse_right_click_point_set.push( {"x": x.invert(point[0]).toFixed(3),"y": y.invert(point[1]).toFixed(3)});
+    point_set.push( {"x": x.invert(point[0]).toFixed(3),
+                     "y": y.invert(point[1]).toFixed(3),
+                     "label": -1});
 }
 d3.select("svg").node().oncontextmenu = function(){return false;}; //disable right click menu
 {% endif %}

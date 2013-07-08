@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 
 import modshogun as sg
 import numpy as np
-import scipy as sp
+import scipy as spxx
 import json
 
 def entrance(request):
@@ -34,10 +34,8 @@ def entrance(request):
                    'template': {'type': 'coordinate-2dims',
                                 'mouse_click_enabled': 'left',
                                 'heatmap': { 'contour': True },
-                                'coordinate_system': {'horizontal_axis': {'range':[-5.0, 5.0],
-                                                                          'position': 'bottom'},
-                                                      'vertical_axis': {'range':[-4.0, 4.0],
-                                                                        'position': 'left'}}},
+                                'coordinate_system': {'horizontal_axis': {'range':[-5.0, 5.0]},
+                                                      'vertical_axis': {'range':[-4.0, 4.0]}}},
                    'panels': [
                         {
                             'panel_name': 'arguments',
@@ -45,10 +43,9 @@ def entrance(request):
                             'panel_property': arguments
                         },
                         {
-                            'panel_name': 'toy_data_generator',
+                            'panel_name': 'toy_data',
                             'panel_label': 'Toy Data'
-                        },
-                        ]
+                        }]}
     return render_to_response("kernel_matrix/index.html",
                               properties,
                               context_instance = RequestContext(request))
@@ -59,8 +56,6 @@ def generate(request):
         arguments = _read_toy_data(request)
         result = _process(*arguments)
     except:
-        import traceback
-        print traceback.format_exc()
         raise Http404
 
     return HttpResponse(json.dumps({'status': 'ok',
@@ -70,7 +65,7 @@ def generate(request):
 def _read_toy_data(request):
     y_set = []
     x_set = []
-    data = json.loads(request.POST['mouse_left_click_point_set'])
+    data = json.loads(request.POST['point_set'])
     for pt in data:
         y_set.append(float(pt["y"]))
         x_set.append(float(pt["x"]))
@@ -90,7 +85,7 @@ def _process(x1_set, x2_set, kernel_width, kernel_name, degree):
     feat_train = sg.RealFeatures(examples)
 
     # construct covariance function
-    if kernel_name == "LinearKernel":
+    if kernelname == "LinearKernel":
         kernel = sg.LinearKernel(feat_train, feat_train)
     elif kernel_name == "PolynomialKernel":
         kernel = sg.PolyKernel(feat_train, feat_train, degree, True)
