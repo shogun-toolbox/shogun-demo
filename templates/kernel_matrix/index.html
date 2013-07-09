@@ -1,7 +1,7 @@
 {% extends "default.html" %}
 {% block javascript %}
 <script>
-function Clear_action()
+function clear_action()
 {
     svg.selectAll(".dot").remove();
     $("#heatmap").remove();
@@ -27,17 +27,23 @@ function generate(data)
     var dx = z[0].length;
     var dy = z.length;
     var index = 0;
-    
+
+    color.domain([0, 1]);
+    x.domain([0, dx]);
+    y.domain([dy, 0]);
+
     svg.selectAll(".heatmap")
-        .data(z)
+        .data(z).enter()
+        .append('g')
+        .selectAll('.box')
+        .data(Object)
         .enter()
-        .append("rect")
-        .style("fill", function(d) {return color(z); })
-        .attr("class", "heatmap")
-        .attr("x", index % dx)
-        .attr("y", index ++ / dx)
-        .attr("width",1 )
-        .attr("height",1 );
+        .append('rect')
+        .attr("fill", function(d) { return color(d);})
+        .attr("x", function(d,i,j){ return x(i);})
+        .attr("y", function(d,i,j){ return y(j);})
+        .attr("width", width/dx)
+        .attr("height", height/dy);
     svg.selectAll(".grid")
         .each(function(d, i) {
             this.parentNode.appendChild(this);
@@ -52,7 +58,7 @@ function generate(data)
         });
     svg.selectAll(".grid .tick.major line")
         .style("stroke", "grey");
-    $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.round({{ domain[0] }}) + "</span><span id='upper' style='float:right; color:white;'>" + Math.round({{ domain[1] }}) + "</span>") ;
+    $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.round(domain[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.round(domain[1]) + "</span>") ;
 }
 </script>
 {% endblock %}
