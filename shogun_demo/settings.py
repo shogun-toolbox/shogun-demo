@@ -157,3 +157,7 @@ LOGGING = {
         },
     }
 }
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'toy_data.importer.files',
+)

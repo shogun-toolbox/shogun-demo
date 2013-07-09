@@ -4,7 +4,11 @@ var height = 610 - margin.top - margin.bottom;
 
 var x = d3.scale.linear().range( [0, width] );
 var y = d3.scale.linear().range( [height, 0] );
-
+var horizontal_max=1, horizontal_min=0;
+var vertical_max=1, vertical_min=0;
+var color = d3.scale.linear()
+    .domain([0,1])
+    .range(["blue","red"]);
 
 {% if template.coordinate_system.horizontal_axis.range %}
 x.domain({{ template.coordinate_system.horizontal_axis.range }}).nice();
@@ -14,18 +18,14 @@ x.domain([0, 1]);
 {% if template.coordinate_system.vertical_axis.range %}
 y.domain({{ template.coordinate_system.vertical_axis.range }}).nice();
 {% else %}
-y.domain([0,0.8]);
+y.domain([0, 1]);
 {% endif %}
 
 var xAxis = d3.svg.axis().scale(x).orient("bottom");
 var yAxis = d3.svg.axis().scale(y).orient("left");
 
-function make_x_axis(){
-    return d3.svg.axis().scale(x).orient("bottom").ticks(10);
-}
-function make_y_axis(){
-    return d3.svg.axis().scale(y).orient("left").ticks(8);
-}
+var xGrid = d3.svg.axis().scale(x).orient("bottom");
+var yGrid = d3.svg.axis().scale(y).orient("left");
 
 var canvas_div = d3.select(".span9").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -36,28 +36,24 @@ var svg = canvas_div.append("g")
 
 svg.append("g")
     .attr("class", "grid")
+    .attr("id", "x_grid")
     .attr("transform", "translate(0, " + height + ")")
-    .call(make_x_axis()
+    .call(xGrid
           .tickSize(-height, 0, 0)
           .tickFormat("")
          );
 svg.append("g")
     .attr("class", "grid")
-    .call(make_y_axis()
+    .attr("id", "y_grid")
+    .call(yGrid
           .tickSize(-width, 0, 0)
           .tickFormat("")
          );
 
 svg.append("g")
     .attr("class", "axis")
-{% if template.coordinate_system.horizontal_axis.position == 'bottom' %}
+    .attr("id", "x_axis")
     .attr("transform", "translate(0," + height + ")")
-{% elif template.coordinate_system.horizontal_axis.position == 'top' %}
-    .attr("transform", "translate(0," + 0 + ")")
-{% else %}
-    .attr("transform", "translate(0," + height/2 + ")")
-{% endif %}
-
     .call(xAxis)
     .append("text")
     .attr("class", "label")
@@ -68,12 +64,7 @@ svg.append("g")
 
 svg.append("g")
     .attr("class", "axis")
-{% if template.coordinate_system.vertical_axis.position == 'left' %}
-{% elif template.coordinate_system.vertical_axis.position == 'right' %}
-    .attr("transform", "translate(" + width + ")")
-{% else %}
-    .attr("transform", "translate(" + width/2 + ")")
-{% endif %}
+    .attr("id", "y_axis")
     .call(yAxis)
     .append("text")
     .attr("class", "label")
@@ -83,10 +74,31 @@ svg.append("g")
     .style("text-anchor", "end")
     .text("{{ template.coordinate_system.vertical_axis.label }}");
 
+function reset_axis(){
+    horizontal_max = vertical_max = 1;
+    horizontal_min = vertical_min = 0;
+    x.domain([horizontal_min, horizontal_max]);
+    y.domain([vertical_min, vertical_max]);
+    var t = svg.transition().duration(750);
+    t.select("#x_axis").call(xAxis);
+    t.select("#y_axis").call(yAxis);
+    t.select("#x_grid").call(xGrid);
+    t.select("#y_grid").call(yGrid);
+}
+
+var area_end = d3.svg.area()
+    .x(function(d) { return x(d.x);})
+    .y0(function(d) { return y(d.range_lower);})
+    .y1(function(d) { return y(d.range_upper);});
+var end = d3.svg.line()
+    .x(function (d) { return x(d.x); })
+    .y(function (d) { return y(d.y); })
+    .interpolate('basis');
+var start = d3.svg.line()
+    .x(function (d) {return x(d.x); })
+    .y(function (d) {return y(0); })
+    .interpolate('basis');
 {% if template.heatmap %}
-var color = d3.scale.linear()
-    .domain([0,1])
-    .range(["blue","red"]);
 var heatmap_legend = document.createElement("div");
 $('.span9').append(heatmap_legend);
 heatmap_legend.id = "legend";

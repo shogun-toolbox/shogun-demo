@@ -52,7 +52,10 @@ def entrance(request):
                            'panel_name': 'arguments',
                            'panel_label': 'Arguments',
                            'panel_property': arguments
-                       }]}
+                       },
+                       {
+                           'panel_name': 'toy_data',
+                           'panel_label': 'Toy Data'}]}
     return render_to_response("classification/binary.html",
                               properties,
                               context_instance = RequestContext(request))
@@ -69,8 +72,9 @@ def classify(request):
         return HttpResponse(json.dumps({"status": e.message}))
 
     try:
+        domain = json.loads(request.POST['axis_domain'])
         C = float(request.POST["C"])
-        x, y, z = classify_svm(sg.LibSVM, features, labels, kernel, C=C)
+        x, y, z = classify_svm(sg.LibSVM, features, labels, kernel, domain, C=C)
     except Exception as e:
         import traceback
         return HttpResponse(json.dumps({"status": repr(traceback.format_exc())}))
@@ -79,13 +83,13 @@ def classify(request):
                                      'domain': [np.min(z), np.max(z)],
                                      'z': z.tolist() }))
 
-def classify_svm(classifier, features, labels, kernel, C=1):
+def classify_svm(classifier, features, labels, kernel, domain, C=1):
     svm = classifier(C, kernel, labels)
     svm.train(features)
     
     size = 100
-    x1 = np.linspace(0, 1, size)
-    y1 = np.linspace(0, 1, size)
+    x1 = np.linspace(domain['horizontal'][0], domain['horizontal'][1], size)
+    y1 = np.linspace(domain['vertical'][0], domain['vertical'][1], size)
     x, y = np.meshgrid(x1, y1)
     
     test = sg.RealFeatures(np.array((np.ravel(x), np.ravel(y))))

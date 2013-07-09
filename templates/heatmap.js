@@ -14,7 +14,7 @@ function getContour(z, minimum, maximum, dom) {
     var zs = d3.range(minimum, maximum, 0.1);
     var x = d3.scale.linear().range([0, width]).domain([1, z.length-2]);
     var y = d3.scale.linear().range([height, 0]).domain([1, z[0].length-2]);
-    var colour_scale = d3.scale.linear().domain(dom).range(["white, white"]);
+    var colour_scale = d3.scale.linear().domain(dom).range(["blue", "red"]);
 
     c.contour(z, 0, xs.length-1, 0, ys.length-1, xs, ys, zs.length, zs);
 

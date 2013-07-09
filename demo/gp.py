@@ -28,13 +28,20 @@ def entrance(request):
             'argument_name': 'sigma',
             'argument_default': '2.0'},
         {
+            'argument_type': 'decimal',
+            'argument_label': 'Noise Level',
+            'argument_name': 'noise_level',
+            'argument_default': '0.1'},
+        {
             'argument_type': 'button-group',
-            'argument_items': [{'button_name': 'TrainGP'},
-                               {'button_name': 'Clear'}]
+            'argument_items': [{'button_name': 'TrainGP',
+                                'button_type': 'json_up_down_load'},
+                               {'button_name': 'clear'}]
         }
     ]
     properties = { 'title': 'Gaussian Process Regression Demo',
                    'template': {'type': 'coordinate-2dims',
+                                'mouse_click_enabled': 'left',
                                 'coordinate_system': {'horizontal_axis': {'range': [-5, 5]},
                                                       'vertical_axis': {'range': [-5, 5]}}},
                    'panels': [
@@ -44,7 +51,7 @@ def entrance(request):
                            'panel_property': arguments
                        },
                        {
-                           'panel_name': 'toy_data_generator',
+                           'panel_name': 'toy_data',
                            'panel_label': 'Toy Data'
                        }]}
     return render_to_response("gp/index.html", properties, context_instance = RequestContext(request))
@@ -62,11 +69,12 @@ def train(request):
 def _read_toy_data(request):
     y_set = []
     x_set = []
-    toy_data = json.loads(request.POST['mouse_left_click_point_set'])
+    toy_data = json.loads(request.POST['point_set'])
     for pt in toy_data:
         y_set.append(float(pt["y"]))
         x_set.append(float(pt["x"]))
     noise_level = float(request.POST['noise_level'])
+    domain = json.loads(request.POST['axis_domain'])
     
     labels = np.array(y_set, dtype = np.float64)
     num = len(x_set)
@@ -78,9 +86,9 @@ def _read_toy_data(request):
     feat_train = sg.RealFeatures(examples)
     labels = sg.RegressionLabels(labels)
     kernel = get_kernel(request, feat_train)
-    return (feat_train, labels, noise_level, kernel)
+    return (feat_train, labels, noise_level, kernel, domain)
 
-def _process(feat_train, labels, noise_level, kernel):
+def _process(feat_train, labels, noise_level, kernel, domain):
     n_dimensions = 1
 
     likelihood = sg.GaussianLikelihood()
@@ -95,7 +103,9 @@ def _process(feat_train, labels, noise_level, kernel):
     inf = sg.ExactInferenceMethod(SECF, feat_train, zmean, labels, likelihood)
 
     # location of unispaced predictions
-    x_test = np.array([np.linspace(-5, 5, feat_train.get_num_vectors())])
+    x_test = np.array([np.linspace(domain['horizontal'][0],
+                                   domain['horizontal'][1],
+                                   feat_train.get_num_vectors())])
     feat_test = sg.RealFeatures(x_test)
 
     gp = sg.GaussianProcessRegression(inf)

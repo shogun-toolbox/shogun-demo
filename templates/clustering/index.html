@@ -9,8 +9,8 @@ function clear_action()
         .duration(1000)
         .attr("r", function(d) {return x(0); })
         .remove();
-    mouse_left_click_point_set = [];
-    mouse_right_click_point_set = [];
+    point_set = [];
+    reset_axis();
 }
 function cluster(data){
     svg.selectAll(".line").remove();
@@ -33,17 +33,17 @@ function cluster(data){
     
     circle.append("line")
         .attr("class","line")
-        .attr("x1", function(d) {return x(d.x+0.02);})
-        .attr("y1", function(d) {return y(d.y+0.02);})
-        .attr("x2", function(d) {return x(d.x-0.02);})
-        .attr("y2", function(d) {return y(d.y-0.02);})
+        .attr("x1", function(d) {return x(d.x)+5;})
+        .attr("y1", function(d) {return y(d.y)+5;})
+        .attr("x2", function(d) {return x(d.x)-5;})
+        .attr("y2", function(d) {return y(d.y)-5;})
         .style("stroke", "gray");
     circle.append("line")
         .attr("class","line")
-        .attr("x1", function(d) {return x(d.x-0.02);})
-        .attr("y1", function(d) {return y(d.y+0.02);})
-        .attr("x2", function(d) {return x(d.x+0.02);})
-        .attr("y2", function(d) {return y(d.y-0.02);})
+        .attr("x1", function(d) {return x(d.x)-5;})
+        .attr("y1", function(d) {return y(d.y)+5;})
+        .attr("x2", function(d) {return x(d.x)+5;})
+        .attr("y2", function(d) {return y(d.y)-5;})
         .style("stroke", "gray");
     $("#cluster").attr('disabled', false);
 }
