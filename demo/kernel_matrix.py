@@ -28,7 +28,7 @@ def entrance(request):
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'generate',
                                 'button_type': 'json_up_down_load'},
-                               {'button_name': 'Clear'}]},
+                               {'button_name': 'clear'}]},
         ]
     properties = { 'title': 'Kernel Matrix Visualization',
                    'template': {'type': 'coordinate-2dims',
@@ -56,6 +56,8 @@ def generate(request):
         arguments = _read_toy_data(request)
         result = _process(*arguments)
     except:
+        import traceback
+        print traceback.format_exc()
         raise Http404
 
     return HttpResponse(json.dumps({'status': 'ok',
@@ -85,7 +87,7 @@ def _process(x1_set, x2_set, kernel_width, kernel_name, degree):
     feat_train = sg.RealFeatures(examples)
 
     # construct covariance function
-    if kernelname == "LinearKernel":
+    if kernel_name == "LinearKernel":
         kernel = sg.LinearKernel(feat_train, feat_train)
     elif kernel_name == "PolynomialKernel":
         kernel = sg.PolyKernel(feat_train, feat_train, degree, True)
