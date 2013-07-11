@@ -1,3 +1,4 @@
+{% if template.type == 'coordinate-2dims' %}
 canvas_div
 {% if template.mouse_click_enabled == 'left' or template.mouse_click_enabled == 'both' %}
     .on("click", mouse_left_click)
@@ -7,7 +8,7 @@ canvas_div
 {% endif %}
     .on("mousemove", mouse_move);
 var mouse_cursor = svg.append("circle")
-        .attr("r", 2.5)
+        .attr("r", 3.5)
         .attr("transform", "translate(-100,-100)")
         .attr("class", "cursor");
 function mouse_move() {
@@ -30,7 +31,7 @@ function mouse_left_click(event) {
     point[1]-=margin.top;
     svg.append("circle")
         .attr("class",  "dot")
-        .attr("r", 1.5)
+        .attr("r", 3.5)
     {%if template.mouse_click_enabled == 'both' %}
         .style("fill", "red")
     {% endif %}
@@ -51,7 +52,7 @@ function mouse_right_click()
     point[1]-=margin.top;
     svg.append("circle")
         .attr("class",  "dot")
-        .attr("r", 1.5)
+        .attr("r", 3.5)
         .attr("cx", point[0])
         .attr("cy", point[1])
         .style("fill", "blue");
@@ -60,4 +61,37 @@ function mouse_right_click()
                      "label": -1});
 }
 d3.select("svg").node().oncontextmenu = function(){return false;}; //disable right click menu
+{% endif %}
+{% elif template.type == 'drawing' %}
+var pressed = false;
+canvas_div
+    .on("mousedown", mouse_down)
+    .on("mousemove", mouse_move)
+    .on("mouseup", mouse_up);
+
+function mouse_move(event) {
+    if(pressed)
+    {
+        if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
+            return;
+        var point = d3.mouse(this);
+        var e = window.event || d3.event;
+        if(e.button == 2 || e.button == 3)
+            return;
+        point[0]-=margin.left;
+        point[1]-=margin.top;
+        svg.append("circle")
+            .attr("class",  "dot")
+            .attr("r", 3.5)
+            .attr("cx", point[0])
+            .attr("cy", point[1]);
+    }
+}
+function mouse_down(event){
+    pressed = true;
+}
+function mouse_up(event){
+    pressed = false;
+}
+
 {% endif %}

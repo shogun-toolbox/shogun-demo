@@ -4,7 +4,6 @@ from django.shortcuts import render_to_response
 
 import modshogun as sg
 import numpy as np
-import scipy as spxx
 import json
 
 def entrance(request):

@@ -1,0 +1,8 @@
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 1;
+}
+
+.grid path{
+    stroke-width: 0;
+}
