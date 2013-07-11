@@ -8,7 +8,7 @@ canvas_div
 {% endif %}
     .on("mousemove", mouse_move);
 var mouse_cursor = svg.append("circle")
-        .attr("r", 3.5)
+        .attr("r", 6.5)
         .attr("transform", "translate(-100,-100)")
         .attr("class", "cursor");
 function mouse_move() {
@@ -31,7 +31,7 @@ function mouse_left_click(event) {
     point[1]-=margin.top;
     svg.append("circle")
         .attr("class",  "dot")
-        .attr("r", 3.5)
+        .attr("r", 6)
     {%if template.mouse_click_enabled == 'both' %}
         .style("fill", "red")
     {% endif %}
@@ -52,7 +52,7 @@ function mouse_right_click()
     point[1]-=margin.top;
     svg.append("circle")
         .attr("class",  "dot")
-        .attr("r", 3.5)
+        .attr("r", 6)
         .attr("cx", point[0])
         .attr("cy", point[1])
         .style("fill", "blue");
@@ -82,7 +82,7 @@ function mouse_move(event) {
         point[1]-=margin.top;
         svg.append("circle")
             .attr("class",  "dot")
-            .attr("r", 3.5)
+            .attr("r", 6)
             .attr("cx", point[0])
             .attr("cy", point[1]);
     }
