@@ -1,1 +1,48 @@
 {% extends "default.html" %}
+{% block javascript %}
+<script>
+function recognize_action(){
+    $.ajax(
+        {
+            url: 'recognize',
+            type: 'POST',
+            dataType: "text",
+            data: {                   
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'lines': JSON.stringify(lines)},
+            success: show_digit,
+        });
+}
+function show_digit(data)
+{
+    data = JSON.parse(data);
+    preview_svg.selectAll(".preview_blocks")
+        .data(data['thumb']).enter()
+        .append('g')
+        .selectAll(".preview_blocks")
+        .data(Object)
+        .enter()
+        .append('rect')
+        .attr("class", "preview_blocks")
+        .attr("fill", function(d) { if (d) return "black"; else return "none";})
+        .attr("x", function(d,i,j){return preview_x(i);})
+        .attr("y", function(d,i,j){return preview_y(j);})
+        .attr("width", preview_x(1)-preview_x(0))
+        .attr("height", preview_y(1)-preview_y(0));
+    if (!$("#digit").length)
+        {
+            var digit = document.createElement("div");
+            $(".span3").append(digit);
+            digit.id = "digit";
+        }
+    $("#digit").html("<hr><p>The predict is</p><h2 style='text-align:center;'>" + data['predict'] + "</h2>");
+}
+function clear_action()
+{
+    d3.selectAll(".preview_blocks").remove();
+    d3.selectAll(".drew").remove();
+    d3.selectAll("#digit").remove();
+    lines = [];
+}
+</script>
+{% endblock %}

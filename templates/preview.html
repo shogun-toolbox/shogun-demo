@@ -1,0 +1,39 @@
+<div class="span2" id="preview_canvas">
+</div>
+<div class="btn-group">
+    <button type="button" class="btn btn-small btn-primary" id="recognize" onclick="recognize_action();">Recognize</button>
+    <button type="button" class="btn btn-small btn-primary" id="clear" onclick="clear_action();">clear</button>
+</div>
+<script>
+var preview_margin = {top: 10, right: 10, bottom: 10, left: 10};
+var preview_size_pixel = 160;
+var preview_x = d3.scale.linear().range( [0, preview_size_pixel] ).domain([0,16]);
+var preview_y = d3.scale.linear().range( [0, preview_size_pixel] ).domain([0,16]);
+
+var preview_xGrid = d3.svg.axis().scale(preview_x).orient("bottom");
+var preview_yGrid = d3.svg.axis().scale(preview_y).orient("left");
+
+  var preview_canvas_div = d3.select("#preview_canvas").append("svg")
+    .attr("width", preview_size_pixel + preview_margin.left+ preview_margin.right)
+    .attr("height", preview_size_pixel + preview_margin.top + preview_margin.bottom);
+  var preview_svg = preview_canvas_div.append("g")
+          .attr("transform", "translate("+ preview_margin.left + "," + preview_margin.top + ")");
+  preview_svg.append("g")
+    .attr("class", "grid")
+    .attr("id", "x_grid")
+    .attr("transform", "translate(0, " + preview_size_pixel + ")")
+    .call(preview_xGrid
+          .tickSize(-preview_size_pixel, 0, 0)
+          .ticks(20)
+          .tickFormat("")
+         );
+  preview_svg.append("g")
+    .attr("class", "grid")
+    .attr("id", "y_grid")
+    .call(preview_yGrid
+          .tickSize(-preview_size_pixel, 0, 0)
+          .ticks(20)
+          .tickFormat("")
+         );
+
+</script>
