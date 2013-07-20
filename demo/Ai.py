@@ -9,7 +9,7 @@ import numpy as np
 import gzip as gz
 import pickle as pkl
 
-TRAIN_SVM_FNAME_GZ = "data/ocr.svm.gz"
+TRAIN_SVM_FNAME_GZ = "local/ocr.svm.gz"
 
 NEAR_ZERO_POS = 1e-8
 NEAR_ONE_NEG = 1-NEAR_ZERO_POS

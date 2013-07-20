@@ -4,7 +4,7 @@ import h5py, json
 
 TOY_DATA_DIR = 'data/'
 TOY_DATA_SET = {
-    'australian': 'australian.libsvm.h5',
+    'australian': 'toy/australian.libsvm.h5',
 }
 
 def files(request):

@@ -16,6 +16,7 @@ function recognize_action(){
 function show_digit(data)
 {
     data = JSON.parse(data);
+    preview_svg.selectAll(".preview_blocks").remove();
     preview_svg.selectAll(".preview_blocks")
         .data(data['thumb']).enter()
         .append('g')

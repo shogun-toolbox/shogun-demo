@@ -86,24 +86,25 @@ function mouse_move() {
         var point = d3.mouse(this);
         point[0]-=margin.left;
         point[1]-=margin.top;
-        if (point.toString() != last_dot.toString())
-        {
-            line_dots.push([x.invert(point[0]), y.invert(point[1])]);
-            last_dot = point.concat();
-        }
+        line_dots.push([x.invert(point[0]), y.invert(point[1])]);
 
         var line = d3.svg.line()
                 .x(function(d) {return x(d[0]);})
                 .y(function(d) {return y(d[1]);})
                 .interpolate('basis');
-        svg.selectAll(".drawing").remove();
-        svg.append("path")
+        if(last_dot.length)
+          svg.append("path")
             .attr("class", "drawing")
-            .attr("d",line(line_dots))
+            .attr("d",line([[x.invert(last_dot[0]),
+                             y.invert(last_dot[1])],
+                            [x.invert(point[0]),
+                             y.invert(point[1])]]))
             .style("stroke-width", "30")
             .style("stroke", "green")
             .style("stroke-linecap","round")
+            .style("stroke-linejoin", "round")
             .style("fill", "transparent");
+        last_dot = [].concat(point);
     }
 }
 function mouse_down(){
@@ -115,7 +116,7 @@ function mouse_up(){
     if(line_dots.length)
         lines.push(line_dots);
     line_dots = [];
-
+    last_dot = [];
     pressed = false;
 }
 
