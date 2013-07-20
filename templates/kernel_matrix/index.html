@@ -17,7 +17,7 @@ function generate(data)
         return;
     }
 
-    var z = data['z'];
+    z = data['z'];
     var domain = data['domain'];
     var minimum = domain[0];
     var maximum = domain[1];
@@ -35,7 +35,7 @@ function generate(data)
     svg.selectAll(".heatmap")
         .data(z).enter()
         .append('g')
-        .selectAll('.box')
+        .selectAll('.heatmap')
         .data(Object)
         .enter()
         .append('rect')

@@ -2,8 +2,8 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40};
 var width = 660 - margin.left - margin.right;
 var height = 610 - margin.top - margin.bottom;
 
-var x = d3.scale.linear().range( [0, width] );
-var y = d3.scale.linear().range( [height, 0] );
+var x = d3.scale.linear().range( [0, width] ).domain([0,1]);
+var y = d3.scale.linear().range( [0, height] ).domain([0,1]);
 
 var xGrid = d3.svg.axis().scale(x).orient("bottom");
 var yGrid = d3.svg.axis().scale(y).orient("left");
@@ -20,6 +20,7 @@ svg.append("g")
     .attr("transform", "translate(0, " + height + ")")
     .call(xGrid
           .tickSize(-height, 0, 0)
+          .ticks(20)
           .tickFormat("")
          );
 svg.append("g")
@@ -27,7 +28,9 @@ svg.append("g")
     .attr("id", "y_grid")
     .call(yGrid
           .tickSize(-width, 0, 0)
+          .ticks(20)
           .tickFormat("")
          );
+
 
 {% include "mouse_click.js" %}
