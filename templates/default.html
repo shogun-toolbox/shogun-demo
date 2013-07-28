@@ -31,6 +31,8 @@
                 {% include "toy_data_generator_form.html" %}
               {% elif panel.panel_name == 'arguments' %}
                 {% include "arguments_form.html" %}
+              {% elif panel.panel_name == 'preview' %}
+                {% include "preview.html" %}
               {% endif %}
             </div>
             {% endfor %}

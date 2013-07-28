@@ -64,33 +64,59 @@ d3.select("svg").node().oncontextmenu = function(){return false;}; //disable rig
 {% endif %}
 {% elif template.type == 'drawing' %}
 var pressed = false;
+var line_dots=[];
+var last_dot=[];
+var lines = [];
 canvas_div
     .on("mousedown", mouse_down)
     .on("mousemove", mouse_move)
     .on("mouseup", mouse_up);
 
-function mouse_move(event) {
+function mouse_move() {
     if(pressed)
     {
-        if (d3.mouse(this)[0]-margin.left < 0 || d3.mouse(this)[1]-margin.top > height)
+        if (d3.mouse(this)[0]-margin.left <= 0 
+            || d3.mouse(this)[1]-margin.top >= height
+            || d3.mouse(this)[0]-margin.left >= width
+            || d3.mouse(this)[1]-margin.top <= 0)
+        {
+            mouse_up();
             return;
+        }
         var point = d3.mouse(this);
-        var e = window.event || d3.event;
-        if(e.button == 2 || e.button == 3)
-            return;
         point[0]-=margin.left;
         point[1]-=margin.top;
-        svg.append("circle")
-            .attr("class",  "dot")
-            .attr("r", 6)
-            .attr("cx", point[0])
-            .attr("cy", point[1]);
+        line_dots.push([x.invert(point[0]), y.invert(point[1])]);
+
+        var line = d3.svg.line()
+                .x(function(d) {return x(d[0]);})
+                .y(function(d) {return y(d[1]);})
+                .interpolate('basis');
+        if(last_dot.length)
+          svg.append("path")
+            .attr("class", "drawing")
+            .attr("d",line([[x.invert(last_dot[0]),
+                             y.invert(last_dot[1])],
+                            [x.invert(point[0]),
+                             y.invert(point[1])]]))
+            .style("stroke-width", "30")
+            .style("stroke", "green")
+            .style("stroke-linecap","round")
+            .style("stroke-linejoin", "round")
+            .style("fill", "transparent");
+        last_dot = [].concat(point);
     }
 }
-function mouse_down(event){
+function mouse_down(){
     pressed = true;
 }
-function mouse_up(event){
+function mouse_up(){
+    svg.selectAll(".drawing")
+        .attr("class", "drew");
+    if(line_dots.length)
+        lines.push(line_dots);
+    line_dots = [];
+    last_dot = [];
     pressed = false;
 }
 

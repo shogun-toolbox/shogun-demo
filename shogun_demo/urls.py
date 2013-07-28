@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     url(r'^kernel_matrix/entrance', 'demo.kernel_matrix.entrance'),
     url(r'^kernel_matrix/generate', 'demo.kernel_matrix.generate'),
     url(r'^ocr/entrance', 'demo.ocr.entrance'),
+    url(r'^ocr/recognize', 'demo.ocr.recognize'),
     url(r'^toy_data/generator/generate', 'toy_data.generator.generate'),
     url(r'^toy_data/importer/dump', 'toy_data.importer.dump'),
                                                             

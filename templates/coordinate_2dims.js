@@ -98,6 +98,7 @@ var start = d3.svg.line()
     .x(function (d) {return x(d.x); })
     .y(function (d) {return y(0); })
     .interpolate('basis');
+
 {% if template.heatmap %}
 var heatmap_legend = document.createElement("div");
 $('.span9').append(heatmap_legend);
