@@ -11,7 +11,7 @@
     {% elif argument.argument_type == 'integer' %}
     <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" onkeyup="value=value.replace(/[^\d]/g,'')">
     {% elif argument.argument_type == 'select' %}
-    <select name="{{ argument.argument_name }}" >
+    <select name="{{ argument.argument_name }}" id="{{ argument.argument_name }}" >
       {% for item in argument.argument_items %}
       <option value="{{ item }}" {% if item == argument.argument_default %} selected {% endif %}>{{ item }} </option>
       {% endfor %}
