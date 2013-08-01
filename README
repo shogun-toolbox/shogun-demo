@@ -21,3 +21,58 @@ Currently available demos
   - http://<addr>:<port>/kernel_matrix/entrance			: A demo for kernel matrix visualization
   - http://<addr>:<port>/classification/binary/entrance		: A demo for binary classification
   - http://<addr>:<port>/classification/perceptron/entrance	: A demo for binary perceptron
+
+Docs
+====
+  An Example contains a front-end script(javascript) and a backend controller(python).
+  - front-end
+    - Entrance Generator
+      Entrance generator is a python method used to generate the entrance page of the demo. All the demo's entrance page will be in same layout(a main title, a canvas section and a panel section). The Entrance Generator takes an HttpRequest Object as its first parameter, which is typically named request. The method returns an rendered template HttpResponse. A python dict is needed to define the property of the entrance page. 
+      - Property Dict
+        - 'title': define title of the entrance page,
+        - 'template': a python dict to specify the property of the canvas
+          - 'type': specify the type of the canvas
+            - option 'coordinate-2dims': use the canvas as a coordinate system of 2 dimensions
+            - option 'drawing': use the canvas as a mouse drag drawing area
+          - 'mouse_click_enabled': specify if mouse click input is enabled. only used with type 'coordinate-2dims'
+            - option 'none' [default]: disable the mouse
+            - option 'left': only allow left mouse click for 1 feature input
+            - option 'both': allow left and right mouse click, left for feature 1 and right for feature 2.
+          - 'heatmap': specify if heatmap data is allowed to draw on the page
+            - 'contour' 
+              - option False [default]: do not display contour
+              - option true: display contour(using conrec.js)
+          - 'coordinate_system': a dict specifys the property of the coordinate system
+            - 'horizontal_axis': a dict specifys the property of the horizontal axis
+            - 'vertical_axis': a dict specifys the property of the vertical axis
+              - 'range': an 2-item list specifys the range of the axis, eg. [-5.0, 5.0]
+        - 'panels': an list of dicts, each item is a configuration of a single panel in panel section
+            item dict info:
+            - 'panel_name': the html id of the panel <div>, in other word, you can access the panel by document.getElementById() in javascript.
+              - if 'panel_name' is 'arguments', the generator will generate a form with the argument type information set in panel_property
+              - if 'panel_name' is 'toy_data', the generator will make a toy data generator/importer panel in the panel section.
+            - 'panel_label' [default same as 'panel_name']: the title of the panel.
+            - 'panel_property': use along with 'panel_name' equals 'argument', which provide the argument information of the particular argument panel.
+              - Arguments List, an list of dicts, each item of the list represents a profile of input zone for a single argument.
+                item dict info:
+                - 'argument_type': set as one of ['integer', decimal', 'select'],
+                  - 'integer': make the text input zone only accepts integer.
+                  - 'decimal': make the text input zone only accepts decimal number.
+                  - 'select': make the zone as a drop-down menu. in this case, an string list of 'argument_items' must be set to specify the items in the menu. 
+                  - 'button-group': create a button group. in this case, a dict list of 'argument_items' must be set to specify each button information in the group.
+                - 'argument_label': the label(or name) of the input.
+                - 'argument_name': the html id of the input
+                - 'argument_default': use with argument_type equals 'integer' or 'decimal', specify the default value of the input zone.
+                - 'argument_items': use with argument_type equals 'select' or 'button-group', specify the items under the drop-down menu or button group.
+                  - when use with 'argument_type' == 'select', a list of the drop-down menu items' name need to be provided.
+                  - when use with 'argument_type' == 'button-group', a list of button's information dicts need to be provided.
+                    button info:
+                    - 'button_name': the html id of <button>, in other word, you can access the button by document.getElementId() in javascript.
+                    - 'button_label': the caption shown on the button.
+                    - 'button_type': if 'button_type' == 'json_up_down_load', a json interactive javascript will be generate. The function upload all the parameter specified in the argument list, and send a ajax request. The target URL is the correspond 'button_name', which means if a button named 'generate', and it's a 'json_up_down_load' button, when hit the button, it'll send 'generate/' a ajax request. When the browser received the data sent back from server, a custom function named 'button_name' will be called to do further work, such as draw the data on the canvas section.
+    - frontend script
+      Detailed javascript is needed to specify the way data input and output, and it can be done by modifying the {% block javascript %} block in the template file. Meanwhile, when there's a button group defined in the panel section, you can add the mousedown event to the button by creating functions named <button_name>_action.
+
+  - python backend
+    A python backend is needed to specify the algorithm. The backend method is better in the same file with the entrance generator. Just like the entrance generator, the backend is a method which needs a HttpRequest object as input argument and provide with a HttpResponse object. The HttpRequest object contains the input data of the algorithm, and we can access a single parameter with request.POST[<argument_name>]. When the calculation is down, it'd be better to dump it in a json file and send.
+    
