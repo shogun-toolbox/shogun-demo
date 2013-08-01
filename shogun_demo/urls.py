@@ -30,8 +30,10 @@ urlpatterns = patterns('',
     url(r'^kernel_matrix/generate', 'demo.kernel_matrix.generate'),
     url(r'^ocr/entrance', 'demo.ocr.entrance'),
     url(r'^ocr/recognize', 'demo.ocr.recognize'),
+    url(r'^tapkee/entrance', 'demo.tapkee.entrance'),
     url(r'^toy_data/generator/generate', 'toy_data.generator.generate'),
     url(r'^toy_data/importer/dump', 'toy_data.importer.dump'),
+    url(r'^data/(\w+)/(.+)', 'common.data.serve'),
                                                             
     # url(r'^shogun_demo/', include('shogun_demo.foo.urls')),
 
