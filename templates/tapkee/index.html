@@ -13,19 +13,35 @@ function show_action()
             MIT_CBCL_faces_embedding_action();
             break;
         case "words_embedding":
-            words_embedding_action();
+            json_query('words.json', words_embedding_action);
             break;
         case "MNIST_digits_embedding":
             MNIST_digits_embedding_action();
             break;
         case "promoters_embedding":
-            promoters_embedding_action();
+            json_query('promoters.json', promoters_embedding_action);
             break;
         case 'faces_embedding':
             faces_embedding_action();
             break;
     }
 };
+
+function json_query(url, success){
+    $.ajax(
+        {
+            url: url,
+            type: 'POST',
+            dataType: "text",
+            data: {'csrfmiddlewaretoken': '{{ csrf_token }}',
+                   'k': document.arguments.k.value},
+            beforeSend: function(){$("#show").attr('disabled', true);},
+            success: success,
+            error: function(){alert("Error!");$("#show").attr('disabled', false);},
+        }); 
+}
+
+
 
 function MIT_CBCL_faces_embedding_action(){
     d3.json("/static/data/tapkee/cbcl.json", function(json) {
@@ -87,70 +103,70 @@ function MNIST_digits_embedding_action(){
         });
     });
 }
-function words_embedding_action(){
-    d3.json("/static/data/tapkee/words.json", function(json) {
-        var color = d3.scale.category10();
-        var x_extent = d3.extent(json.data, function(d) { return d.cx });
-        var y_extent = d3.extent(json.data, function(d) { return d.cy });
-        x.domain(x_extent);
-        y.domain(y_extent);
-        var node = svg.selectAll(".dot")
-                .data(json.data)
-                .enter().append("svg:circle")
-                .attr("class", "dot")
-                .attr("cx", function(d) { return x(d.cx); })
-                .attr("cy", function(d) { return y(d.cy); })
-                .attr("r", function(d) { return 3 })
-                .style("stroke", "black")
-                .style("fill", function(d,i) { return color(0) });
- 
-        $('.dot').tipsy({
-            gravity: 'w',
-            html: true,
-            title: function() {
-                var d = this.__data__;
-                string = d.string;
-                return string;
-            }
-        });
+function words_embedding_action(json){
+    var json = $.parseJSON(json);
+    var color = d3.scale.category10();
+    var x_extent = d3.extent(json.data, function(d) { return d.cx });
+    var y_extent = d3.extent(json.data, function(d) { return d.cy });
+    x.domain(x_extent);
+    y.domain(y_extent);
+    var node = svg.selectAll(".dot")
+            .data(json.data)
+            .enter().append("svg:circle")
+            .attr("class", "dot")
+            .attr("cx", function(d) { return x(d.cx); })
+            .attr("cy", function(d) { return y(d.cy); })
+            .attr("r", function(d) { return 3 })
+            .style("stroke", "black")
+            .style("fill", function(d,i) { return color(0) });
+    
+    $('.dot').tipsy({
+        gravity: 'w',
+        html: true,
+        title: function() {
+            var d = this.__data__;
+            string = d.string;
+            return string;
+        }
     });
+    $("#show").attr('disabled', false);
 }
-function promoters_embedding_action(){
-    d3.json("/static/data/tapkee/promoters.json", function(json) {
-        var color = d3.scale.category10();
-        var letters = ['A', 'C', 'T', 'G'];
+function promoters_embedding_action(data){
+    var json = $.parseJSON(data);
+    var color = d3.scale.category10();
+    var letters = ['A', 'C', 'T', 'G'];
+    
+    var x_extent = d3.extent(json.data, function(d) { return d.cx });
+    var y_extent = d3.extent(json.data, function(d) { return d.cy });
+    var gc_extent = d3.extent(json.data, function(d) { return d.gc });
+    x.domain(x_extent);
+    y.domain(y_extent);
+    var gc_scale = d3.scale.linear().range([0,1])
+            .domain(gc_extent);
+    var node = svg.selectAll("circle")
+            .data(json.data)
+            .enter().append("svg:circle")
+            .attr("class", "dot")
+            .attr("cx", function(d) { return x(d.cx) })
+            .attr("cy", function(d) { return y(d.cy) })
+            .attr("r", function(d) { return 5 })
+            .style("stroke", "black")
+            .style("fill", function(d,i) { return d3.hsl(200,0.5,gc_scale(d.gc)) });
  
-        var x_extent = d3.extent(json.data, function(d) { return d.cx });
-        var y_extent = d3.extent(json.data, function(d) { return d.cy });
-        var gc_extent = d3.extent(json.data, function(d) { return d.gc });
-        x.domain(x_extent);
-        y.domain(y_extent);
-        var gc_scale = d3.scale.linear().range([0,1])
-                .domain(gc_extent);
-        var node = svg.selectAll("circle")
-                .data(json.data)
-                .enter().append("svg:circle")
-                .attr("class", "dot")
-                .attr("cx", function(d) { return x(d.cx) })
-                .attr("cy", function(d) { return y(d.cy) })
-                .attr("r", function(d) { return 5 })
-                .style("stroke", "black")
-                .style("fill", function(d,i) { return d3.hsl(200,0.5,gc_scale(d.gc)) });
- 
-        $('.dot').tipsy({
-            gravity: 'w',
-            html: true,
-            title: function() {
-                var d = this.__data__;
-                string = d.string;
-                var text = string.substring(0,6) + " ... " + string.substring(string.length-6);
-                for (var i=0; i<4; i++) {
-                    text = text.replace(new RegExp(letters[i],"g"),'<span style="color: ' + color(i) + ';">' + letters[i] + '</span>');
-                }
-                return text;
+    $('.dot').tipsy({
+        gravity: 'w',
+        html: true,
+        title: function() {
+            var d = this.__data__;
+            string = d.string;
+            var text = string.substring(0,6) + " ... " + string.substring(string.length-6);
+            for (var i=0; i<4; i++) {
+                text = text.replace(new RegExp(letters[i],"g"),'<span style="color: ' + color(i) + ';">' + letters[i] + '</span>');
             }
-        });
+            return text;
+        }
     });
+    $("#show").attr('disabled', false);
 }
 function faces_embedding_action(){
     d3.json("/static/data/tapkee/faces.json", function(json) {
