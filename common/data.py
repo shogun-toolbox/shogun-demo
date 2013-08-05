@@ -14,4 +14,4 @@ def serve(request, archive_name, file_name):
         content = z.read(file_name)
         return HttpResponse(content,mimetype="image/png")
     except:
-        return json.dumps({'status': 'exception'})
+        return HttpResponse(json.dumps({'status': 'exception'}))
