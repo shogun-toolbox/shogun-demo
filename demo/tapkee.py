@@ -53,32 +53,20 @@ def words(request):
     except:
         return HttpResponse(json.dumps({"status": "illegal k"}))
 
-    N = len(demo.words)
-    if k<5 or k>N:
+    if k<5 or k>demo.N:
         raise ValueError("illegal k")
-        
+
     converter = sg.KernelLocallyLinearEmbedding()
     converter.set_k(k)
     converter.set_target_dim(2)
-    converter.parallel.set_num_threads(1)
-    
-    
-    dist_matrix = np.zeros([N,N])
-    for i in xrange(N):
-        for j in xrange(i,N):
-            s = difflib.SequenceMatcher(None,demo.words[i],demo.words[j])
-            dist_matrix[i,j] = s.ratio()
-    dist_matrix = 0.5*(dist_matrix+dist_matrix.T)
-    word_kernel = sg.CustomKernel(dist_matrix)
+    converter.parallel.set_num_threads(4)
         
-    embedding = converter.embed_kernel(word_kernel).get_feature_matrix()
-
+    embedding = converter.embed_kernel(demo.word_kernel).get_feature_matrix()
+    
     data = {}
-  
     data['data'] = [{'string':demo.words[i],
                      'cx':embedding[0,i],
-                     'cy':embedding[1,i]} for i in xrange(N)]
-    
+                     'cy':embedding[1,i]} for i in xrange(demo.N)]
     return HttpResponse(json.dumps(data))
 
     
@@ -98,4 +86,3 @@ def promoters(request):
                      'cx':embedding[0,i],
                      'cy':embedding[1,i]} for i in xrange(N)]
     return HttpResponse(json.dumps(data))
-

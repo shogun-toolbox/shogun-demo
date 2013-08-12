@@ -7,9 +7,9 @@
     <label> {{ argument.argument_name }} </label>
     {% endif %}
     {% if argument.argument_type == 'decimal' %}
-    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" id="{{ argument.argument.name }}" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     {% elif argument.argument_type == 'integer' %}
-    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" onkeyup="value=value.replace(/[^\d]/g,'')">
+    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" id="{{ argument.argument.name }}"onkeyup="value=value.replace(/[^\d]/g,'')">
     {% elif argument.argument_type == 'select' %}
     <select name="{{ argument.argument_name }}" id="{{ argument.argument_name }}" >
       {% for item in argument.argument_items %}
@@ -32,3 +32,14 @@
   {% endfor %}
   </fieldset>
 </form>
+<script>
+  {% for argument in panel.panel_property %}
+  {% if argument.argument_explain %}
+  $('#{{ argument.argument_name }}').tipsy({
+      gravity: 'w',
+      html: true,
+      title: function(){ return "{{ argument.argument_explain|safe }}"}
+  });
+  {% endif %}
+  {% endfor %}
+</script>

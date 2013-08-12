@@ -36,6 +36,7 @@ urlpatterns = patterns('',
     url(r'^toy_data/generator/generate', 'toy_data.generator.generate'),
     url(r'^toy_data/importer/dump', 'toy_data.importer.dump'),
     url(r'^data/(\w+)/(.+)', 'common.data.serve'),
+    url(r'^tree/entrance', 'demo.tree.entrance'),
                                                             
     # url(r'^shogun_demo/', include('shogun_demo.foo.urls')),
 
