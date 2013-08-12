@@ -13,7 +13,8 @@ def entrance(request):
             'argument_type': 'select',
             'argument_name': 'kernel',
             'argument_items': ['GaussianKernel', 'PolynomialKernel', 'LinearKernel' ],
-            'argument_default': 'GaussianKernel'
+            'argument_default': 'GaussianKernel',
+            'argument_explain': '<i>Kernel</i> Function',
         },
         {
             'argument_type': 'decimal',
