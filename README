@@ -62,6 +62,7 @@ Docs
                   - 'button-group': create a button group. in this case, a dict list of 'argument_items' must be set to specify each button information in the group.
                 - 'argument_label': the label(or name) of the input.
                 - 'argument_name': the html id of the input
+                - 'argument_explain': pop-up explanation of the argument. html tags allowed.
                 - 'argument_default': use with argument_type equals 'integer' or 'decimal', specify the default value of the input zone.
                 - 'argument_items': use with argument_type equals 'select' or 'button-group', specify the items under the drop-down menu or button group.
                   - when use with 'argument_type' == 'select', a list of the drop-down menu items' name need to be provided.

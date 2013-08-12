@@ -1,0 +1,215 @@
+{
+ "name": "",
+ "height": 1.12,
+ "children": [
+  {
+   "name": "",
+   "height": 0.7,
+   "children": [
+       {
+           "name": "",
+           "height": 0.55,
+           "children": [
+               {
+                   "name": "BRCA2",
+                   "height": 0.5
+               },
+               {
+                   "name": "BRCA2",
+                   "height": 0.5
+               }
+           ]
+       },
+       {
+           "name": "",
+           "height": 0.65,
+           "children":[
+               {
+                   "name": "BRCA2",
+                   "height": 0.5
+               },
+               {
+                   "name": "BRCA2",
+                   "height": 0.5
+               }
+           ]
+       }
+   ]
+  },
+  {
+   "name": "",
+   "height": 1.08,
+   "children": [
+       {
+           "name": "",
+           "height": 0.94,
+           "children": [
+               {
+                   "name": "",
+                   "height": 0.905,
+                   "children": [
+                       {
+                           "name": "",
+                           "height": 0.845,
+                           "children":[
+                               {
+                                   "name": "BRCA1",
+                                   "height": 0.5
+                               },
+                               {
+                                   "name": "Sporadic",
+                                   "height": 0.5
+                               }
+                           ]
+                       },
+                       {
+                           "name": "BRCA1",
+                           "height": 0.5
+                       }
+                   ]
+               },
+               {
+                   "name": "",
+                   "height": 0.81,
+                   "children":[
+                       {
+                           "name": "Sporadic",
+                           "height": 0.5
+                       },
+                       {
+                           "name": "",
+                           "height": 0.69,
+                           "children": [
+                               {
+                                   "name": "Sporadic",
+                                   "height": 0.5
+                               },
+                               {
+                                   "name": "Sporadic",
+                                   "height": 0.5
+                               }
+                           ]
+                       }
+                   ]
+               }
+           ]
+       },
+       {
+           "name": "",
+           "height": 1.05,
+           "children": [
+               {
+                   "name": "",
+                   "height": 1.01,
+                   "children": [
+                       {
+                           "name": "",
+                           "height": 0.95,
+                           "children": [
+                               {
+                                   "name": "",
+                                   "height": 0.9,
+                                   "children": [
+                                       {
+                                           "name": "",
+                                           "height": 0.79,
+                                           "children": [
+                                               {
+                                                   "name": "BRCA1",
+                                                   "height": 0.5
+                                               },
+                                               {
+                                                   "name": "BRCA1",
+                                                   "height": 0.5
+                                               }
+                                           ]
+                                       },
+                                       {
+                                           "name": "",
+                                           "height": 0.83,
+                                           "children": [
+                                               {
+                                                   "name": "Spordict",
+                                                   "height": 0.5
+                                               },
+                                               {
+                                                   "name": "Spordict",
+                                                   "height": 0.5
+                                               }
+                                           ]
+                                       }
+                                   ]
+                               },
+                               {
+                                   "name":"",
+                                   "height": 0.75,
+                                   "children": [
+                                       {
+                                           "name": "BRCA2",
+                                           "height": 0.5
+                                       },
+                                       {
+                                           "name": "BRCA2",
+                                           "height": 0.5
+                                       }
+                                   ]
+                               }
+                           ]
+                       },
+                       {
+                           "name": "",
+                           "height": 0.9,
+                           "children": [
+                               {
+                                   "name": "BRCA1",
+                                   "height": 0.5
+                               },
+                               {
+                                   "name": "Sporadic",
+                                   "height": 0.5
+                               }
+                           ]
+                       }
+                   ]
+               },
+               {
+                   "name": "",
+                   "height": 1.01,
+                   "children": [
+                       {
+                           "name": "",
+                           "height": 0.75,
+                           "children": [
+                               {
+                                   "name": "BRCA1",
+                                   "height": 0.5
+                               },
+                               {
+                                   "name": "BRCA1",
+                                   "height": 0.5
+                               }
+                           ]
+                       },
+                       {
+                           "name": "",
+                           "height": 0.8,
+                           "children":[
+                               {
+                                   "name": "BRCA2",
+                                   "height": 0.5
+                               },
+                               {
+                                   "name": "BRCA2",
+                                   "height": 0.5
+                               }
+                           ]
+                       }
+                           
+                   ]
+               }
+           ]
+       }
+   ]
+  }
+ ]
+}
