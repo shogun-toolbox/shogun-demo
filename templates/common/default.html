@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+      <title>{{ title }}</title>
+      <script src="/static/js/d3.min.js"></script>
+      <script src="/static/js/d3.layout.js"></script>
+      <script src="/static/js/jquery-1.9.1.min.js"></script>
+      <script src="/static/js/jquery.tipsy.js" type="text/javascript"></script>
+      <link href="/static/css/tipsy.css" rel="stylesheet" type="text/css">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1.0">
+      <link href="/static/css/shogun_demo.css" rel="stylesheet" media="screen">
+      <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+      <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+      <script src="/static/js/conrec.js"></script>
+    </head>
+    <body id="main">
+      <div class="container-narrow">
+      <div class="page-header"><h2>&nbsp;{{ title }} <small>based on shogun-toolbox</small></h2></div>
+        <!-- canvas -->
+        <div class="span9" style="display:inline;"></div>
+        <!-- arguments -->
+        <div class="span3" style="display:inline;">
+          {% if panels %}
+          <ul class="nav nav-pills nav-tabs">
+            {% for panel in panels %}
+            <li {% if forloop.first %} class="active" {% endif %} ><a href="#{{ panel.panel_name }}" data-toggle="tab">{{ panel.panel_label }}</a></li>
+            {% endfor %}
+          </ul>
+          <div class="tab-content">
+            {% for panel in panels %}
+            <div class="tab-pane{% if forloop.first %} active{% endif %}" id="{{ panel.panel_name }}">
+              {% if panel.panel_name == 'toy_data' %}
+                {% include "common/toy_data_generator_form.html" %}
+              {% elif panel.panel_name == 'arguments' %}
+                {% include "common/arguments_form.html" %}
+              {% elif panel.panel_name == 'preview' %}
+                {% include "common/preview.html" %}
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      {% if template.type == 'coordinate-2dims' %}
+      <link href="/static/css/coordinate_2dims.css" rel="stylesheet" media="screen">
+      <script>
+        {% include "common/coordinate_2dims.js" %}
+        {% include "common/button.js" %}
+      </script>
+      {% elif template.type == 'drawing' %}
+      <link href="/static/css/drawing.css" rel="stylesheet" media="screen">
+      <script>
+        {% include "common/drawing.js" %}
+      </script>
+      {% elif template.type == 'tree' %}
+      <link href="/static/css/tree.css" rel="stylesheet" media="screen">
+      <script>
+        {% include "common/tree.js" %}
+      </script>
+      {% endif %}
+      {% block javascript %} {% endblock %}
+      </div>
+    </body>
+</html>
