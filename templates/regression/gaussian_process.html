@@ -1,0 +1,42 @@
+{% extends "common/default.html" %}
+{% block javascript %}
+<script>
+function clear_action()
+{
+    point_set = [];
+    svg.selectAll(".line")
+        .remove();
+    svg.selectAll(".area")
+        .remove();
+    svg.selectAll(".dot").remove();
+}
+
+function TrainGP(data)
+{
+    json = $.parseJSON(data);
+    if (svg.selectAll(".line")[0].length == 0)
+    {
+        svg.append("path")
+            .attr("class", "line")
+            .attr("d", start(json))
+            .style("stroke-width", "2")
+            .style("stroke", "green")
+            .style("fill", "none");
+        svg.selectAll(".line")
+            .transition().duration(1000)
+            .attr("d", end(json));
+    }else{
+        svg.selectAll(".line")
+            .attr("d", end(json));
+    }
+    svg.selectAll(".area")
+        .remove();
+    svg.append("path")
+        .datum(json)
+        .attr("class", "area")
+        .attr("d", area_end(json))
+        .style("fill", "rgba(128, 128, 128, 0.25)");
+    $("#TrainGP").attr('disabled', false);
+}
+</script>
+{% endblock %}

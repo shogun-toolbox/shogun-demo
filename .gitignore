@@ -1,4 +1,5 @@
 *.pyc
+*~
 .gitignore
 .DS_Store
 shogun.sqlite
