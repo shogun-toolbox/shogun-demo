@@ -15,7 +15,7 @@ urlpatterns = patterns('demos',
     url(r'^dimred/tapkee/promoters.json', 'dimred.tapkee.promoters'),
 
     url(r'^application/ocr/', 'application.ocr.handler'),
-    url(r'^application/ld/', 'application.lang_detect.handler'),
+    url(r'^application/language_detect/', 'application.language_detect.handler'),
     
     url(r'^misc/kernel_matrix/', 'misc.kernel_matrix.handler'),
     url(r'^misc/tree/', 'misc.tree.handlers'),

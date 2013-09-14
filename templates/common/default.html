@@ -36,6 +36,8 @@
                 {% include "common/arguments_form.html" %}
               {% elif panel.panel_name == 'preview' %}
                 {% include "common/preview.html" %}
+              {% elif panel.panel_name == 'about' %}
+                {% include "common/about.html" %}
               {% endif %}
             </div>
             {% endfor %}
@@ -52,6 +54,10 @@
       <link href="/static/css/drawing.css" rel="stylesheet" media="screen">
       <script>
         {% include "common/drawing.js" %}
+      </script>
+      {% elif template.type == 'text' %}
+      <script>
+        {% include "common/text.js" %}
       </script>
       {% elif template.type == 'tree' %}
       <link href="/static/css/tree.css" rel="stylesheet" media="screen">
