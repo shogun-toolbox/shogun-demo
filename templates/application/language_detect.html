@@ -1,0 +1,31 @@
+{% extends "common/default.html" %}
+{% block javascript %}
+<script>
+document.getElementById("text").onkeydown = function() {if(event.keyCode==13) recognize_action();}
+document.getElementById("result").innerHTML = "<h2 id='language' style='text-align:center'>UNKNOWN</h2>";
+function recognize_action(){
+    $.ajax(
+        {
+            url: 'recognize',
+            type: 'POST',
+            dataType: "text",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'text': document.getElementById("text").value,
+            },
+            success: show_language,
+        });
+}
+function show_language(data)
+{
+    data = JSON.parse(data);
+    var language = data['predict'];
+    document.getElementById("language").innerHTML = language.toUpperCase();
+}
+function clear_action()
+{
+    document.getElementById("text").value = '';
+    document.getElementById("language").innerHTML = "UNKNOWN";
+}
+</script>
+{% endblock %}
