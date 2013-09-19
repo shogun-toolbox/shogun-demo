@@ -24,7 +24,9 @@ def entrance(request):
         }]
     properties = { 'title' : 'Language Detection',
                    'template': {'type': 'text',
-                                'caption': 'Enter a sentence to classify'},
+                                'caption': 'Currently works for 5 languages: ' +
+                                           'English, Greek, German, Italian and Spanish.' +
+                                           '<p>Enter a sentence to classify</p>'},
                    'panels': [
                        {
                            'panel_name': 'arguments',
@@ -34,7 +36,12 @@ def entrance(request):
                        {
                            'panel_name': 'about',
                            'panel_label': 'About',
-                           'panel_property': 'van51',
+                           'panel_property': 'Language detection demo developed using the ' +
+                                             '<b>HashedDocDotFeatures</b> class of <b>Shogun</b> ' +
+                                             'for the document representation and the '+
+                                             '<b>MulticlassLibLinear</b> for the ' +
+                                             'classification. Trained on ' +
+                                             '30000 documents in total. <br>By van51',
                         }
                     ]
                  }
