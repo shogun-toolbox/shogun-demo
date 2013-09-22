@@ -7,15 +7,20 @@
     <label> {{ argument.argument_name }} </label>
     {% endif %}
     {% if argument.argument_type == 'decimal' %}
-    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" id="{{ argument.argument.name }}" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" id="{{ argument.argument_name }}" t onKeyPress="if (event.keyCode!=46 && event.keyCode!=45 &&
+(event.keyCode<48 || event.keyCode>57)) event.returnValue=false"></br>
+
     {% elif argument.argument_type == 'integer' %}
-    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" id="{{ argument.argument.name }}"onkeyup="value=value.replace(/[^\d]/g,'')">
+    <input type="text" value="{{ argument.argument_default }}" name="{{ argument.argument_name }}" id="{{ argument.argument_name }}" t onKeyPress="if (event.keyCode!=45 &&
+(event.keyCode<48 || event.keyCode>57)) event.returnValue=false">
+
     {% elif argument.argument_type == 'select' %}
     <select name="{{ argument.argument_name }}" id="{{ argument.argument_name }}" >
       {% for item in argument.argument_items %}
       <option value="{{ item }}" {% if item == argument.argument_default %} selected {% endif %}>{{ item }} </option>
       {% endfor %}
     </select> <br/>
+
     {% elif argument.argument_type == 'button-group' %}
     <div class="btn-group">
       {% for item in argument.argument_items %}
@@ -24,10 +29,13 @@
       </button>
       {% endfor %}
     </div>
+
     {% elif argument.argument_type == 'div' %}
     <div {% if argument.argument_id %} id="{{ argument.argument_id}}" {% endif %}
          {% if argument.argument_class %} class="{{ argument.argument_class }}" {% endif %}
          ></div>
+    {% elif argument.argument_type == 'ascii_file' %}
+    {% include "common/ascii_file.html" %}
     {% endif %}
   {% endfor %}
   </fieldset>
