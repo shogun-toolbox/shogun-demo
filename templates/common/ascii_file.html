@@ -1,0 +1,14 @@
+<input type="file" id="{{ argument.argument_name }}" name = "{{ argument.argument_name }}" /><br/>
+
+<script>
+  var {{ argument.argument_name }}_text="";
+  function handleFileSelect(evt) {
+    var file = evt.target.files[0]; // FileList object
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        {{ argument.argument_name }}_text = reader.result;
+      }
+    reader.readAsText(file)
+  }
+  document.getElementById('{{ argument.argument_name }}').addEventListener('change', handleFileSelect, false);
+</script>

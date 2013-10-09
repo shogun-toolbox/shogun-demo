@@ -1,0 +1,70 @@
+{% extends "common/default.html" %}
+{% block javascript %}
+<script>
+  function clear_action()
+  {
+     svg.selectAll(".line")
+        .remove();
+  }
+  var line = d3.svg.line()
+        .x(function (d) { return x(d.x); })
+        .y(function (d) { return y(d.y); })
+        .interpolate('basis');
+  var start = d3.svg.line()
+        .x(function (d) {return x(d.x); })
+        .y(function (d) {return y(0); })
+            .interpolate('basis');
+
+  function run_action(){
+    if (sequence_text.length <= 0)
+      alert("Select a sequence fasta");
+    else
+    {
+    $("#run").attr('disabled', true);
+
+    $.ajax(
+        {
+            url: '.',
+            type: 'POST',
+            dataType: "text",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'seq': sequence_text},
+            success: draw,
+        });
+    }
+  }
+  function draw(data){
+    var json = $.parseJSON(data);
+    if (json.status)
+    {
+       alert(json.status);
+       return;
+    }
+    horizontal_max = vertical_max = 0;
+    horizontal_min = vertical_min = 0;
+    json.forEach(function(d) {
+        d.x = +d.x;
+        d.y = +d.y;
+        if(d.y > vertical_max) vertical_max = d.y;
+        if(d.y < vertical_min) vertical_min = d.y;
+    });
+    y.domain([vertical_min, vertical_max]).nice();
+    var t = svg.transition().duration(750);
+    t.select("#y_axis").call(yAxis);
+    t.select("#y_grid").call(yGrid);
+
+    if (svg.selectAll(".line")[0].length == 0)
+        curve = svg.append("path")
+        .attr("class", "line")
+        .attr("d", start(json))
+        .style("stroke-width", "2")
+        .style("stroke", "green")
+        .style("fill", "none");
+    svg.selectAll(".line")
+        .transition().duration(1000)
+        .attr("d", line(json));
+    $("#run").attr('disabled', false);
+  }
+</script>
+{% endblock %}
