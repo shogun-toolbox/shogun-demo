@@ -16,6 +16,8 @@ urlpatterns = patterns('demos',
 
     url(r'^application/ocr/', 'application.ocr.handler'),
     url(r'^application/language_detect/', 'application.language_detect.handler'),
+    url(r'^application/arts/', 'application.arts.handler'),
+    url(r'^application/asp/', 'application.asp.handler'),
     
     url(r'^misc/kernel_matrix/', 'misc.kernel_matrix.handler'),
     url(r'^misc/tree/', 'misc.tree.handlers'),
