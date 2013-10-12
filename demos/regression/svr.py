@@ -25,22 +25,26 @@ def entrance(request):
         {
             'argument_type': 'decimal',
             'argument_name': 'C',
-            'argument_default': '1.2'
+            'argument_default': '1.2',
+            'argument_explain': 'Penalty parameter of the error term'
         },
         {
             'argument_type': 'decimal',
             'argument_name': 'tube',
-            'argument_default': '0.04'
+            'argument_default': '0.04',
+            'argument_explain': 'Specifies the allowed deviation of the prediction from the actual value'
         },
         {
             'argument_type': 'decimal',
             'argument_name': 'sigma',
-            'argument_default': '0.3'
+            'argument_default': '0.3',
+            'argument_explain': 'The sigma to use in the GaussianKernel'
         },
         {
             'argument_type': 'integer',
             'argument_name': 'degree',
-            'argument_default': '5'
+            'argument_default': '5',
+            'argument_explain': 'The degree to use in the PolynomialKernel'
         },
         {
             'argument_type': 'button-group',
@@ -59,7 +63,11 @@ def entrance(request):
                                                       'vertical_axis': {'position': 'left',
                                                                         'label': 'y-axis',
                                                                         'range': [0, 1]}},
-                                'mouse_click_enabled': 'left'},
+                                'mouse_click_enabled': 'left',
+                                'description': 'Demo displaying the performance of SVR in Shogun.<br>' +
+                                    'You can draw your own points or have some generated for you ' +
+                                    'from the "toy data" panel.<br>You can also play around ' +
+                                    'with the various parameters to see how they effect the outcome.'},
                    'panels': [
                        {
                            'panel_name': 'arguments',

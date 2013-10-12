@@ -16,7 +16,14 @@
     </head>
     <body id="main">
       <div class="container-narrow">
-      <div class="page-header"><h2>&nbsp;{{ title }} <small>based on shogun-toolbox</small></h2></div>
+      <div class="page-header"><h2>{{ title }} <small>based on shogun-toolbox</small></h2>
+      <!-- display description if available -->
+      {% if template.description %}
+        {% autoescape off %}
+          <h5>{{ template.description }}</h5>
+        {% endautoescape %}
+      {% endif %}
+      </div>
         <!-- canvas -->
         <div class="span9" style="display:inline;"></div>
         <!-- arguments -->
