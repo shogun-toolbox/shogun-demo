@@ -19,16 +19,19 @@ def entrance(request):
             'argument_label': 'Kernel Function',
             'argument_name': 'kernel',
             'argument_items': ['GaussianKernel', 'PolynomialKernel', 'LinearKernel'],
-            'argument_default': 'GaussianKernel'},
+            'argument_default': 'GaussianKernel',
+            'argument_explain': 'Kernel Function'},
         {
             'argument_type': 'decimal',
             'argument_label': 'Kernel Width',
             'argument_name': 'kernel_width',
-            'argument_default': '0.3'},
+            'argument_default': '0.3',
+            'argument_explain': 'The sigma to use in the GaussianKernel'},
         {
             'argument_type': 'integer',
             'argument_name': 'degree',
-            'argument_default': '5'},
+            'argument_default': '5',
+            'argument_explain': 'The degree of the PolynomialKernel'},
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'generate',
@@ -40,7 +43,11 @@ def entrance(request):
                                 'mouse_click_enabled': 'left',
                                 'heatmap': { 'contour': True },
                                 'coordinate_system': {'horizontal_axis': {'range':[-5.0, 5.0]},
-                                                      'vertical_axis': {'range':[-4.0, 4.0]}}},
+                                                      'vertical_axis': {'range':[-4.0, 4.0]}},
+                                'description': 'Click on the canvas below to enter some points and experiment with ' +
+                                               'the various arguments to see how the kernel matrix is affected each time.<br>' +
+                                               'You can also have some data points generated for you from the "Toy Data" panel ' +
+                                               'on the right'},
                    'panels': [
                         {
                             'panel_name': 'arguments',

@@ -103,7 +103,7 @@ var start = d3.svg.line()
 var feature_select_button_group = "<div class='btn-group'>";
 for (var i = 0 ; i < {{ template.feature_number }}; i++)
     {
-        feature_select_button_group += "<button id='label_"+i+"_button' class='btn' onclick='change_label("+ i +")'> feature "+ (i+1) + " </button>";
+        feature_select_button_group += "<button id='label_"+i+"_button' class='btn' onclick='change_label("+ i +")'> Class "+ (i+1) + " </button>";
     }
 feature_select_button_group += "</div>"
 $(".span9").append(feature_select_button_group);
@@ -120,7 +120,7 @@ change_label(0);
 var heatmap_legend = document.createElement("div");
 $('.span9').append(heatmap_legend);
 heatmap_legend.id = "legend";
-$('#legend').css("background-image", "-webkit-gradient(linear, left top, right bottom, color-stop(0.00, " + color.range()[0] + "), color-stop(1.00, " + color.range()[1] + "))");
+$('#legend').css("background-image", "linear-gradient( 45deg, " + color.range()[0] + ", " + color.range()[1] + ")");
 $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.round(color.domain()[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.round(color.domain()[1]) + "</span>") ;
 {% include "common/heatmap.js" %}
 {% endif %}

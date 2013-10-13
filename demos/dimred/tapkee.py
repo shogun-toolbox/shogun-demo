@@ -25,7 +25,6 @@ def entrance(request):
             'argument_name': 'k',
             'argument_label': 'k',
             'argument_default': '20'
-            
             },
         {
             'argument_type': 'button-group',
@@ -35,7 +34,10 @@ def entrance(request):
         ]
     properties = {'title': 'Dimension Reduction',
                   'template': {'type': 'coordinate-2dims',
-                               'mouse_click_enabled': 'none'},
+                               'mouse_click_enabled': 'none',
+                               'description':'Two dimensional visualization of different datasets by using the ' +
+                                             '<a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CLocallyLinearEmbedding.html">' +
+                                             'CLocallyLinearEmbedding</a> class.'},
                   'panels':[
                       {
                           'panel_name': 'arguments',

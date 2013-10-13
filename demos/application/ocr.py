@@ -22,7 +22,13 @@ def handler(request):
 
 def entrance(request):
     properties = { 'title' : 'Digit Recognize',
-                   'template': {'type': 'drawing'},
+                   'template': {'type': 'drawing',
+                                'description': 'This demo application uses a previously trained <a href="' +
+                                               'http://www.shogun-toolbox.org/doc/en/1.1.0/classshogun_1_1CGMNPSVM.html">' +
+                                               'CGMNPSVM</a> svm in combination with the <a href="' +
+                                               'http://shogun-toolbox.org/doc/en/current/classshogun_1_1CGaussianKernel.html">' +
+                                               'Gaussian Kernel</a> to recognize hand-written digits.<br>' +
+                                               'To test it, draw a digit (0..9) in the area below and press recognize!'},
                    'panels': [
                        {
                            'panel_name': 'preview',
