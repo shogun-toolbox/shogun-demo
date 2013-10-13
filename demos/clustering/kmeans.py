@@ -9,7 +9,7 @@ import json
 arguments = [
     {
         'argument_type': 'select',
-        'argument_label': 'Distance',
+        'argument_label': 'Distance Metric',
         'argument_name': 'distance',
         'argument_items': ['EuclideanDistance',
                            'ManhattanMetric',
@@ -39,6 +39,13 @@ properties = { 'title': 'KMeans',
                                                   'vertical_axis': {'position': 'left',
                                                                     'label': 'Y-axis',
                                                                     'range': [0, 1]}},
+                            'description': 'Clustering demonstration using the <a href="' +
+                                           'http://shogun-toolbox.org/doc/en/current/classshogun_1_1CKMeans.html">' +
+                                           'CKMeans</a> class of Shogun. More information on the k-means clustering algorithm can be found <a' +
+                                           ' href="http://en.wikipedia.org/wiki/K-means_clustering">here.</a><br>' +
+                                           'You can enter data points by clicking on the canvas below or you can ' +
+                                           'have some generated for you from the "Toy Data" panel on the right.<br>' + 
+                                           'You can also experiment with the arguments to see how they affect the outcome.',
                             'mouse_click_enabled': 'both'},
                 'panels': [
                     {
