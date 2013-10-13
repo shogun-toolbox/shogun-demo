@@ -12,13 +12,15 @@ arguments = [
     {
         'argument_type': 'decimal',
         'argument_name': 'rate',
-        'argument_label': 'learning rate',
-        'argument_default': '1'},
+        'argument_label': 'Learning Rate',
+        'argument_default': '1',
+        'argument_explain': 'Affects the weight update per iteration. Should be a value in (0,1]'},
     {
         'argument_type': 'decimal',
         'argument_name': 'bias',
-        'argument_label': 'bias',
-        'argument_default' : '0'},
+        'argument_label': 'Bias',
+        'argument_default' : '0',
+        'argument_explain': 'A constant value independent of the input'},
     {
         'argument_type': 'button-group',
         'argument_items': [{'button_name': 'classify',
@@ -33,6 +35,13 @@ properties = { 'title': 'Perceptron(binary)',
                                                   'vertical_axis': {'position': 'left',
                                                                     'label': 'x2',
                                                                     'range': [0, 1]}},
+                            'description': 'Demonstration of binary classification with Shogun, ' +
+                                           'using the <a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CPerceptron.html">' +
+                                           'CPerceptron</a> class which will provide us with a linear classifier.<br>' +
+                                           'You can enter instances of the red and blue classes by left and ' +
+                                           'right-clicking on the canvas below.<br>' +
+                                           'You can also experiment with the various parameters on the right ' +
+                                           'to see how they affect the outcome.',
                             'heatmap': { 'contour': True },
                             'mouse_click_enabled': 'both'},
                'panels': [

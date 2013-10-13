@@ -46,6 +46,7 @@ Docs
             - 'horizontal_axis': a dict specifys the property of the horizontal axis
             - 'vertical_axis': a dict specifys the property of the vertical axis
               - 'range': an 2-item list specifys the range of the axis, eg. [-5.0, 5.0]
+          - 'description': A brief introduction to the demo, like how it works and its capabilities. Wll be displayed beneath the title.
         - 'panels': an list of dicts, each item is a configuration of a single panel in panel section
             item dict info:
             - 'panel_name': the html id of the panel <div>, in other word, you can access the panel by document.getElementById() in javascript.

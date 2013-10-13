@@ -6,7 +6,6 @@ from common.kernel import get_kernel
 import modshogun as sg
 import numpy as np
 import numpy.random as rnd
-import h5py
 import json
 
 def handler(request):
@@ -21,23 +20,29 @@ def entrance(request):
             'argument_type': 'select',
             'argument_name': 'kernel',
             'argument_items': ['GaussianKernel', 'PolynomialKernel', 'LinearKernel'],
-            'argument_default': 'GaussianKernel'
+            'argument_default': 'GaussianKernel',
+            'argument_explain': 'Your choice for the covariance function'
         },
         {
             'argument_type': 'integer',
             'argument_name': 'degree',
-            'argument_default': '5'
+            'argument_default': '5',
+            'argument_explain': 'The degree to use with the PolynomialKernel'
         },
         {
             'argument_type': 'decimal',
             'argument_label': 'Kernel Width',
             'argument_name': 'sigma',
-            'argument_default': '2.0'},
+            'argument_default': '2.0',
+            'argument_explain': 'The sigma to use in the GaussianKernel'
+        },
         {
             'argument_type': 'decimal',
             'argument_label': 'Noise Level',
             'argument_name': 'noise_level',
-            'argument_default': '0.1'},
+            'argument_default': '0.1',
+            'argument_explain': 'The noise level of the training points'
+        },
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'TrainGP',
@@ -49,7 +54,15 @@ def entrance(request):
                    'template': {'type': 'coordinate-2dims',
                                 'mouse_click_enabled': 'left',
                                 'coordinate_system': {'horizontal_axis': {'range': [-5, 5]},
-                                                      'vertical_axis': {'range': [-5, 5]}}},
+                                                      'vertical_axis': {'range': [-5, 5]}},
+                                'description': 'Demonstration of performing regression with ' + 
+                                               '<a href="http://en.wikipedia.org/wiki/Gaussian_process">' +
+                                               'Gaussian Processes</a> in Shogun. A detailed how-to can be found ' +
+                                               '<a href="http://shogun-toolbox.org/static/notebook/current/gaussian_processes.html">' +
+                                               'here.</a><br>' +
+                                               'You can enter your own data points by clicking on the canvas below or you ' +
+                                               'can have some generated for you from the "Toy Data" panel on the right.<br>' +
+                                               'You can also experiment with the different arguments to see how they affect the outcome.'},
                    'panels': [
                        {
                            'panel_name': 'arguments',
