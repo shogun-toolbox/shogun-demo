@@ -20,7 +20,7 @@ urlpatterns = patterns('demos',
     url(r'^application/asp/', 'application.asp.handler'),
     
     url(r'^misc/kernel_matrix/', 'misc.kernel_matrix.handler'),
-    url(r'^misc/tree/', 'misc.tree.handlers'),
+    url(r'^misc/tree/', 'misc.tree.entrance'),
 )
 
 urlpatterns += patterns('util',
