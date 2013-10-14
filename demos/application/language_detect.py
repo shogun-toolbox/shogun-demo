@@ -24,9 +24,13 @@ def entrance(request):
         }]
     properties = { 'title' : 'Language Detection',
                    'template': {'type': 'text',
-                                'caption': 'Currently works for 5 languages: ' +
-                                           'English, Greek, German, Italian and Spanish.' +
-                                           '<p>Enter a sentence to classify</p>'},
+                                'caption': 'Enter a sentence to classify:',
+                                'description': 'This application demo uses a previously trained <a href="' +
+                                               'http://shogun-toolbox.org/doc/en/current/classshogun_1_1CMulticlassLibLinear.html">' +
+                                               'MulticlassLibLinear</a> svm, in conjuction with the <a href="' +
+                                               '">' +
+                                               'HashedDocDotFeatures</a>, to predict the language of documents.<br>' +
+                                               'It works for 5 languages: English, Greek, German, Italian and Spanish.'},
                    'panels': [
                        {
                            'panel_name': 'arguments',
@@ -36,12 +40,7 @@ def entrance(request):
                        {
                            'panel_name': 'about',
                            'panel_label': 'About',
-                           'panel_property': 'Language detection demo developed using the ' +
-                                             '<b>HashedDocDotFeatures</b> class of <b>Shogun</b> ' +
-                                             'for the document representation and the '+
-                                             '<b>MulticlassLibLinear</b> for the ' +
-                                             'classification. Trained on ' +
-                                             '30000 documents in total. <br>By van51',
+                           'panel_property': 'Developed by <a target="_blank" href="https://github.com/van51">van51</a>',
                         }
                     ]
                  }

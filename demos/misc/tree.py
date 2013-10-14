@@ -11,6 +11,6 @@ def entrance(request):
         'title': 'tree',
         'template': {'type': 'tree'}
     }
-    return render_to_response("tree/index.html",
+    return render_to_response("misc/tree.html",
                               properties,
                               context_instance = RequestContext(request))

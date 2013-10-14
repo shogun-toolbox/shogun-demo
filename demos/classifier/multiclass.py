@@ -22,21 +22,25 @@ arguments = [
             'argument_name': 'kernel',
             'argument_items': ['GaussianKernel',
                                'LinearKernel',
-                               'PolynomialKernel']},
+                               'PolynomialKernel'],
+            'argument_explain': 'Kernel Function'},
         {
             'argument_type': 'decimal',
             'argument_name': 'C',
-            'argument_default': '1.2'},
+            'argument_default': '1.2',
+            'argument_explain': 'Regularization constant'},
         {
             'argument_type': 'decimal',
             'argument_name': 'sigma',
             'argument_label': 'Sigma',
-            'argument_default' : '0.1'},
+            'argument_default' : '0.1',
+            'argument_explain': 'The sigma to use in the GaussianKernel'},
         {
             'argument_type': 'integer',
             'argument_name': 'degree',
             'argument_label': 'Degree',
-            'argument_default': '2'},
+            'argument_default': '2',
+            'argument_explain': 'The degree to use in the PolynomialKernel'},
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
@@ -52,6 +56,12 @@ properties = { 'title': 'Multiclass Classifier',
                                                   'vertical_axis': {'position': 'left',
                                                                     'label': 'x2',
                                                                     'range': [0, 1]}},
+                            'description': 'Demonstration of multiclass classification with Shogun, ' +
+                                           'using the <a href="http://www.shogun-toolbox.org/doc/en/1.1.0/classshogun_1_1CGMNPSVM.html">' +
+                                           ' GMNPSVM</a> class. <br>' +
+                                           'You can select a class from the appropriate area below the canvas ' +
+                                           'and then draw points for that class by clicking on the canvas.<br>' +
+                                           'You can also experiment with the various parameters on the right to see how they affect the outcome.',
                             'heatmap': { 'contour': True },
                             'mouse_click_enabled': 'left',
                             'feature_number': 4},
