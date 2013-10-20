@@ -6,7 +6,7 @@ import sys
 import gzip as gz
 import pickle as pkl
 
-default_filepath = "data/lang_detection/default.svm.gz"
+DEFAULT_FILEPATH = "data/lang_detection/default.svm.gz"
 
 id_to_lang = {0 : "English", 1 : "Greek", 2 : "German",
 				3 : "Spanish", 4 : "Italian"}
@@ -15,8 +15,8 @@ class LanguageClassifier:
 	def __init__(self):
 		self.svm = None
 
-	def load_classifier(self):
-		gz_stream = gz.open(default_filepath, 'rb')
+	def load_classifier(self, fname=DEFAULT_FILEPATH):
+		gz_stream = gz.open(fname, 'rb')
 		self.svm = pkl.load(gz_stream)
 		gz_stream.close()
 

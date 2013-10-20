@@ -1,31 +1,20 @@
-# Django settings for shogun_demo project.
+# Django settings for shogun-demo project.
 import os
-CURRENT_PATH = os.path.abspath(os.path.dirname(__file__))
-ROOT_PATH = "/".join(CURRENT_PATH.split("/")[0:-1])
+ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
+
+DATA_PATH = ROOT_PATH + '/data'
+OCR_DATA_FNAME_GZ = ROOT_PATH + "/data/ocr/ocr.svm.gz"
+LC_DATA_FNAME_GZ = ROOT_PATH + "/data/lang_detection/default.svm.gz"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 PRODUCTION = False
 
 ADMINS = (
-    ('Soeren Sonnenburg', 'sonne@shogun-toolbox.org'),
-    ('Bernard Hernandez Perez', 'bernard.hernandez.perez@gmail.com'),
-    ('Fernando J. Iglesias Garcia', 'fernando.iglesias@shogun-toolbox.org')
+    ('Soeren Sonnenburg', 'sonne@shogun-toolbox.org')
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': ROOT_PATH + '/shogun.sqlite',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
-    }
-}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -103,10 +92,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'shogun_demo.urls'
-
-# Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'shogun_demo.wsgi.application'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -158,3 +144,5 @@ LOGGING = {
     }
 }
 
+#cache applications
+import demos.application

@@ -1,6 +1,3 @@
-# File   : $HeadURL$
-# Version: $Id$
-
 from modshogun import RealFeatures, MulticlassLabels
 from modshogun import GaussianKernel
 from modshogun import GMNPSVM
@@ -55,13 +52,13 @@ class Ai:
         self.svm = GMNPSVM(c, GaussianKernel(x, x, kernel_width), y)
         self.svm.set_epsilon(epsilon)
 
-    def write_svm(self):
-        gz_stream = gz.open(TRAIN_SVM_FNAME_GZ, 'wb', 9)
+    def write_classifier(self, fname=TRAIN_SVM_FNAME_GZ):
+        gz_stream = gz.open(fname, 'wb', 9)
         pkl.dump(self.svm, gz_stream)
         gz_stream.close()
 
-    def read_svm(self):
-        gz_stream = gz.open(TRAIN_SVM_FNAME_GZ, 'rb')
+    def read_classifier(self, fname=TRAIN_SVM_FNAME_GZ):
+        gz_stream = gz.open(fname, 'rb')
         self.svm = pkl.load(gz_stream)
         gz_stream.close()
 
@@ -86,8 +83,6 @@ class Ai:
         self.svm.io.enable_progress()
         self.svm.train(x)
         self.svm.io.disable_progress()
-
-    def load_classifier(self): self.read_svm()
 
     def classify(self, matrix):
         cl = self.svm.apply(
