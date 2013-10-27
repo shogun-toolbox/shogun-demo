@@ -94,7 +94,7 @@ def classify(request):
 def classify_perceptron(classifier, features, labels, learn=1, bias=0):
     perceptron = classifier(features, labels)
     perceptron.set_learn_rate(learn)
-    perceptron.set_max_iter(1000)
+    perceptron.set_max_iter(100)
     perceptron.set_bias(bias)
     perceptron.train()
     
