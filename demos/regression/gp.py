@@ -2,6 +2,7 @@ from django.http import HttpResponse,Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from common.kernel import get_kernel
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -55,14 +56,7 @@ def entrance(request):
                                 'mouse_click_enabled': 'left',
                                 'coordinate_system': {'horizontal_axis': {'range': [-5, 5]},
                                                       'vertical_axis': {'range': [-5, 5]}},
-                                'description': 'Demonstration of performing regression with ' + 
-                                               '<a href="http://en.wikipedia.org/wiki/Gaussian_process">' +
-                                               'Gaussian Processes</a> in Shogun. A detailed how-to can be found ' +
-                                               '<a href="http://shogun-toolbox.org/static/notebook/current/gaussian_processes.html">' +
-                                               'here.</a><br>' +
-                                               'You can enter your own data points by clicking on the canvas below or you ' +
-                                               'can have some generated for you from the "Toy Data" panel on the right.<br>' +
-                                               'You can also experiment with the different arguments to see how they affect the outcome.'},
+                                'description': read_demo_description.read_description(__file__)},
                    'panels': [
                        {
                            'panel_name': 'arguments',

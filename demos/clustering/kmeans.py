@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -47,13 +48,7 @@ properties = { 'title': 'KMeans',
                                                   'vertical_axis': {'position': 'left',
                                                                     'label': 'Y-axis',
                                                                     'range': [0, 1]}},
-                            'description': 'Clustering demonstration using the <a href="' +
-                                           'http://shogun-toolbox.org/doc/en/current/classshogun_1_1CKMeans.html">' +
-                                           'CKMeans</a> class of Shogun. More information on the k-means clustering algorithm can be found <a' +
-                                           ' href="http://en.wikipedia.org/wiki/K-means_clustering">here.</a><br>' +
-                                           'You can enter data points by clicking on the canvas below or you can ' +
-                                           'have some generated for you from the "Toy Data" panel on the right.<br>' + 
-                                           'You can also experiment with the arguments to see how they affect the outcome.',
+                            'description': read_demo_description.read_description(__file__),
                             'mouse_click_enabled': 'both'},
                 'panels': [
                     {

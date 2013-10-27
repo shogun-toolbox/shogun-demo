@@ -1,0 +1,4 @@
+Demonstration of performing regression with <a href="http://en.wikipedia.org/wiki/Gaussian_process">Gaussian Processes</a> in Shogun.
+ A detailed how-to can be found <a href="http://shogun-toolbox.org/static/notebook/current/gaussian_processes.html"> here.</a><br>
+You can enter your own data points by clicking on the canvas below or you can have some generated for you from the "Toy Data" panel on the right.<br>
+You can also experiment with the different arguments to see how they affect the outcome.

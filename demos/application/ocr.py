@@ -2,6 +2,7 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from demos import application
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -23,12 +24,7 @@ def handler(request):
 def entrance(request):
     properties = { 'title' : 'Digit Recognize',
                    'template': {'type': 'drawing',
-                                'description': 'This demo application uses a previously trained <a href="' +
-                                               'http://www.shogun-toolbox.org/doc/en/1.1.0/classshogun_1_1CGMNPSVM.html">' +
-                                               'CGMNPSVM</a> svm in combination with the <a href="' +
-                                               'http://shogun-toolbox.org/doc/en/current/classshogun_1_1CGaussianKernel.html">' +
-                                               'Gaussian Kernel</a> to recognize hand-written digits.<br>' +
-                                               'To test it, draw a digit (0..9) in the area below and press recognize!'},
+                                'description': read_demo_description.read_description(__file__)},
                    'panels': [
                        {
                            'panel_name': 'preview',
