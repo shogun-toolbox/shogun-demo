@@ -1,6 +1,6 @@
 import numpy as np
 import modshogun as sg
-def classify_svm(classifier, features, labels, kernel, domain, C=1):
+def classify_svm(classifier, features, labels, kernel, domain, C=1, returnValues=True):
     svm = classifier(C, kernel, labels)
     svm.train(features)
     
@@ -11,9 +11,10 @@ def classify_svm(classifier, features, labels, kernel, domain, C=1):
     
     test = sg.RealFeatures(np.array((np.ravel(x), np.ravel(y))))
     kernel.init(features, test)
-    
-    out = svm.apply(test).get_values()
-    if not len(out):
+   
+    if returnValues:
+        out = svm.apply(test).get_values()
+    else:
         out = svm.apply(test).get_labels()
     z = out.reshape((size, size))
     z = np.transpose(z)

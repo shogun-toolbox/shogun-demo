@@ -108,8 +108,11 @@ for (var i = 0 ; i < {{ template.feature_number }}; i++)
 feature_select_button_group += "</div>"
 $(".span9").append(feature_select_button_group);
 function change_label(label) {
-    d3.selectAll("button")
-        .classed("btn-primary", 0);
+    for (var i=0; i<{{ template.feature_number }}; i++)
+    {
+        d3.select('#label_' + i + '_button')
+            .classed('btn-primary', 0);
+    }
     d3.select("#label_" + label + "_button")
         .classed("btn-primary", 1);
     current_label = label;

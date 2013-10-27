@@ -1,13 +1,25 @@
 <form name="toy_data_generator">
   <fieldset>
     <legend> Generator </legend>
+    {% if panel.panel_property %}
+    {% for argument in panel.panel_property %}
+    {% if argument.problem_type and argument.problem_type == 'classification' %}
+    <label> Number of classes </label>
+    <input type="text" value="2" name="num_classes" {{ argument.disable_class_input }} onkeyup="value=value.replace(/[^\d{1,}]/g,'')"></br>
+    <label> Class Overlapping </label>
+    <input type="text" value="0.0" name="overlapping" id="overlapping" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action('classify');">Create Toy Data</button>
+    {% endif %}
+    {% endfor %}
+    {% else %}
     <label> Sine Freq. </label>
     <input type="text" value="2.0" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <label> Amplitude </label>
     <input type="text" value="2.0" name="amplitude" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <label> Noise Level </label>
     <input type="text" value="0.1" name="noise_level" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
-    <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action();">Create Toy Data</button>
+    <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action('regress');">Create Toy Data</button>
+    {% endif %}
   </fieldset>
 </form>
 <form name="toy_data_importer">
@@ -26,18 +38,49 @@
     <button type="button" class="btn btn-small btn-primary" onclick="DumpToyData_action();">dump</button>
   </fieldset>
 </form>
+{% if panel.panel_property %}
+{% for argument in panel.panel_property %}
+{% if argument.problem_type and argument.problem_type == 'classification' %}
 <script>
-    function CreateToyData_action()
+    $('#overlapping').tipsy({
+        gravity: 'w',
+        html: true,
+        title: function(){ return "Probability that classes will overlap.<br>0 means no overlap is permitted."}
+    });
+</script>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<script>
+    function CreateToyData_action(action)
     {
+        data = {};
+        token = '{{ csrf_token }}';
+        max_domain_color = 1; 
+        if (action=='regress')
+        {
+            data = {csrfmiddlewaretoken: token,
+                    amplitude: document.toy_data_generator.amplitude.value,
+                    frequency: document.toy_data_generator.frequency.value,
+                    noise_level: document.toy_data_generator.noise_level.value,
+                    action: action};
+        }
+        else
+        {
+            data = {csrfmiddlewaretoken: token,
+                    num_classes: document.toy_data_generator.num_classes.value,
+                    overlapping: document.toy_data_generator.overlapping.value,
+                    action: action};
+            max_domain_color = parseInt(document.toy_data_generator.num_classes.value) - 1;
+        }
+
         $.ajax(
             {
                 url:"/toy_data/generator/generate",
                 type: "POST",
                 dataType: 'text',
-                data: {csrfmiddlewaretoken: '{{ csrf_token }}',
-                       amplitude: document.toy_data_generator.amplitude.value,
-                       frequency: document.toy_data_generator.frequency.value,
-                       noise_level: document.toy_data_generator.noise_level.value},
+                data: data,
                 beforeSend: function(){$("#CreateToyData").attr('disabled',true);},
                 success: function(data){
                     point_set=[];
@@ -51,7 +94,7 @@
                         if(d.y < vertical_min) vertical_min = d.y;
                     });
                     svg.selectAll(".dot").remove();
-                    color.domain([-1, 1]);
+                    color.domain([0, max_domain_color]).range(['blue', 'red']);
                     svg.selectAll(".dot")
                         .data(json)
                         .enter().append("circle")

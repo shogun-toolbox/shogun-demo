@@ -3,7 +3,24 @@ import numpy as np
 import numpy.random as rnd
 import json
 
-def generate(request):
+def generate_classification_data(request):
+    from modshogun import DataGenerator
+    n = 40
+    try:
+        num_classes = int(float(request.POST['num_classes']))
+        coverage = float(request.POST['overlapping'])
+    except:
+        raise Http404
+
+    x = DataGenerator.generate_classification_data(num_classes, 2, n, coverage)
+    toy_data = []
+    for i in xrange(0,n-1):
+        toy_data.append( {  'x': x[0, i],
+                            'y': x[1, i], 
+                            'label': x[2, i] })
+    return HttpResponse(json.dumps(toy_data))
+
+def generate_regression_data(request):
     xmin = -5
     xmax = 5
     n = 40
@@ -31,3 +48,11 @@ def generate(request):
                            'y': y[i],
                            'label': '1'})
     return HttpResponse(json.dumps(toy_data))
+
+def generate(request):
+    if (request.POST['action'] and request.POST['action'] == 'classify'):
+        print 'Calling'
+        return generate_classification_data(request)
+    else:
+        return generate_regression_data(request)
+

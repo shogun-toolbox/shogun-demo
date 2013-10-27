@@ -40,6 +40,15 @@ arguments = [
                                 'button_type': 'json_up_down_load'},
                                {'button_name': 'clear'}]
         }]
+
+toy_data_arguments = [
+        {
+            'problem_type': 'classification',
+            'disable_class_input': 'disabled',
+            'x_range': [0, 1],
+            'y_range': [0, 1]
+        }]
+
 properties = { 'title': 'Binary Classification',
                'template': {'type': 'coordinate-2dims',
                             'coordinate_system': {'horizontal_axis': {'position': 'bottom',
@@ -63,7 +72,8 @@ properties = { 'title': 'Binary Classification',
                     },
                     {
                         'panel_name': 'toy_data',
-                        'panel_label': 'Toy Data'}]}
+                        'panel_label': 'Toy Data',
+                        'panel_property': toy_data_arguments}]}
 
 def handler(request):
     if request.method == 'GET':

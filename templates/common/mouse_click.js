@@ -10,7 +10,7 @@ canvas_div
 
 {% if template.feature_number > 0 %}
 var current_label = 0;
-var feature_color = d3.scale.linear().domain([0, {{ template.feature_number }}]).range(["blue", "red"]);
+var feature_color = d3.scale.linear().domain([0, {{ template.feature_number }}-1]).range(["blue", "red"]);
 {% endif %}
 var mouse_cursor = svg.append("circle")
         .attr("r", 6.5)
