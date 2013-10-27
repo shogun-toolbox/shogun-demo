@@ -2,6 +2,7 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from demos import application
+from util import read_demo_description
 import json
 
 def handler(request):
@@ -25,12 +26,7 @@ def entrance(request):
     properties = { 'title' : 'Language Detection',
                    'template': {'type': 'text',
                                 'caption': 'Enter a sentence to classify:',
-                                'description': 'This application demo uses a previously trained <a href="' +
-                                               'http://shogun-toolbox.org/doc/en/current/classshogun_1_1CMulticlassLibLinear.html">' +
-                                               'MulticlassLibLinear</a> svm, in conjuction with the <a href="' +
-                                               '">' +
-                                               'HashedDocDotFeatures</a>, to predict the language of documents.<br>' +
-                                               'It works for 5 languages: English, Greek, German, Italian and Spanish.'},
+                                'description': read_demo_description.read_description(__file__)},
                    'panels': [
                        {
                            'panel_name': 'arguments',

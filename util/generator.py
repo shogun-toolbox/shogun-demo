@@ -12,7 +12,7 @@ def generate_classification_data(request):
     except:
         raise Http404
 
-    x = DataGenerator.generate_classification_data(num_classes, 2, n, coverage)
+    x = DataGenerator.generate_checkboard_data(num_classes, 2, n, coverage)
     toy_data = []
     for i in xrange(0,n-1):
         toy_data.append( {  'x': x[0, i],

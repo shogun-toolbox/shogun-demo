@@ -1,0 +1,3 @@
+This application demo uses a previously trained <a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CMulticlassLibLinear.html" >
+MulticlassLibLinear</a> svm, in conjuction with the <a href=""> HashedDocDotFeatures</a>, to predict the language of documents.<br>
+It works for 5 languages: English, Greek, German, Italian and Spanish.
