@@ -48,6 +48,13 @@ arguments = [
                                {'button_name': 'clear'}]
         }]
 
+toy_data_arguments = [
+        {
+            'problem_type': 'classification',
+            'x_range': [0, 1],
+            'y_range': [0, 1]
+        }]
+
 properties = { 'title': 'Multiclass Classifier',
                'template': {'type': 'coordinate-2dims',
                             'coordinate_system': {'horizontal_axis': {'position': 'bottom',
@@ -73,7 +80,8 @@ properties = { 'title': 'Multiclass Classifier',
                     },
                     {
                         'panel_name': 'toy_data',
-                        'panel_label': 'Toy Data'}]}
+                        'panel_label': 'Toy Data',
+                        'panel_property': toy_data_arguments}]}
 def entrance(request):
     return render_to_response("classifier/multiclass.html",
                               properties,
@@ -92,11 +100,12 @@ def classify(request):
 
     try:
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z = svm.classify_svm(sg.GMNPSVM, features, labels, kernel, domain, C=C)
+        x, y, z = svm.classify_svm(sg.GMNPSVM, features, labels, kernel, domain, C, False)
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 
 #    z = z + np.random.rand(*z.shape) * 0.01
+	
     z_max = np.nanmax(z)
     z_min = np.nanmin(z)
     z_delta = 0.1*(np.nanmax(z)-np.nanmin(z))

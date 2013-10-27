@@ -28,6 +28,14 @@ arguments = [
                            },
                            {'button_name': 'clear'}]
     }]
+
+toy_data_arguments = [
+        {
+            'problem_type': 'classification',
+            'x_range': [0, 1],
+            'y_range': [0, 1]
+        }]
+
 properties = { 'title': 'KMeans',
                'template': {'type': 'coordinate-2dims',
                             'feature': 'binary',
@@ -55,7 +63,8 @@ properties = { 'title': 'KMeans',
                     },
                     {
                         'panel_name': 'toy_data',
-                        'panel_label': 'toy data'}]}
+                        'panel_label': 'Toy Data',
+                        'panel_property': toy_data_arguments}]}
 
 def entrance(request):
     return render_to_response("clustering/kmeans.html", properties, context_instance=RequestContext(request))
