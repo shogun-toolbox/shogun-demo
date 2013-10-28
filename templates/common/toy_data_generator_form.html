@@ -4,6 +4,11 @@
     {% if panel.panel_property %}
     {% for argument in panel.panel_property %}
     {% if argument.problem_type and argument.problem_type == 'classification' %}
+    <label> Generator type </label>
+    <select name="generator_type" id="generator_type" >
+        <option value="checkboard" id="checkboard" selected> Checkboard Data </option>
+        <option value="gaussian" id="gaussian"> Gaussian-generated Data </option>
+    </select> <br/>
     <label> Number of classes </label>
     <input type="text" value="2" name="num_classes" {{ argument.disable_class_input }} onkeyup="value=value.replace(/[^\d{1,}]/g,'')"></br>
     <label> Class Overlapping </label>
@@ -42,10 +47,27 @@
 {% for argument in panel.panel_property %}
 {% if argument.problem_type and argument.problem_type == 'classification' %}
 <script>
+    function generator_description(generator_type)
+    {
+        if (generator_type=='checkboard')
+            return 'Classes are generated in a grid and are always linearly separated.';
+        else
+            return 'Classes are generated from randomly initialized Gaussian distributions.';
+    }
     $('#overlapping').tipsy({
         gravity: 'w',
         html: true,
-        title: function(){ return "Probability that classes will overlap.<br>0 means no overlap is permitted."}
+        title: function(){ return "Probability that classes will overlap. 0 means no overlap is permitted.<br>Only used with checkboard generator."}
+    });
+    $('#gaussian').tipsy({
+        gravity: 'w',
+        html: true,
+        title: function(){ return generator_description('gaussian');}
+    });
+    $('#checkboard').tipsy({
+        gravity: 'w',
+        html: true,
+        title: function(){ return generator_description('checkboard');}
     });
 </script>
 {% endif %}
@@ -70,6 +92,7 @@
         {
             data = {csrfmiddlewaretoken: token,
                     num_classes: document.toy_data_generator.num_classes.value,
+                    generator_type: document.toy_data_generator.generator_type.value,
                     overlapping: document.toy_data_generator.overlapping.value,
                     action: action};
             max_domain_color = parseInt(document.toy_data_generator.num_classes.value) - 1;

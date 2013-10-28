@@ -3,7 +3,7 @@ import numpy as np
 import numpy.random as rnd
 import json
 
-def generate_classification_data(request):
+def generate_checkboard_data(request):
     from modshogun import DataGenerator
     n = 40
     try:
@@ -49,10 +49,47 @@ def generate_regression_data(request):
                            'label': '1'})
     return HttpResponse(json.dumps(toy_data))
 
+def generate_gmm_classification_data(request):
+    from modshogun import GMM, Math
+
+    num_classes = int(request.POST['num_classes'])
+    gmm = GMM(num_classes)
+    total = 40
+    rng = 4.0
+    num = total/num_classes
+    for i in xrange(num_classes):
+        gmm.set_nth_mean(np.array([Math.random(-rng, rng) for j in xrange(2)]), i)
+        cov_tmp = Math.normal_random(0.2, 0.1)
+        cov = np.array([[1.0, cov_tmp], [cov_tmp, 1.0]], dtype=float)
+        gmm.set_nth_cov(cov, i)
+
+    data=[]
+    labels=[]
+    for i in xrange(num_classes):
+        coef = np.zeros(num_classes)
+        coef[i] = 1.0
+        gmm.set_coef(coef)
+        data.append(np.array([gmm.sample() for j in xrange(num)]).T)
+        labels.append(np.array([i for j in xrange(num)]))
+
+    data = np.hstack(data)
+    data = data / (2.0 * rng)
+    xmin = np.min(data[0,:])
+    ymin = np.min(data[1,:])
+    labels = np.hstack(labels)
+    toy_data = []
+    for i in xrange(num_classes*num):
+        toy_data.append( {  'x': data[0, i] - xmin,
+                            'y': data[1, i] - ymin,
+                            'label': float(labels[i])})
+    return HttpResponse(json.dumps(toy_data))
+
 def generate(request):
     if (request.POST['action'] and request.POST['action'] == 'classify'):
-        print 'Calling'
-        return generate_classification_data(request)
+        if (request.POST['generator_type']=='checkboard'):
+            return generate_checkboard_data(request)
+        else:
+            return generate_gmm_classification_data(request)
     else:
         return generate_regression_data(request)
 
