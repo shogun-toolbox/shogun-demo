@@ -1,0 +1,5 @@
+Two dimensional visualization of different datasets by using various dimensionality reduction algorithms available in Shogun through 
+<a href="http://tapkee.lisitsyn.me/">Tapkee</a>.<br>
+'words_embedding' uses the <a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CKernelLocallyLinearEmbedding.html">CKernelLocallyLinearEmbedding</a> class.<br>
+'promoters_embedding' uses the <a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CMultidimensionalScaling.html">CMultidimensionalScaling</a> class. <br>
+ All the rest use the <a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CLocallyLinearEmbedding.html">CLocallyLinearEmbedding</a> class.

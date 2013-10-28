@@ -2,6 +2,7 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from common.kernel import get_kernel
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -64,10 +65,7 @@ def entrance(request):
                                                                         'label': 'y-axis',
                                                                         'range': [0, 1]}},
                                 'mouse_click_enabled': 'left',
-                                'description': 'Demo displaying the performance of SVR in Shogun.<br>' +
-                                    'You can draw your own points or have some generated for you ' +
-                                    'from the "toy data" panel.<br>You can also play around ' +
-                                    'with the various parameters to see how they effect the outcome.'},
+                                'description': read_demo_description.read_description(__file__)},
                    'panels': [
                        {
                            'panel_name': 'arguments',

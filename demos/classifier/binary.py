@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from common.kernel import get_kernel
 from common.fetch_data import get_binary_features
 from demos.classifier import svm
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -59,11 +60,7 @@ properties = { 'title': 'Binary Classification',
                                                                     'range': [0, 1]}},
                             'heatmap': { 'contour': True },
                             'mouse_click_enabled': 'both',
-                            'description': 'Demonstration of a binary classification task with Shogun, '+
-                                          'using the <a href="http://www.shogun-toolbox.org/doc/en/current/classshogun_1_1CLibSVM.html">' +
-                                          'CLibSVM</a> class.<br>You can enter instances of the red and blue classes by ' +
-                                          'left and right-clicking on the canvas below.<br>You can also ' +
-                                          'experiment with the various parameters on the right to see how they affect the outcome.'},
+                            'description': read_demo_description.read_description(__file__)},
                 'panels': [
                     {
                         'panel_name': 'arguments',

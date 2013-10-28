@@ -1,0 +1,3 @@
+Demonstration of binary classification with Shogun, using the <a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CPerceptron.html">
+CPerceptron</a> class which will provide us with a linear classifier.<br>You can enter instances of the red and blue classes by left and  
+right-clicking on the canvas below.<br>You can also experiment with the various parameters on the right to see how they affect the outcome.

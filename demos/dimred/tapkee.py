@@ -2,6 +2,7 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from demos import dimred
+from util import read_demo_description
 
 import difflib
 import modshogun as sg
@@ -24,7 +25,8 @@ def entrance(request):
             'argument_type': 'decimal',
             'argument_name': 'k',
             'argument_label': 'k',
-            'argument_default': '20'
+            'argument_default': '20',
+            'argument_explain': 'Number of neighbors to consider'
             },
         {
             'argument_type': 'button-group',
@@ -35,9 +37,7 @@ def entrance(request):
     properties = {'title': 'Dimension Reduction',
                   'template': {'type': 'coordinate-2dims',
                                'mouse_click_enabled': 'none',
-                               'description':'Two dimensional visualization of different datasets by using the ' +
-                                             '<a href="http://shogun-toolbox.org/doc/en/current/classshogun_1_1CLocallyLinearEmbedding.html">' +
-                                             'CLocallyLinearEmbedding</a> class.'},
+                               'description': read_demo_description.read_description(__file__)},
                   'panels':[
                       {
                           'panel_name': 'arguments',

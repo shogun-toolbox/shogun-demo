@@ -1,6 +1,7 @@
 from django.http import HttpResponse,Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -44,10 +45,7 @@ def entrance(request):
                                 'heatmap': { 'contour': True },
                                 'coordinate_system': {'horizontal_axis': {'range':[-5.0, 5.0]},
                                                       'vertical_axis': {'range':[-4.0, 4.0]}},
-                                'description': 'Click on the canvas below to enter some points and experiment with ' +
-                                               'the various arguments to see how the kernel matrix is affected each time.<br>' +
-                                               'You can also have some data points generated for you from the "Toy Data" panel ' +
-                                               'on the right'},
+                                'description': read_demo_description.read_description(__file__)},
                    'panels': [
                         {
                             'panel_name': 'arguments',

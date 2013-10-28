@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from common.kernel import get_kernel
 from common.fetch_data import get_multi_features
 from demos.classifier import svm
+from util import read_demo_description
 
 import modshogun as sg
 import numpy as np
@@ -63,12 +64,7 @@ properties = { 'title': 'Multiclass Classifier',
                                                   'vertical_axis': {'position': 'left',
                                                                     'label': 'x2',
                                                                     'range': [0, 1]}},
-                            'description': 'Demonstration of multiclass classification with Shogun, ' +
-                                           'using the <a href="http://www.shogun-toolbox.org/doc/en/1.1.0/classshogun_1_1CGMNPSVM.html">' +
-                                           ' GMNPSVM</a> class. <br>' +
-                                           'You can select a class from the appropriate area below the canvas ' +
-                                           'and then draw points for that class by clicking on the canvas.<br>' +
-                                           'You can also experiment with the various parameters on the right to see how they affect the outcome.',
+                            'description': read_demo_description.read_description(__file__),
                             'heatmap': { 'contour': True },
                             'mouse_click_enabled': 'left',
                             'feature_number': 4},
