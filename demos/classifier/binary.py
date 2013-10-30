@@ -70,7 +70,8 @@ properties = { 'title': 'Binary Classification',
                     {
                         'panel_name': 'toy_data',
                         'panel_label': 'Toy Data',
-                        'panel_property': toy_data_arguments}]}
+                        'panel_property': toy_data_arguments}],
+                   'data_sets' : ['australian']}
 
 def handler(request):
     if request.method == 'GET':

@@ -8,11 +8,12 @@ LC_DATA_FNAME_GZ = DATA_PATH + "/lang_detection/default.svm.gz"
 TAPKEE_WORD_FNAME = DATA_PATH + "/tapkee/words.dat"
 TAPKEE_MML_FNAME = DATA_PATH + "/tapkee/mml.txt"
 
-DEBUG = False
 PRODUCTION = True
 
 if PRODUCTION:
-	DEBUG=False
+    DEBUG=False
+else:
+    DEBUG = True
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -155,5 +156,5 @@ LOGGING = {
 }
 
 #cache applications
-if not PRODUCTION:
+if PRODUCTION:
 	import demos.application

@@ -27,6 +27,7 @@
     {% endif %}
   </fieldset>
 </form>
+{% if data_sets %}
 <form name="toy_data_importer">
   <fieldset>
     <legend> Importer </legend>
@@ -43,6 +44,7 @@
     <button type="button" class="btn btn-small btn-primary" onclick="DumpToyData_action();">dump</button>
   </fieldset>
 </form>
+{% endif %}
 {% if panel.panel_property %}
 {% for argument in panel.panel_property %}
 {% if argument.problem_type and argument.problem_type == 'classification' %}

@@ -1,14 +1,11 @@
 from django.http import HttpResponse, Http404
-from django.conf import settings
+import settings
 import h5py, json
 
-TOY_DATA_DIR = 'data/'
+TOY_DATA_DIR = settings.DATA_PATH+'/toy/'
 TOY_DATA_SET = {
-    'australian': 'toy/australian.libsvm.h5',
+    'australian': 'australian.libsvm.h5',
 }
-
-def files(request):
-    return {'data_sets': TOY_DATA_SET.keys}
 
 def dump(request):
     try:

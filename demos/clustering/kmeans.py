@@ -59,7 +59,8 @@ properties = { 'title': 'KMeans',
                     {
                         'panel_name': 'toy_data',
                         'panel_label': 'Toy Data',
-                        'panel_property': toy_data_arguments}]}
+                        'panel_property': toy_data_arguments}],
+                   'data_sets' : ['australian']}
 
 def entrance(request):
     return render_to_response("clustering/kmeans.html", properties, context_instance=RequestContext(request))
@@ -102,7 +103,6 @@ def _train_clustering(point_set, distance_name, k):
     labels = np.array([0]*len(point_set))
     features = np.zeros((2, len(point_set)))
 
-    print labels
     for i in xrange(len(point_set)):
         features[0, i] = point_set[i]['x']
         features[1, i] = point_set[i]['y']

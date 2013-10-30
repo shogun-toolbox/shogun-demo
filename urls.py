@@ -26,5 +26,6 @@ urlpatterns = patterns('demos',
 urlpatterns += patterns('util',
     url(r'^toy_data/generator/generate', 'generator.generate'),
     url(r'^toy_data/importer/dump', 'importer.dump'),
+    url(r'^toy_data/importer/files', 'importer.files'),
     url(r'^data/(\w+)/(.+)', 'data.serve'),
 )                                                            

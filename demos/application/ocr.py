@@ -98,5 +98,3 @@ def recognize(request):
         print traceback.format_exc()
         raise Http404
 
-    print image
-
