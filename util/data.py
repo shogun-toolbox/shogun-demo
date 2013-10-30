@@ -1,11 +1,12 @@
 from django.http import HttpResponse
 import json
 import zipfile
+import settings
 
 archives = {
-    'mnist': 'data/tapkee/mnist.zip',
-    'faces_transparent': 'data/tapkee/faces_transparent.zip',
-    'oks': 'data/tapkee/oks.zip',
+    'mnist': settings.DATA_PATH + '/tapkee/mnist.zip',
+    'faces_transparent': settings.DATA_PATH + '/tapkee/faces_transparent.zip',
+    'oks': settings.DATA_PATH + '/tapkee/oks.zip',
 }
 
 def serve(request, archive_name, file_name):

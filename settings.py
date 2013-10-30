@@ -3,22 +3,28 @@ import os
 ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 DATA_PATH = ROOT_PATH + '/data'
-OCR_DATA_FNAME_GZ = ROOT_PATH + "/data/ocr/ocr.svm.gz"
-LC_DATA_FNAME_GZ = ROOT_PATH + "/data/lang_detection/default.svm.gz"
+OCR_DATA_FNAME_GZ = DATA_PATH + "/ocr/ocr.svm.gz"
+LC_DATA_FNAME_GZ = DATA_PATH + "/lang_detection/default.svm.gz"
+TAPKEE_WORD_FNAME = DATA_PATH + "/tapkee/words.dat"
+TAPKEE_MML_FNAME = DATA_PATH + "/tapkee/mml.txt"
 
-DEBUG = True
+DEBUG = False
+PRODUCTION = True
+
+if PRODUCTION:
+	DEBUG=False
+
 TEMPLATE_DEBUG = DEBUG
-PRODUCTION = False
 
 ADMINS = (
-    ('Soeren Sonnenburg', 'sonne@shogun-toolbox.org')
+    ('Soeren Sonnenburg', 'Soeren.Sonnenburg@shogun-toolbox.org')
 )
 
 MANAGERS = ADMINS
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -128,13 +134,17 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugFalse'
         }
     },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
+	'handlers': {
+		'mail_admins': {
+			'level': 'ERROR',
+			'filters': ['require_debug_false'],
+			'class': 'django.utils.log.AdminEmailHandler'
+			},
+		'console':{
+			'level': 'DEBUG',
+			'class': 'logging.StreamHandler',
+			},
+		},
     'loggers': {
         'django.request': {
             'handlers': ['mail_admins'],
@@ -145,4 +155,5 @@ LOGGING = {
 }
 
 #cache applications
-import demos.application
+if not PRODUCTION:
+	import demos.application
