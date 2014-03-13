@@ -1,3 +1,2 @@
 Demonstration of binary classification with Shogun, using the <a href="http://www.shogun-toolbox.org/doc/en/3.0.0/classshogun_1_1CGaussianProcessBinaryClassification.html">
-GaussianProcessBinaryClassification</a> class. <br>You can select a class from the appropriate area below the canvas and then draw points for that class by clicking on the canvas 
-or have some data generated for you from the 'Toy Data' panel on the right. You can also experiment with the various parameters on the right to see how they affect the outcome.
+GaussianProcessBinaryClassification</a> class. <br>You can enter instances of the red and blue classes by left and right-clicking on the canvas below or you can have some points generated for you from the 'Toy Data' panel on the right.You can also experiment with the various parameters on the right to see how they affect the outcome. 
