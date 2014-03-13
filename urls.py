@@ -9,6 +9,7 @@ urlpatterns = patterns('demos',
     url(r'^classifier/binary/', 'classifier.binary.handler'),
     url(r'^classifier/perceptron/', 'classifier.perceptron.handler'),
     url(r'^classifier/multiclass/', 'classifier.multiclass.handler'),
+    url(r'^classifier/gp', 'classifier.gp.handler'),
     
     url(r'^dimred/tapkee/$', 'dimred.tapkee.entrance'),
     url(r'^dimred/tapkee/words.json', 'dimred.tapkee.words'),
