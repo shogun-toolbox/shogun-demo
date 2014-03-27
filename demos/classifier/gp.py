@@ -28,11 +28,18 @@ arguments = [
             'argument_explain': 'Kernel Function'},
         {
             'argument_type': 'select',
-            'argument_label': 'Likelhood model',
+            'argument_label': 'Likelihood model',
             'argument_name': 'likelihood',
             'argument_items':['LogitLikelihood',
                               'ProbitLikelihood'],
             'argument_explain':'Likelihood model'},
+        {
+            'argument_type': 'select',
+            'argument_label': 'Learn parameters',
+            'argument_name': 'learn',
+            'argument_items':['No',
+                              'ML2'],
+            'argument_explain':'Learn parameters using model selection'},
         {
             'argument_type': 'decimal',
             'argument_name': 'sigma',
@@ -101,14 +108,19 @@ def classify(request):
         lik = get_likelihood(request)
     except ValueError as e:
         return HttpResponse(json.dumps({"status": e.message}))
-
+    try:
+        learn = request.POST["learn"]
+    except ValueError as e:
+        return HttpResponse(json.dumps({"status": e.message}))
     try:
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z = gaussian_process.classify_gp(features, labels, kernel, domain,lik, False)
+        x, y, z, width, param = gaussian_process.classify_gp(features, labels, kernel, domain, lik, learn)
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 
     return HttpResponse(json.dumps({ 'status': 'ok',
+                                     'best_width': float(width),
+                                     'best_param': float(param),
                                      'domain': [np.min(z), np.max(z)],
                                      'z': z.tolist() }))
 

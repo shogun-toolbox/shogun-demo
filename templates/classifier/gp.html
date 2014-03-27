@@ -11,6 +11,9 @@ function classify(data)
         return;
     }
 
+    if (data['best_width'] != 0){
+	    $('#sigma').val(data['best_width']);}
+
     var z = data['z'];
     var domain = data['domain'];
     var minimum = Math.floor(domain[0]);
