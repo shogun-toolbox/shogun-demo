@@ -36,6 +36,14 @@ arguments = [
             'argument_default': '2',
             'argument_explain': 'The degree to use in the PolynomialKernel'},
         {
+            'argument_type': 'select',
+            'argument_label': 'Learn parameters',
+            'argument_name': 'learn',
+            'argument_items': ['No',
+                               'GridSearch'],
+            'argument_explain': 'Learn parameters using model selection'},
+
+        {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
                                 'button_type': 'json_up_down_load'},
@@ -95,9 +103,14 @@ def classify(request):
         return HttpResponse(json.dumps({"status": e.message}))
 
     try:
+        learn = request.POST["learn"]
+    except ValueError as e:
+        return HttpResponse(json.dumps({"status": e.message}))
+    
+    try:
         C = float(request.POST["C"])
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z = svm.classify_svm(sg.LibSVM, features, labels, kernel, domain, C=C)
+        x, y, z = svm.classify_svm(sg.LibSVM, features, labels, kernel, domain, learn, C=C)
     except Exception as e:
         import traceback
         return HttpResponse(json.dumps({"status": repr(traceback.format_exc())}))
