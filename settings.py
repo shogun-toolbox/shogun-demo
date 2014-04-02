@@ -8,7 +8,7 @@ LC_DATA_FNAME_GZ = DATA_PATH + "/lang_detection/default.svm.gz"
 TAPKEE_WORD_FNAME = DATA_PATH + "/tapkee/words.dat"
 TAPKEE_MML_FNAME = DATA_PATH + "/tapkee/mml.txt"
 
-PRODUCTION = True
+PRODUCTION = False
 
 if PRODUCTION:
     DEBUG=False

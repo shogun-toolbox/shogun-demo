@@ -12,8 +12,10 @@ import json
 def handler(request):
     if request.method == 'GET':
         return entrance(request)
-    else:
+    elif request.path=='/regression/gp/TrainGP':
         return gaussian_process(request)
+    else:
+        return gaussian_process_ml2(request)
 
 def entrance(request):
     arguments = [
@@ -48,6 +50,8 @@ def entrance(request):
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'TrainGP',
                                 'button_type': 'json_up_down_load'},
+                               {'button_name': 'UseML2',
+                                'button_type': 'json_up_down_load'},
                                {'button_name': 'clear'}]
         }
     ]
@@ -80,6 +84,17 @@ def gaussian_process(request):
 
     return HttpResponse(json.dumps(result))
 
+def gaussian_process_ml2(request):
+    result = []
+    try:
+        arguments = _read_toy_data_ml2(request)
+        result = _process_ml2(*arguments)
+    except:
+        raise ValueError("Argument Error")
+
+    return HttpResponse(json.dumps(result))
+    
+
 def _read_toy_data(request):
     y_set = []
     x_set = []
@@ -101,6 +116,27 @@ def _read_toy_data(request):
     labels = sg.RegressionLabels(labels)
     kernel = get_kernel(request, feat_train)
     return (feat_train, labels, noise_level, kernel, domain)
+
+def _read_toy_data_ml2(request):
+    y_set = []
+    x_set = []
+    toy_data = json.loads(request.POST['point_set'])
+    for pt in toy_data:
+        y_set.append(float(pt["y"]))
+        x_set.append(float(pt["x"]))
+    domain = json.loads(request.POST['axis_domain'])
+    
+    labels = np.array(y_set, dtype = np.float64)
+    num = len(x_set)
+    if num == 0:
+        raise Http404
+    examples = np.zeros((1, num))
+    for i in xrange(num):
+        examples[0,i] = x_set[i]
+    feat_train = sg.RealFeatures(examples)
+    labels = sg.RegressionLabels(labels)
+    return (feat_train, labels, domain)
+
 
 def _process(feat_train, labels, noise_level, kernel, domain):
     n_dimensions = 1
@@ -137,3 +173,35 @@ def _process(feat_train, labels, noise_level, kernel, domain):
                        'range_upper': predictions[i]+2*np.sqrt(covariance[i]),
                        'range_lower': predictions[i]-2*np.sqrt(covariance[i])})
     return result
+
+
+def _process_ml2(feats_train, labels_train, domain):
+    n_dimensions = 1
+    inf = sg.ExactInferenceMethod(sg.GaussianKernel(10, 32.), feats_train, sg.ZeroMean(), labels_train, sg.GaussianLikelihood())
+    gp=sg.GaussianProcessRegression(inf)
+    grad=sg.GradientEvaluation(gp, feats_train, labels_train, sg.GradientCriterion(), False)
+    grad.set_function(inf)
+    grad_search=sg.GradientModelSelection(grad)
+    best_combination=grad_search.select_model()
+    best_combination.apply_to_machine(gp)
+    best_width=sg.GaussianKernel.obtain_from_generic(inf.get_kernel()).get_width()
+    best_scale=inf.get_scale()
+    best_sigma=sg.GaussianLikelihood.obtain_from_generic(inf.get_model()).get_sigma()
+    gp.train()
+    # location of unispaced predictions
+    x_test = np.array([np.linspace(domain['horizontal'][0],
+                                   domain['horizontal'][1],
+                                   feats_train.get_num_vectors())])
+    feats_test = sg.RealFeatures(x_test)
+    #    gp.set_return_type(sg.GaussianProcessRegression.GP_RETURN_COV)
+    covariance=gp.get_variance_vector(feats_test)
+    #    gp.set_return_type(sg.GaussianProcessRegression.GP_RETURN_MEANS)
+    predictions = gp.get_mean_vector(feats_test)
+    result=[]
+    for i in xrange(len(feats_test.get_feature_matrix()[0])):
+        result.append({'x': feats_test.get_feature_matrix()[0][i],
+                       'y': predictions[i],
+                       'range_upper': predictions[i]+2*np.sqrt(covariance[i]),
+                       'range_lower': predictions[i]-2*np.sqrt(covariance[i])})
+    return result
+
