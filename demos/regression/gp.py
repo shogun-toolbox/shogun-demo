@@ -8,11 +8,12 @@ import modshogun as sg
 import numpy as np
 import numpy.random as rnd
 import json
+import os
 
 def handler(request):
     if request.method == 'GET':
         return entrance(request)
-    elif request.path=='/regression/gp/TrainGP':
+    elif request.path==os.sep.join(["","regression", "gp", "TrainGP"]):
         return gaussian_process(request)
     else:
         return gaussian_process_ml2(request)
