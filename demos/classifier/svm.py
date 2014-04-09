@@ -1,6 +1,6 @@
 import numpy as np
 import modshogun as sg
-def classify_svm(classifier, features, labels, kernel, domain, learn, C=1, returnValues=True):
+def classify_svm(classifier, features, labels, kernel, domain, learn, value, C=1, returnValues=True):
     if learn == 'GridSearch':
         svm = classifier()  
         root = sg.ModelSelectionParameters()
@@ -22,7 +22,10 @@ def classify_svm(classifier, features, labels, kernel, domain, learn, C=1, retur
         if kernel.get_name() == 'PolyKernel':
             param_kernel = sg.ModelSelectionParameters("kernel", kernel)
             degree = sg.ModelSelectionParameters("degree")
-            degree.build_values(0, 5, sg.R_LINEAR)
+            if value:
+                degree.build_values(value[0], value[1], sg.R_LINEAR)
+            else:
+                degree.build_values(0, 5, sg.R_LINEAR)
             param_kernel.append_child(degree)
             root.append_child(param_kernel)
 

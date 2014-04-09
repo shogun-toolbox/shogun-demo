@@ -2,7 +2,7 @@
   <fieldset>
     {% for argument in panel.panel_property %}
     {% if argument.argument_label %}
-    <label> {{ argument.argument_label }} </label>
+    <label {%if argument.argument_class%}class="{{argument.argument_class}}"{%endif%}> {{ argument.argument_label }} </label>
     {% elif argument.argument_name %}
     <label> {{ argument.argument_name }} </label>
     {% endif %}

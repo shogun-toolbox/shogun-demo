@@ -42,13 +42,30 @@ arguments = [
             'argument_items': ['No',
                                'GridSearch'],
             'argument_explain': 'Learn parameters using model selection'},
+        {
+            'argument_type': 'select',
+            'argument_class': 'hide',
+            'argument_label': 'GridSearch values From:',
+            'argument_name': 'polygrid1',
+            'argument_items':['0','1','2','3','4'],
+            'argument_explain': 'Range of values for learning degree of PolyKernel '},
+        {
+            'argument_type': 'select',
+            'argument_class':'hide',
+            'argument_label': 'To:',
+            'argument_name': 'polygrid2',
+            'argument_items':['1','2','3','4','5'],
+            'argument_explain': 'Range of values for learning degree of PolyKernel '},
+
 
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
                                 'button_type': 'json_up_down_load'},
                                {'button_name': 'clear'}]
-        }]
+        }
+        
+        ]
 
 toy_data_arguments = [
         {
@@ -92,6 +109,7 @@ def entrance(request):
                               properties,
                               context_instance = RequestContext(request))
 def classify(request):
+    value=[]
     try:
         features, labels = get_binary_features(request)
     except ValueError as e:
@@ -100,17 +118,23 @@ def classify(request):
     try:
         kernel = get_kernel(request, features)
     except ValueError as e:
-        return HttpResponse(json.dumps({"status": e.message}))
+        return HttpResponse(json.dumps({"status": e.message}))    
 
     try:
         learn = request.POST["learn"]
     except ValueError as e:
         return HttpResponse(json.dumps({"status": e.message}))
-    
+
+    if kernel.get_name() == 'PolyKernel' and learn == "GridSearch":
+        value.append(int(request.POST["polygrid1"]))
+        value.append(int(request.POST["polygrid2"]))
+        if value[1] <= value[0]:
+            return HttpResponse(json.dumps({"status": "Bad values"}))
+
     try:
         C = float(request.POST["C"])
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z = svm.classify_svm(sg.LibSVM, features, labels, kernel, domain, learn, C=C)
+        x, y, z = svm.classify_svm(sg.LibSVM, features, labels, kernel, domain, learn, value, C=C)
     except Exception as e:
         import traceback
         return HttpResponse(json.dumps({"status": repr(traceback.format_exc())}))
