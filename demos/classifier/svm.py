@@ -19,7 +19,7 @@ def classify_svm(classifier, features, labels, kernel, domain, learn, value, C=1
             param_kernel.append_child(width)
             root.append_child(param_kernel)
 
-        if kernel.get_name() == 'PolyKernel':
+        elif kernel.get_name() == 'PolyKernel':
             param_kernel = sg.ModelSelectionParameters("kernel", kernel)
             degree = sg.ModelSelectionParameters("degree")
             if value:

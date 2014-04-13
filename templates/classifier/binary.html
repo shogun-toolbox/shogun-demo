@@ -1,7 +1,6 @@
 {% extends "common/default.html" %}
 {% block javascript %}
 <script>
-$(document).ready(function(){
 $('.hide').hide();
 $('#polygrid1').hide();
 $('#polygrid2').hide();
@@ -27,9 +26,6 @@ $( "#kernel" ).change(function () {
 	if(str.trim() == check){
 	display_build_values();
 	}
-})
-
-
 })
 
 function display_build_values()
@@ -103,8 +99,5 @@ function clear_action()
     svg.selectAll(".grid .tick.major line")
         .style("stroke", "lightgrey");
 }
-
-
-
 </script>
 {% endblock %}

@@ -39,8 +39,7 @@ arguments = [
             'argument_type': 'select',
             'argument_label': 'Learn parameters',
             'argument_name': 'learn',
-            'argument_items': ['No',
-                               'GridSearch'],
+            'argument_items': ['No', 'GridSearch'],
             'argument_explain': 'Learn parameters using model selection'},
         {
             'argument_type': 'select',
@@ -56,16 +55,12 @@ arguments = [
             'argument_name': 'polygrid2',
             'argument_items':['1','2','3','4','5'],
             'argument_explain': 'Range of values for learning degree of PolyKernel '},
-
-
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
                                 'button_type': 'json_up_down_load'},
                                {'button_name': 'clear'}]
-        }
-        
-        ]
+        }]
 
 toy_data_arguments = [
         {
