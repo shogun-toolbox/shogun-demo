@@ -132,7 +132,7 @@ def classify(request):
         x, y, z = svm.classify_svm(sg.LibSVM, features, labels, kernel, domain, learn, value, C=C)
     except Exception as e:
         import traceback
-        return HttpResponse(json.dumps({"status": repr(traceback.format_exc())}))
+        return HttpResponse(json.dumps({"status": repr(traceback.format_exc(0))}))
 
     return HttpResponse(json.dumps({ 'status': 'ok',
                                      'domain': [np.min(z), np.max(z)],

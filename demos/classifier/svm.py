@@ -6,11 +6,11 @@ def classify_svm(classifier, features, labels, kernel, domain, learn, value, C=1
         root = sg.ModelSelectionParameters()
         c1 = sg.ModelSelectionParameters("C1")
         root.append_child(c1)
-        c1.build_values(-1.0, 1.0, sg.R_EXP)
+        c1.build_values(-1.0, 5.0, sg.R_EXP)
 
         c2 = sg.ModelSelectionParameters("C2")
         root.append_child(c2)
-        c2.build_values(-1.0, 1.0, sg.R_EXP)
+        c2.build_values(-1.0, 5.0, sg.R_EXP)
 
         if kernel.get_name() == 'GaussianKernel':
             param_kernel = sg.ModelSelectionParameters("kernel", kernel)
@@ -29,10 +29,25 @@ def classify_svm(classifier, features, labels, kernel, domain, learn, value, C=1
             param_kernel.append_child(degree)
             root.append_child(param_kernel)
 
-        splitting_strategy = sg.StratifiedCrossValidationSplitting(labels, 10)
+        pos=0
+        neg=0
+        for i in range(0, labels.get_num_labels()):
+            if labels.get_label(i)==1:
+                pos+=1
+            else:
+                neg+=1
+        if pos<2 or neg<2:
+            class LabelsError(Exception):
+                pass
+            raise LabelsError('Need at least two labels from one class')
+        elif pos<3 or neg<3:
+            splitting_strategy = sg.StratifiedCrossValidationSplitting(labels, 2)
+        else:
+            splitting_strategy = sg.StratifiedCrossValidationSplitting(labels, 3)
         evaluation_criterium = sg.ContingencyTableEvaluation(sg.ACCURACY)
         cross = sg.CrossValidation(svm, features, labels, splitting_strategy, evaluation_criterium)
-        cross.set_num_runs(5)
+        cross.set_num_runs(10)
+        cross.set_conf_int_alpha(0.01)
         grid_search = sg.GridSearchModelSelection(cross, root)
         best_combination = grid_search.select_model()
         best_combination.apply_to_machine(svm)
