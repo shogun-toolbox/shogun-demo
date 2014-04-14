@@ -42,6 +42,7 @@ arguments = [
             'argument_label': 'Degree',
             'argument_default': '2',
             'argument_explain': 'The degree to use in the PolynomialKernel'},
+        
         {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
@@ -93,10 +94,12 @@ def classify(request):
         kernel = get_kernel(request, features)
     except ValueError as e:
         return HttpResponse(json.dumps({"status": e.message}))
-
+    
+    learn = "No"  
+    
     try:
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z = svm.classify_svm(sg.GMNPSVM, features, labels, kernel, domain, C, False)
+        x, y, z = svm.classify_svm(sg.GMNPSVM, features, labels, kernel, domain, learn, C, False)
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 

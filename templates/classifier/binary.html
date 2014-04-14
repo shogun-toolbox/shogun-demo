@@ -1,6 +1,43 @@
 {% extends "common/default.html" %}
 {% block javascript %}
 <script>
+$('.hide').hide();
+$('#polygrid1').hide();
+$('#polygrid2').hide();
+$( "#learn" ).change(function () {
+	$('.hide').hide();
+	$('#polygrid1').hide();
+	$('#polygrid2').hide();
+	var str = $(this).find(':selected').text();
+	var check = "GridSearch";
+
+	if(str.trim() == check){
+	display_build_values();
+	}
+})
+
+$( "#kernel" ).change(function () {
+	$('.hide').hide();
+	$('#polygrid1').hide();
+	$('#polygrid2').hide();
+	var str = $("#learn").find(':selected').text();
+	var check = "GridSearch";
+
+	if(str.trim() == check){
+	display_build_values();
+	}
+})
+
+function display_build_values()
+{
+	var str = $('#kernel').find(':selected').text();
+	var check = "PolynomialKernel"
+	if(str.trim() == check){
+		$('.hide').show();
+		$('#polygrid1').show();
+		$('#polygrid2').show();}
+}
+
 function classify(data)
 {
     $('#classify').attr('disabled', false);

@@ -1,7 +1,60 @@
 import numpy as np
 import modshogun as sg
-def classify_svm(classifier, features, labels, kernel, domain, C=1, returnValues=True):
-    svm = classifier(C, kernel, labels)
+def classify_svm(classifier, features, labels, kernel, domain, learn, value, C=1, returnValues=True):
+    if learn == 'GridSearch':
+        svm = classifier()  
+        root = sg.ModelSelectionParameters()
+        c1 = sg.ModelSelectionParameters("C1")
+        root.append_child(c1)
+        c1.build_values(-1.0, 5.0, sg.R_EXP)
+
+        c2 = sg.ModelSelectionParameters("C2")
+        root.append_child(c2)
+        c2.build_values(-1.0, 5.0, sg.R_EXP)
+
+        if kernel.get_name() == 'GaussianKernel':
+            param_kernel = sg.ModelSelectionParameters("kernel", kernel)
+            width = sg.ModelSelectionParameters("width")
+            width.build_values(-1.0, 1.0, sg.R_EXP, 0.05, 2.0)
+            param_kernel.append_child(width)
+            root.append_child(param_kernel)
+
+        elif kernel.get_name() == 'PolyKernel':
+            param_kernel = sg.ModelSelectionParameters("kernel", kernel)
+            degree = sg.ModelSelectionParameters("degree")
+            if value:
+                degree.build_values(value[0], value[1], sg.R_LINEAR)
+            else:
+                degree.build_values(0, 5, sg.R_LINEAR)
+            param_kernel.append_child(degree)
+            root.append_child(param_kernel)
+
+        pos=0
+        neg=0
+        for i in range(0, labels.get_num_labels()):
+            if labels.get_label(i)==1:
+                pos+=1
+            else:
+                neg+=1
+        if pos<2 or neg<2:
+            class LabelsError(Exception):
+                pass
+            raise LabelsError('Need at least two labels from one class')
+        elif pos<3 or neg<3:
+            splitting_strategy = sg.StratifiedCrossValidationSplitting(labels, 2)
+        else:
+            splitting_strategy = sg.StratifiedCrossValidationSplitting(labels, 3)
+        evaluation_criterium = sg.ContingencyTableEvaluation(sg.ACCURACY)
+        cross = sg.CrossValidation(svm, features, labels, splitting_strategy, evaluation_criterium)
+        cross.set_num_runs(10)
+        cross.set_conf_int_alpha(0.01)
+        grid_search = sg.GridSearchModelSelection(cross, root)
+        best_combination = grid_search.select_model()
+        best_combination.apply_to_machine(svm)
+
+    else:
+        svm = classifier(C, kernel, labels) 
+        
     svm.train(features)
     
     size = 100
