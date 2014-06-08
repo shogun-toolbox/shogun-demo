@@ -14,9 +14,7 @@
     <label> Class Overlapping </label>
     <input type="text" value="0.0" name="overlapping" id="overlapping" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action('classify');">Create Toy Data</button>
-    {% endif %}
-    {% endfor %}
-    {% else %}
+    {% elif argument.problem_type and argument.problem_type == 'regression'  %}
     <label> Sine Freq. </label>
     <input type="text" value="2.0" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <label> Amplitude </label>
@@ -25,9 +23,14 @@
     <input type="text" value="0.1" name="noise_level" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action('regress');">Create Toy Data</button>
     {% endif %}
+    {% endfor %}
+    {% endif %}  
+
   </fieldset>
 </form>
-{% if data_sets %}
+{% if panel.panel_property %}  
+{% for argument in panel.panel_property %}
+{% if data_sets and argument.problem_type and argument.problem_type == 'classification' %}
 <form name="toy_data_importer">
   <fieldset>
     <legend> Importer </legend>
@@ -44,7 +47,30 @@
     <button type="button" class="btn btn-small btn-primary" onclick="DumpToyData_action();">load</button>
   </fieldset>
 </form>
+{% elif data_sets  and argument.problem_type and argument.problem_type == 'regression'  %}
+<form name="toy_data_importer">
+  <fieldset>
+    <legend> Importer </legend>
+    <label>Data Set</label>
+    <select name="data_set">
+      {% for data_set in data_sets %}
+        <option value="{{ data_set }}">{{ data_set }}</option>
+      {% endfor %}
+    </select>
+    <label> Feature </label>
+    <select name="feature">
+        <option value="CRIM">CRIME_RATE</option>
+        <option value="DIS">DIST_EMPLOYMENT</option>
+        <option value="INDUS">BUISNESS_ACRES</option>
+        <option value="LSTAT">LOWER_STATUS_POP</option>	
+    </select>
+     <button type="button" class="btn btn-small btn-primary" onclick="Regress_DumpToyData_action();">load</button>
+  </fieldset>
+</form>
 {% endif %}
+{% endfor %}
+{% endif %}
+
 {% if panel.panel_property %}
 {% for argument in panel.panel_property %}
 {% if argument.problem_type and argument.problem_type == 'classification' %}
@@ -138,7 +164,7 @@
                     svg.selectAll(".dot")
                         .transition().duration(750)
                         .attr("cx", function(d) { return x(d.x); })
-                        .attr("cy", function(d) { return y(d.y); });
+                        .attr("cy", function(d) { return y(d.y); });	
                     point_set = point_set.concat(json);
     
                     $("#CreateToyData").attr('disabled', false);
@@ -148,7 +174,7 @@
             });
     };
     function DumpToyData_action()
-    {
+    {	
         clear_action();
         $.ajax(
             {
@@ -200,5 +226,59 @@
                     alert("Cannot load toy data!");
                 }
             });
+    };  
+    function Regress_DumpToyData_action()
+    {
+        clear_action();
+        $.ajax(
+            {
+                url: "/toy_data/importer/regress_dump",
+                type: "POST",
+                dataType: "text",
+                data: { 
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    feature: document.toy_data_importer.feature.value,
+                    data_set: document.toy_data_importer.data_set.value
+                },
+                success: function(data)
+                {
+                    horizontal_max = vertical_max = 0;
+                    horizontal_min = vertical_min = 0;
+                    json = $.parseJSON(data);
+                    svg.selectAll(".dot").remove();
+                    json.forEach(function(d) {
+                        if(d.x > horizontal_max) horizontal_max = d.x;
+                        if(d.y > vertical_max) vertical_max = d.y;
+                        if(d.x < horizontal_min) horizontal_min = d.x;
+                        if(d.y < vertical_min) vertical_min = d.y;
+                    });
+                    color.domain([-1, 1]);
+                    svg.selectAll(".dot")
+                        .data(json)
+                        .enter().append("circle")
+                        .attr("class", "dot")
+                        .attr("r", 4)
+                        .attr("cx", function(d) { return x(d.x); })
+                        .attr("cy", function(d) { return y(d.y); })
+                        .attr("fill", function(d) {return color(1);});
+                    x.domain([horizontal_min, horizontal_max]).nice();
+                    y.domain([vertical_min, vertical_max]).nice();
+                    var t = svg.transition().duration(750);
+                    t.select("#x_axis").call(xAxis);
+                    t.select("#y_axis").call(yAxis);
+                    t.select("#x_grid").call(xGrid);
+                    t.select("#y_grid").call(yGrid);
+                    svg.selectAll(".dot")
+                        .transition().duration(750)
+                        .attr("cx", function(d) { return x(d.x); })
+                        .attr("cy", function(d) { return y(d.y); });
+                    point_set = point_set.concat(json);
+                },
+                error: function()
+                {
+                    alert("Cannot load toy data!");
+                }
+            });
     }
+
 </script>

@@ -1,0 +1,4 @@
+Demo displaying the performance of various regression models in Shogun : <a href='http://shogun-toolbox.org/doc/en/latest/classshogun_1_1CLinearRidgeRegression.html '>Linear Ridge regression</a>, <a href=' http://shogun-toolbox.org/doc/en/latest/classshogun_1_1CLeastSquaresRegression.html '>Least Squares regression</a>, <a href='http://shogun-toolbox.org/doc/en/latest/classshogun_1_1CKernelRidgeRegression.html '>Kernel ridge regression</a>.
+You can draw your own points or have some generated for you from the "Toy Data" panel where you can also load the <a href='https://archive.ics.uci.edu/ml/datasets/Housing ' >Boston housing dataset</a>.<br>You can also play around with the various parameters to 
+see how they effect the outcome.
+
