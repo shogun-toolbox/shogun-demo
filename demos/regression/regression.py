@@ -80,33 +80,33 @@ def entrance(request):
                               context_instance=RequestContext(request))
     
 def regression(request):
-    #try:
-    domain = json.loads(request.POST['axis_domain'])        
-    X = np.linspace(domain['horizontal'][0], domain['horizontal'][1], 100) 
-    x = np.array([X])
-    feat = sg.RealFeatures(x)
+    try:
+        domain = json.loads(request.POST['axis_domain'])        
+        X = np.linspace(domain['horizontal'][0], domain['horizontal'][1], 100) 
+        x = np.array([X])
+        feat = sg.RealFeatures(x)
 
-    arguments=_read_data(request)
-    
-    tool=request.POST['regression']
-    if (tool == 'LeastSquaresRegression'):
-        ls = _train_ls(*arguments)
-        y = _apply_ls(feat, ls)
-    
-    elif (tool == 'LinearRidgeRegression'):
-        lrr = _train_lrr(*arguments)
-        y = _apply_lrr(feat, lrr)
+        arguments=_read_data(request)
+        
+        tool=request.POST['regression']
+        if (tool == 'LeastSquaresRegression'):
+            ls = _train_ls(*arguments)
+            y = _apply_ls(feat, ls)
+        
+        elif (tool == 'LinearRidgeRegression'):
+            lrr = _train_lrr(*arguments)
+            y = _apply_lrr(feat, lrr)
 
-    elif (tool=='KernelRidgeRegression'):
-        krr, kernel, train =_train_krr(*arguments)
-        y = _apply_krr(kernel, train, feat, krr)
+        elif (tool=='KernelRidgeRegression'):
+            krr, kernel, train =_train_krr(*arguments)
+            y = _apply_krr(kernel, train, feat, krr)
 
-    line_dot = []
-    for i in xrange(len(X)):
-        line_dot.append({'x' : X[i], 'y' : y[i]})
-    return HttpResponse(json.dumps(line_dot))
-    #except:
-    #   raise Http404
+        line_dot = []
+        for i in xrange(len(X)):
+            line_dot.append({'x' : X[i], 'y' : y[i]})
+        return HttpResponse(json.dumps(line_dot))
+    except:
+        raise Http404
             
 def _read_data(request):
     labels = []
