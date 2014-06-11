@@ -56,6 +56,12 @@ def entrance(request):
                                {'button_name': 'clear'}]
         }
     ]
+    toy_data_arguments = [
+        {
+            'problem_type': 'regression',
+            }
+        ]
+
     properties = { 'title': 'Gaussian Process Regression',
                    'template': {'type': 'coordinate-2dims',
                                 'mouse_click_enabled': 'left',
@@ -70,7 +76,8 @@ def entrance(request):
                        },
                        {
                            'panel_name': 'toy_data',
-                           'panel_label': 'Toy Data'
+                           'panel_label': 'Toy Data',
+                           'panel_property': toy_data_arguments
                        }]}
     return render_to_response("regression/gaussian_process.html",
                               properties, context_instance = RequestContext(request))
