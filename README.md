@@ -1,8 +1,17 @@
-Author : Shogun.
-Description : Shogun demos, done in django.
+- Author : Shogun.
+- Description : Shogun demos, done in django.
+
+Running Demos Locally
+----------------------
+
+- Start the  Django development server using `python manage.py runserver`
+- To server the static files (required to run the demos) in the development server
+	- In /settings.py change `PRODUCTION = True` to `PRODUCTION = False` 
+- On doing `python manage.py runserver` you should see the \<addr\>:\<port\> its running at. (Typically http://127.0.0.1:8000/)
+- <a href='https://code.djangoproject.com/wiki/Distributions'> Third Party distributions for Django </a>
 
 Explanation of directory content
-================================
+---------------------------------
 
   - /demos	: Handles the requests, present the demos
   - /toy_data	: Handles the requests, and generate/import toy data.
@@ -13,7 +22,7 @@ Explanation of directory content
 	- urls.py	: Urls and method in demos.
 
 Currently available demos
-=========================
+---------------------------
 
   - http://<addr>:<port>/svr/entrance				: A demo for support vector regression
   - http://<addr>:<port>/clustering/entrance			: A demo for clustering
@@ -23,7 +32,7 @@ Currently available demos
   - http://<addr>:<port>/classification/perceptron/entrance	: A demo for binary perceptron
 
 Docs
-====
+------
   An Example contains a front-end script(javascript) and a backend controller(python).
   - front-end
     - Entrance Generator
@@ -75,6 +84,6 @@ Docs
     - frontend script
       Detailed javascript is needed to specify the way data input and output, and it can be done by modifying the {% block javascript %} block in the template file. Meanwhile, when there's a button group defined in the panel section, you can add the mousedown event to the button by creating functions named <button_name>_action.
 
-  - python backend
+- python backend
     A python backend is needed to specify the algorithm. The backend method is better in the same file with the entrance generator. Just like the entrance generator, the backend is a method which needs a HttpRequest object as input argument and provide with a HttpResponse object. The HttpRequest object contains the input data of the algorithm, and we can access a single parameter with request.POST[<argument_name>]. When the calculation is down, it'd be better to dump it in a json file and send.
     
