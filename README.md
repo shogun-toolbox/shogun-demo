@@ -4,9 +4,9 @@
 Running Demos Locally
 ----------------------
 
-- Start the  Django development server using `python manage.py runserver`
 - To server the static files (required to run the demos) in the development server
 	- In /settings.py change `PRODUCTION = True` to `PRODUCTION = False` 
+- Start the  Django development server using `python manage.py runserver`
 - On doing `python manage.py runserver` you should see the \<addr\>:\<port\> its running at. (Typically http://127.0.0.1:8000/)
 - <a href='https://code.djangoproject.com/wiki/Distributions'> Third Party distributions for Django </a>
 
@@ -24,12 +24,18 @@ Explanation of directory content
 Currently available demos
 ---------------------------
 
-  - http://<addr>:<port>/svr/entrance				: A demo for support vector regression
-  - http://<addr>:<port>/clustering/entrance			: A demo for clustering
-  - http://<addr>:<port>/gp/entrance				: A demo for gaussian process requession
-  - http://<addr>:<port>/kernel_matrix/entrance			: A demo for kernel matrix visualization
-  - http://<addr>:<port>/classification/binary/entrance		: A demo for binary classification
-  - http://<addr>:<port>/classification/perceptron/entrance	: A demo for binary perceptron
+  - http://\<addr\>:\<port\>/regression/svr/				: A demo for support vector regression
+  - http://\<addr\>:\<port\>/regression/regression/			: A demo for ridge regression
+  - http://\<addr\>:\<port\>/regression/gp/				: A demo for gaussian process regression
+  - http://\<addr\>:\<port\>/classifier/binary/				: A demo for binary classification
+  - http://\<addr\>:\<port\>/classifier/perceptron/			: A demo for binary perceptron
+  - http://\<addr\>:\<port\>/classifier/multiclass/			: A demo for multiclass classification
+  - http://\<addr\>:\<port\>/classifier/gp/				: A demo for gaussian process classification
+  - http://\<addr\>:\<port\>/misc/kernel_matrix/			: A demo for kernel matrix visualization
+  - http://\<addr\>:\<port\>/application/ocr/ 				: A demo for recognizing hand-written digits.
+  - http://\<addr\>:\<port\>/application/language_detect/		: A demo for language detection	
+  - http://\<addr\>:\<port\>/clustering/kmeans/				: A demo for clustering using kmeans
+
 
 Docs
 ------
