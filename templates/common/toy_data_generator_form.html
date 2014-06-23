@@ -41,10 +41,24 @@
       {% endfor %}
     </select>
     <label> Horizontal Feature </label>
-    <input type="text" value="1" name="feature1" onkeyup="value=value.replace(/[^\d]/g,'')">
+    <select id='select1' name="h_feature">
+        <option value="GLUC">GLUCOSE_CONC</option>
+        <option value="BP">BLOOD_PRESSURE</option>
+        <option value="SKIN">SKIN_THICK</option>
+        <option value="INSUL">INSULIN</option>		
+        <option value="BMI">BMI</option>
+        <option value="AGE">AGE</option>		
+    </select>
     <label> Vertical Feature </label>
-    <input type="text" value="2" name="feature2" onkeyup="value=value.replace(/[^\d]/g,'')">
-    <button type="button" class="btn btn-small btn-primary" onclick="DumpToyData_action();">load</button>
+    <select id='select2' name="v_feature">
+        <option value="GLUC">GLUCOSE_CONC</option>
+        <option value="BP">BLOOD_PRESSURE</option>
+        <option value="SKIN">SKIN_THICK</option>
+        <option value="INSUL">INSULIN</option>		
+        <option value="BMI">BMI</option>
+        <option value="AGE">AGE</option>		
+    </select>
+    <button type="button" class="btn btn-small btn-primary" onclick="Classify_DumpToyData_action();">load</button>
   </fieldset>
 </form>
 {% elif data_sets  and argument.problem_type and argument.problem_type == 'regression'  %}
@@ -102,7 +116,42 @@
 {% endfor %}
 {% endif %}
 
+{% if panel.panel_property %}  
+{% for argument in panel.panel_property %}
+{% if data_sets and argument.problem_type and argument.problem_type == 'classification' %}
+
 <script>
+    function preventDupes( select, index ) {
+        var options = select.options,
+            len = options.length;
+        while( len-- ) {
+            options[ len ].disabled = false;
+        }
+        select.options[ index ].disabled = true;
+        if( index === select.selectedIndex ) {
+            alert('You\'ve already selected the feature"' + select.options[index].text + '".\n\nPlease choose another.');
+    	        this.selectedIndex = 0;
+        }
+    };
+
+    var select1 = select = document.getElementById( 'select1' );
+    var select2 = select = document.getElementById( 'select2' );
+
+    select1.onchange = function() {
+        preventDupes.call(this, select2, this.selectedIndex );
+    };
+
+    select2.onchange = function() {
+        preventDupes.call(this, select1, this.selectedIndex );
+    };
+
+</script>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<script>
+
     function CreateToyData_action(action)
     {
         data = {};
@@ -173,18 +222,18 @@
                                   $("#CreateToyData").attr('disabled', false);}
             });
     };
-    function DumpToyData_action()
+    function Classify_DumpToyData_action()
     {	
         clear_action();
         $.ajax(
             {
-                url: "/toy_data/importer/dump",
+                url: "/toy_data/importer/classify_dump",
                 type: "POST",
                 dataType: "text",
                 data: { 
                     csrfmiddlewaretoken: '{{ csrf_token }}',
-                    feature1: document.toy_data_importer.feature1.value,
-                    feature2: document.toy_data_importer.feature2.value,
+                    h_feature: document.toy_data_importer.h_feature.value,
+                    v_feature: document.toy_data_importer.v_feature.value,
                     data_set: document.toy_data_importer.data_set.value
                 },
                 success: function(data)

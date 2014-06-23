@@ -91,7 +91,7 @@ properties = { 'title': 'Binary Classification',
                         'panel_name': 'toy_data',
                         'panel_label': 'Toy Data',
                         'panel_property': toy_data_arguments}],
-                   'data_sets' : ['australian']}
+                   'data_sets' : ['diabetes']}
 
 def handler(request):
     if request.method == 'GET':

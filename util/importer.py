@@ -7,25 +7,52 @@ TOY_DATA_DIR = settings.DATA_PATH+'/toy/'
 TOY_DATA_SET = {
     'australian': 'australian.libsvm.h5',
     'boston_housing': 'housing_scale.svm',
+    'diabetes': 'diabetes_scale.svm'
 }
 
-def dump(request):
+def classify_dump(request):
     try:
-        data_set = request.POST['data_set']
-        feature1 = int(request.POST['feature1'])
-        feature2 = int(request.POST['feature2'])
-        f = h5py.File(TOY_DATA_DIR +
-                      TOY_DATA_SET[data_set], 'r')
-        features = f["/data/data"]
-        label = f["/data/label"]
+        data_set = request.POST['data_set']    
+        h_feature = request.POST['h_feature']
+        f=sg.SparseRealFeatures()
+        #Load the file and generate labels.
+        trainlab=f.load_with_labels(sg.LibSVMFile(TOY_DATA_DIR + TOY_DATA_SET[data_set],))
+        #Get the feature matrix
+        mat=f.get_full_feature_matrix()
+        if h_feature == 'GLUC':
+            h_feat = mat[1]
+        elif h_feature == 'BP':
+            h_feat = mat[2]
+        elif h_feature == 'SKIN':
+            h_feat = mat[3]
+        elif h_feature == 'INSUL':
+            h_feat = mat[4]
+        elif h_feature == 'BMI':
+            h_feat = mat[5]
+        elif h_feature == 'AGE':
+            h_feat = mat[6]
+
+        v_feature = request.POST['v_feature']
+        if v_feature == 'GLUC':
+            v_feat = mat[1]
+        elif v_feature == 'BP':
+            v_feat = mat[2]
+        elif v_feature == 'SKIN':
+            v_feat = mat[3]
+        elif v_feature == 'INSUL':
+            v_feat = mat[4]
+        elif v_feature == 'BMI':
+            v_feat = mat[5]
+        elif v_feature == 'AGE':
+            v_feat = mat[6]
     except:
         raise Http404
     
     toy_data = []
-    for i in xrange(len(features[0])):
-        toy_data.append( {'x': features[feature1][i],
-                          'y': features[feature2][i],
-                          'label': label[i][0]})
+    for i in xrange(len(mat[0])):
+        toy_data.append( {'x': h_feat[i],
+                          'y': v_feat[i],
+                          'label': trainlab[i]})
     return HttpResponse(json.dumps(toy_data))
 
 def regress_dump(request):
