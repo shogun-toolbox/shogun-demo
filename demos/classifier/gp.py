@@ -53,6 +53,13 @@ arguments = [
             'argument_default': '2',
             'argument_explain': 'The degree to use in the PolynomialKernel'},
         {
+            'argument_type': 'decimal',
+            'argument_name': 'scale',
+            'argument_label': 'Kernel scaling',
+            'argument_default' : '0.1',
+            'argument_explain': 'The scale for kernel'},
+
+        {
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'classify',
                                 'button_type': 'json_up_down_load'},
@@ -113,14 +120,19 @@ def classify(request):
     except ValueError as e:
         return HttpResponse(json.dumps({"status": e.message}))
     try:
+        scale = float(request.POST["scale"])
+    except:
+        raise ValueError("Scale is not correct")
+    try:
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z, width, param = gaussian_process.classify_gp(features, labels, kernel, domain, lik, learn)
+        x, y, z, width, param, best_scale = gaussian_process.classify_gp(features, labels, kernel, domain, lik, learn, scale)
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 
     return HttpResponse(json.dumps({ 'status': 'ok',
                                      'best_width': float(width),
                                      'best_param': float(param),
+                                     'best_scale': float(best_scale),
                                      'domain': [np.min(z), np.max(z)],
                                      'z': z.tolist() }))
 

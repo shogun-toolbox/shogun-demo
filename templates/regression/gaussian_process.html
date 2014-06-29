@@ -14,6 +14,19 @@ function clear_action()
 function TrainGP(data)
 {
     json = $.parseJSON(data);
+
+    if (json[0].best_width != 0){
+	    $('#sigma').val(json[0].best_width);
+	    console.log(json[0].best_width)
+    }
+
+    if (json[0].best_sigma != 0){
+	    $('#noise_level').val(json[0].best_sigma);}
+
+    if (json[0].best_scale != 0){
+	    $('#scale').val(json[0].best_scale);}
+
+
     if (svg.selectAll(".line")[0].length == 0)
     {
         svg.append("path")

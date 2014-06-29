@@ -14,6 +14,9 @@ function classify(data)
     if (data['best_width'] != 0){
 	    $('#sigma').val(data['best_width']);}
 
+    if (data['best_scale'] != 0){
+	    $('#scale').val(data['best_scale']);}
+
     var z = data['z'];
     var domain = data['domain'];
     var minimum = Math.floor(domain[0]);
