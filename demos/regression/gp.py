@@ -28,6 +28,14 @@ def entrance(request):
             'argument_explain': 'Your choice for the covariance function'
         },
         {
+            'argument_type': 'select',
+            'argument_label': 'Inference Method',
+            'argument_name': 'inf',
+            'argument_items': ['ExactInferenceMethod', 'FITCInferenceMethod'],
+            'argument_default': 'ExactInferenceMethod',
+            'argument_explain': 'Your choice for the Inference method'
+        },
+        {
             'argument_type': 'integer',
             'argument_name': 'degree',
             'argument_default': '5',
@@ -37,7 +45,7 @@ def entrance(request):
             'argument_type': 'decimal',
             'argument_label': 'Kernel Width',
             'argument_name': 'sigma',
-            'argument_default': '2.0',
+            'argument_default': '1.0',
             'argument_explain': 'The sigma to use in the GaussianKernel'
         },
         {
@@ -51,7 +59,7 @@ def entrance(request):
             'argument_type': 'decimal',
             'argument_name': 'scale',
             'argument_label': 'Kernel scaling',
-            'argument_default' : '0.1',
+            'argument_default' : '1.0',
             'argument_explain': 'The scale for kernel'},
 
         {
@@ -77,7 +85,7 @@ def entrance(request):
 
     properties = { 'title': 'Gaussian Process Regression',
                    'template': {'type': 'coordinate-2dims',
-                                'mouse_click_enabled': 'left',
+                                'mouse_click_enabled': 'both',
                                 'coordinate_system': {'horizontal_axis': {'range': [-5, 5]},
                                                       'vertical_axis': {'range': [-5, 5]}},
                                 'description': read_demo_description.read_description(__file__)},
@@ -108,12 +116,26 @@ def gaussian_process(request):
 def _read_toy_data(request):
     y_set = []
     x_set = []
+    x_set_induc=[]
+    points=[]
+    points_induc=[]
     toy_data = json.loads(request.POST['point_set'])
     for pt in toy_data:
+        if int(pt['label'])==1:
+            points.append(pt)
+        elif pt['label']==-1:
+            points_induc.append(pt)
+
+    for pt in points:
         y_set.append(float(pt["y"]))
         x_set.append(float(pt["x"]))
+
+    for pt in points_induc:
+        x_set_induc.append(float(pt["x"]))
+
     noise_level = float(request.POST['noise_level'])
     scale = float(request.POST['scale'])
+    inf = request.POST['inf']
     domain = json.loads(request.POST['axis_domain'])
     
     labels = np.array(y_set, dtype = np.float64)
@@ -125,15 +147,27 @@ def _read_toy_data(request):
         examples[0,i] = x_set[i]
     feat_train = sg.RealFeatures(examples)
     labels = sg.RegressionLabels(labels)
+
+    #Get inducing points
+    num_induc = len(x_set_induc)
+    
+    if num_induc != 0:
+        examples_induc = np.zeros((1, num_induc))
+        for i in xrange(num_induc):
+            examples_induc[0,i] = x_set_induc[i]
+        feat_train_induc = sg.RealFeatures(examples_induc)
+    elif num_induc == 0:
+        feat_train_induc = None
+
     kernel = get_kernel(request, feat_train)
     try:
         learn = request.POST["learn"]
-    except ValueError as e:
-        return HttpResponse(json.dumps({"status": e.message}))
+    except:
+        raise ValueError("Argument Error")      
 
-    return (feat_train, labels, noise_level, scale, kernel, domain, learn)
+    return (feat_train, labels, noise_level, scale, kernel, domain, learn, feat_train_induc, inf)
 
-def _process(feat_train, labels, noise_level, scale, kernel, domain, learn):
+def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select):
     n_dimensions = 1
 
     likelihood = sg.GaussianLikelihood()
@@ -145,13 +179,23 @@ def _process(feat_train, labels, noise_level, scale, kernel, domain, learn):
     SECF = kernel
     covar = SECF
     zmean = sg.ZeroMean()
-    inf = sg.ExactInferenceMethod(SECF, feat_train, zmean, labels, likelihood)
-    inf.set_scale(scale)
+    if str(inf_select) == 'ExactInferenceMethod':
+        inf = sg.ExactInferenceMethod(SECF, feat_train, zmean, labels, likelihood)
+        inf.set_scale(scale)
+    elif str(inf_select) == 'FITCInferenceMethod':
+        if feat_induc != None:
+            inf = sg.FITCInferenceMethod(SECF, feat_train, zmean, labels, likelihood, feat_induc)
+            inf.set_scale(scale)
+        elif feat_induc == None:
+            raise ValueError("Argument Error")
+
+        
 
     # location of unispaced predictions
+    size=100
     x_test = np.array([np.linspace(domain['horizontal'][0],
-                                   domain['horizontal'][1],
-                                   feat_train.get_num_vectors())])
+                                   domain['horizontal'][1], 
+                                   size)])
     feat_test = sg.RealFeatures(x_test)
 
     gp = sg.GaussianProcessRegression(inf)

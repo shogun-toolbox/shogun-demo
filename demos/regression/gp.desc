@@ -1,5 +1,5 @@
 Demonstration of performing regression with <a href="http://en.wikipedia.org/wiki/Gaussian_process">Gaussian Processes</a> in Shogun.
-A detailed how-to can be found <a href="http://shogun-toolbox.org/static/notebook/current/gaussian_processes.html"> here.</a><br>
-You can enter your own data points by clicking on the canvas below or you can have some generated for you from the "Toy Data" panel on the right.<br>
-You can also experiment with the different arguments to see how they affect the outcome.
-Also you can use the maximum likelihood (ML2) button to automagically learn the best hyper-parameters of the GP and plot the outcome.
+A detailed how-to can be found in the <a href="http://shogun-toolbox.org/static/notebook/current/gaussian_processes.html"> GP notebook .</a><br>
+You can enter your own data points by left clicking on the canvas below or have some generated for you from the "Toy Data" panel on the right.<br>
+Use the learn parameters dropdown to automagically learn the best hyper-parameters of the GP using maximum likelihood (ML2).</br>
+You can set inducing points for <a href="http://www.shogun-toolbox.org/doc/en/latest/classshogun_1_1CFITCInferenceMethod.html" > FITCInferenceMethod </a> by right clicking on the canvas.
