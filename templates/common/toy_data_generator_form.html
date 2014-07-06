@@ -6,8 +6,8 @@
     {% if argument.problem_type and argument.problem_type == 'classification' %}
     <label> Generator type </label>
     <select name="generator_type" id="generator_type" >
+        <option value="gaussian" id="gaussian"> Gaussian-generated Data </option>	    
         <option value="checkboard" id="checkboard" selected> Checkboard Data </option>
-        <option value="gaussian" id="gaussian"> Gaussian-generated Data </option>
     </select> <br/>
     <label> Number of classes </label>
     <input type="text" value="2" name="num_classes" {{ argument.disable_class_input }} onkeyup="value=value.replace(/[^\d{1,}]/g,'')"></br>
@@ -16,9 +16,9 @@
     <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action('classify');">Create Toy Data</button>
     {% elif argument.problem_type and argument.problem_type == 'regression'  %}
     <label> Sine Freq. </label>
-    <input type="text" value="2.0" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <input type="text" value="1.5" name="frequency" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <label> Amplitude </label>
-    <input type="text" value="2.0" name="amplitude" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
+    <input type="text" value="1.0" name="amplitude" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <label> Noise Level </label>
     <input type="text" value="0.1" name="noise_level" onkeyup="value=value.replace(/[^\d{1,}\.\d{1,}|\d{1,}]/g,'')"></br>
     <button type="button" class="btn btn-small btn-primary" id="CreateToyData" onclick="CreateToyData_action('regress');">Create Toy Data</button>

@@ -96,10 +96,11 @@ def classify(request):
         return HttpResponse(json.dumps({"status": e.message}))
     
     learn = "No"  
-    
+    values=[]
+
     try:
         domain = json.loads(request.POST['axis_domain'])
-        x, y, z = svm.classify_svm(sg.GMNPSVM, features, labels, kernel, domain, learn, C, False)
+        x, y, z = svm.classify_svm(sg.GMNPSVM, features, labels, kernel, domain, learn, values, C, False)
     except Exception as e:
         return HttpResponse(json.dumps({"status": repr(e)}))
 

@@ -16,7 +16,7 @@ def handler(request):
     elif request.path==os.sep.join(["","regression", "gp", "TrainGP"]):
         return gaussian_process(request)
     else:
-        return gaussian_process_ml2(request)
+        return plot_predictive(request)
 
 def entrance(request):
     arguments = [
@@ -74,6 +74,8 @@ def entrance(request):
             'argument_type': 'button-group',
             'argument_items': [{'button_name': 'TrainGP',
                                 'button_type': 'json_up_down_load'},
+                               {'button_name': 'plot_predictive',
+                                'button_type': 'json_up_down_load'},
                                {'button_name': 'clear'}]
         }
     ]
@@ -88,6 +90,7 @@ def entrance(request):
                                 'mouse_click_enabled': 'both',
                                 'coordinate_system': {'horizontal_axis': {'range': [-5, 5]},
                                                       'vertical_axis': {'range': [-5, 5]}},
+                                'heatmap': { 'contour': True },
                                 'description': read_demo_description.read_description(__file__)},
                    'panels': [
                        {
@@ -112,6 +115,24 @@ def gaussian_process(request):
         raise ValueError("Argument Error")
 
     return HttpResponse(json.dumps(result))
+
+def plot_predictive(request):
+    result=[]
+    try:
+        arguments = _read_toy_data(request)
+        z = _predictive_process(*arguments)
+    except:
+        raise ValueError("Argument Error")
+    
+    z_max = np.nanmax(z)
+    z_min = np.nanmin(z)
+    z_delta = 0.1*(np.nanmax(z)-np.nanmin(z))
+    data = {"status": "ok",
+            "domain": [z_min-z_delta, z_max+z_delta],
+            "max": z_max+z_delta,
+            "min": z_min-z_delta,
+            "z": z.tolist()}
+    return HttpResponse(json.dumps(data))
 
 def _read_toy_data(request):
     y_set = []
@@ -167,7 +188,7 @@ def _read_toy_data(request):
 
     return (feat_train, labels, noise_level, scale, kernel, domain, learn, feat_train_induc, inf)
 
-def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select):
+def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select, return_values=False):
     n_dimensions = 1
 
     likelihood = sg.GaussianLikelihood()
@@ -192,7 +213,7 @@ def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat
         
 
     # location of unispaced predictions
-    size=100
+    size=75
     x_test = np.array([np.linspace(domain['horizontal'][0],
                                    domain['horizontal'][1], 
                                    size)])
@@ -232,4 +253,26 @@ def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat
                        'best_scale': float(best_scale),
                        'best_sigma': float(best_sigma)
                        })
-    return result
+        
+    if not return_values:
+        return result
+    elif return_values:
+        return covariance, predictions
+
+def _predictive_process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select):
+    variances, means = _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select, True)
+    size=75
+    x_test = np.linspace(domain['horizontal'][0], domain['horizontal'][1], size)
+    y1 = np.linspace(domain['vertical'][0], domain['vertical'][1], 50)
+    D=np.zeros((len(y1), len(x_test)))
+
+    # evaluate normal distribution at every prediction point (column)
+    for j in range(np.shape(D)[1]):
+        # create gaussian distributio instance, expects mean vector and covariance matrix, reshape
+        gauss = sg.GaussianDistribution(np.array(means[j]).reshape(1,), np.array(variances[j]).reshape(1,1))
+    
+        # evaluate predictive distribution for test point, method expects matrix
+        D[:,j] = np.exp(gauss.log_pdf_multiple(y1.reshape(1,len(y1))))
+    
+
+    return np.transpose(D)
