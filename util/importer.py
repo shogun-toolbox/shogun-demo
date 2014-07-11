@@ -4,11 +4,17 @@ import h5py, json
 import modshogun as sg
 
 TOY_DATA_DIR = settings.DATA_PATH+'/toy/'
+REGRESS_DATA_DIR = settings.DATA_PATH+'/multiclass/categorical_dataset/'
 TOY_DATA_SET = {
     'australian': 'australian.libsvm.h5',
-    'boston_housing': 'housing_scale.svm',
     'diabetes': 'diabetes_scale.svm'
 }
+REGRESS_DATA_SET = {
+        'boston_housing': 'fm_housing.dat'
+        }
+REGRESS_LABELS={
+        'boston_housing': 'housing_label.dat'        
+        }
 
 def classify_dump(request):
     try:
@@ -59,11 +65,19 @@ def regress_dump(request):
     try:
         data_set = request.POST['data_set']
         feature = request.POST['feature']
-        f=sg.SparseRealFeatures()
-        #Load the file and generate labels.
-        trainlab=f.load_with_labels(sg.LibSVMFile(TOY_DATA_DIR + TOY_DATA_SET[data_set],))
-        #Get the feature matrix
-        mat=f.get_full_feature_matrix()
+
+
+        temp_feats=sg.RealFeatures(sg.CSVFile(REGRESS_DATA_DIR + REGRESS_DATA_SET[data_set]))
+        labels=sg.RegressionLabels(sg.CSVFile(REGRESS_DATA_DIR + REGRESS_LABELS[data_set]))
+        lab=labels.get_labels()
+
+        #rescale to 0...1
+        preproc=sg.RescaleFeatures()
+        preproc.init(temp_feats)
+        temp_feats.add_preprocessor(preproc)
+        temp_feats.apply_preprocessor(True)
+        mat = temp_feats.get_feature_matrix()
+
         if feature == 'CRIM':
             feat = mat[0]
         elif feature == 'DIS':
@@ -78,7 +92,7 @@ def regress_dump(request):
     toy_data = []
     for i in xrange(len(feat)):
         toy_data.append( {'x': feat[i],
-                          'y': trainlab[i],
+                          'y': lab[i],
                           'label': float(0)})
     return HttpResponse(json.dumps(toy_data))
 
