@@ -120,19 +120,11 @@ def plot_predictive(request):
     result=[]
     try:
         arguments = _read_toy_data(request)
-        z = _predictive_process(*arguments)
+        result = _predictive_process(*arguments)
     except:
         raise ValueError("Argument Error")
     
-    z_max = np.nanmax(z)
-    z_min = np.nanmin(z)
-    z_delta = 0.1*(np.nanmax(z)-np.nanmin(z))
-    data = {"status": "ok",
-            "domain": [z_min-z_delta, z_max+z_delta],
-            "max": z_max+z_delta,
-            "min": z_min-z_delta,
-            "z": z.tolist()}
-    return HttpResponse(json.dumps(data))
+    return HttpResponse(json.dumps(result))
 
 def _read_toy_data(request):
     y_set = []
@@ -257,14 +249,15 @@ def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat
     if not return_values:
         return result
     elif return_values:
-        return covariance, predictions
+        return covariance, predictions, best_width, best_scale, best_sigma
 
 def _predictive_process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select):
-    variances, means = _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select, True)
+    variances, means, best_width, best_scale, best_sigma = _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select, True)
     size=75
-    x_test = np.linspace(domain['horizontal'][0], domain['horizontal'][1], size)
+    x_test = np.array([np.linspace(domain['horizontal'][0], domain['horizontal'][1], size)])
+    feat_test = sg.RealFeatures(x_test)    
     y1 = np.linspace(domain['vertical'][0], domain['vertical'][1], 50)
-    D=np.zeros((len(y1), len(x_test)))
+    D=np.zeros((len(y1), size))
 
     # evaluate normal distribution at every prediction point (column)
     for j in range(np.shape(D)[1]):
@@ -274,5 +267,26 @@ def _predictive_process(feat_train, labels, noise_level, scale, kernel, domain, 
         # evaluate predictive distribution for test point, method expects matrix
         D[:,j] = np.exp(gauss.log_pdf_multiple(y1.reshape(1,len(y1))))
     
+    z=np.transpose(D)
+    z_max = np.nanmax(z)
+    z_min = np.nanmin(z)
+    z_delta = 0.1*(np.nanmax(z)-np.nanmin(z))
 
-    return np.transpose(D)
+    result = []
+    for i in xrange(len(feat_test.get_feature_matrix()[0])):
+        result.append({'x': feat_test.get_feature_matrix()[0][i],
+                       'y': means[i],
+                       'range_upper': means[i]+2*np.sqrt(variances[i]),
+                       'range_lower': means[i]-2*np.sqrt(variances[i]),
+                       'best_width': float(best_width),
+                       'best_scale': float(best_scale),
+                       'best_sigma': float(best_sigma),
+                       "status": "ok",
+                       "domain": [z_min-z_delta, z_max+z_delta],
+                       "max": z_max+z_delta,
+                       "min": z_min-z_delta,
+                       "z": z.tolist()
+                       })
+
+
+    return result
