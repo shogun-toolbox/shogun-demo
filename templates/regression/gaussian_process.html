@@ -35,7 +35,7 @@ function TrainGP(data)
         svg.append("path")
             .attr("class", "line")
             .attr("d", start(json))
-            .style("stroke-width", "2")
+            .style("stroke-width", "3")
             .style("stroke", "green")
             .style("fill", "none");
         svg.selectAll(".line")
@@ -55,19 +55,19 @@ function TrainGP(data)
     $("#TrainGP").attr('disabled', false);
 }
 
-function plot_predictive(data)
+function plot_predictive(raw_data)
 {
-
+    
     $('#plot_predictive').attr('disabled', false);
 
-    data = JSON.parse(data);
-    if (data['status'] != 'ok'){
-        alert(data['status']);
+    data = JSON.parse(raw_data);
+    if (data[0]['status'] != 'ok'){
+        alert(data[0]['status']);
         return;
     }
 
-    var z = data['z'];
-    var domain = data['domain'];
+    var z = data[0]['z'];
+    var domain = data[0]['domain'];
     var minimum = Math.floor(domain[0]);
     var maximum = Math.ceil(domain[1]);
 
@@ -106,6 +106,8 @@ function plot_predictive(data)
     svg.selectAll(".grid .tick.major line")
         .style("stroke", "grey");
     $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.floor(domain[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.ceil(domain[1]) + "</span>") ;
+
+    TrainGP(raw_data)
 
 }
 
