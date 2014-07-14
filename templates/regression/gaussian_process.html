@@ -77,6 +77,8 @@ function plot_predictive(raw_data)
     var y_scale = result['y_scale'];
     var color_scale = result['color_scale'];
 
+    svg.selectAll(".line").remove();
+
     svg.selectAll(".heatmap").remove();
 
     svg.selectAll(".heatmap")
