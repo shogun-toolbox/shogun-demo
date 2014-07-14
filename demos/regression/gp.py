@@ -184,7 +184,10 @@ def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat
     n_dimensions = 1
 
     likelihood = sg.GaussianLikelihood()
-    likelihood.set_sigma(noise_level)
+    if learn == 'ML2':
+        likelihood.set_sigma(1)
+    else:
+        likelihood.set_sigma(noise_level)
     covar_parms = np.log([2])
     hyperparams = {'covar': covar_parms, 'lik': np.log([1])}
 
@@ -194,11 +197,17 @@ def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat
     zmean = sg.ZeroMean()
     if str(inf_select) == 'ExactInferenceMethod':
         inf = sg.ExactInferenceMethod(SECF, feat_train, zmean, labels, likelihood)
-        inf.set_scale(scale)
+        if learn == 'ML2':
+            inf.set_scale(1)
+        else:
+            inf.set_scale(scale)
     elif str(inf_select) == 'FITCInferenceMethod':
         if feat_induc != None:
             inf = sg.FITCInferenceMethod(SECF, feat_train, zmean, labels, likelihood, feat_induc)
-            inf.set_scale(scale)
+            if learn == 'ML2':
+                inf.set_scale(1)
+            else:
+                inf.set_scale(scale)
         elif feat_induc == None:
             raise ValueError("Argument Error")
 
