@@ -15,7 +15,7 @@ function clear_action()
         .style("stroke", "lightgrey");
 }
 
-function TrainGP(data)
+function plotMean(data)
 {
     json = $.parseJSON(data);
 
@@ -53,6 +53,12 @@ function TrainGP(data)
         .attr("d", area_end(json))
         .style("fill", "rgba(128, 128, 128, 0.25)");
     $("#TrainGP").attr('disabled', false);
+}
+
+function TrainGP(data)
+{
+    svg.selectAll(".heatmap").remove();
+    plotMean(data)    
 }
 
 function plot_predictive(raw_data)
@@ -109,7 +115,7 @@ function plot_predictive(raw_data)
         .style("stroke", "grey");
     $('#legend').html("<span id='lower' style='float:left; color:white;'>" + Math.floor(domain[0]) + "</span><span id='upper' style='float:right; color:white;'>" + Math.ceil(domain[1]) + "</span>") ;
 
-    TrainGP(raw_data)
+    plotMean(raw_data)
 
 }
 
