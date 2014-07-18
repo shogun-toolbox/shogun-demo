@@ -44,7 +44,7 @@ arguments = [
             'argument_type': 'decimal',
             'argument_name': 'sigma',
             'argument_label': 'Sigma',
-            'argument_default' : '0.1',
+            'argument_default' : '1',
             'argument_explain': 'The sigma to use in the GaussianKernel'},
         {
             'argument_type': 'integer',
@@ -56,7 +56,7 @@ arguments = [
             'argument_type': 'decimal',
             'argument_name': 'scale',
             'argument_label': 'Kernel scaling',
-            'argument_default' : '0.1',
+            'argument_default' : '1',
             'argument_explain': 'The scale for kernel'},
 
         {
