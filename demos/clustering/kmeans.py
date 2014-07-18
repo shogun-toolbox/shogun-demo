@@ -60,7 +60,7 @@ properties = { 'title': 'KMeans',
                         'panel_name': 'toy_data',
                         'panel_label': 'Toy Data',
                         'panel_property': toy_data_arguments}],
-                   'data_sets' : ['australian']}
+                   'data_sets' : ['diabetes']}
 
 def entrance(request):
     return render_to_response("clustering/kmeans.html", properties, context_instance=RequestContext(request))
