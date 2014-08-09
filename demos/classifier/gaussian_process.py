@@ -12,6 +12,9 @@ def classify_gp(features, labels, kernel, domain, lik, learn, scale, returnValue
     best_scale=0.0
 
     if learn == 'ML2':
+        inf.set_scale(1)
+        if kernel.get_name() == 'GaussianKernel':
+            kernel.set_width(1)
         grad = sg.GradientEvaluation(gp, features, labels, sg.GradientCriterion(), False)
         grad.set_function(inf)
         grad_search = sg.GradientModelSelection(grad)
