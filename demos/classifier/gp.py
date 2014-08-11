@@ -30,8 +30,8 @@ arguments = [
             'argument_type': 'select',
             'argument_label': 'Likelihood model',
             'argument_name': 'likelihood',
-            'argument_items':['LogitLikelihood',
-                              'ProbitLikelihood'],
+            'argument_items':['ProbitLikelihood',
+                              'LogitLikelihood'],
             'argument_explain':'Likelihood model'},
         {
             'argument_type': 'select',
@@ -119,6 +119,11 @@ def classify(request):
         learn = request.POST["learn"]
     except ValueError as e:
         return HttpResponse(json.dumps({"status": e.message}))
+    
+    if int(features.get_num_vectors()) > 100 and learn == "ML2":
+        return HttpResponse(json.dumps({"status": ("Model Selection " 
+            "allowed only for less than 100 samples due to computational costs")}))
+
     try:
         scale = float(request.POST["scale"])
     except:

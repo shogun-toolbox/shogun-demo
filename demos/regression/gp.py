@@ -109,7 +109,10 @@ def entrance(request):
 def gaussian_process(request):
     result = []
     try:
-        arguments = _read_toy_data(request)
+        arguments, model_sel_error = _read_toy_data(request)
+        if model_sel_error:
+            return HttpResponse(json.dumps({"status": ("Model Selection " 
+            "allowed only for less than 100 samples due to computational costs")}))
         result = _process(*arguments)
     except:
         raise ValueError("Argument Error")
@@ -119,7 +122,10 @@ def gaussian_process(request):
 def plot_predictive(request):
     result=[]
     try:
-        arguments = _read_toy_data(request)
+        arguments, model_sel_error = _read_toy_data(request)
+        if model_sel_error:
+            return HttpResponse(json.dumps({"status": ("Model Selection " 
+            "allowed only for less than 100 samples due to computational costs")}))
         result = _predictive_process(*arguments)
     except:
         raise ValueError("Argument Error")
@@ -132,6 +138,7 @@ def _read_toy_data(request):
     x_set_induc=[]
     points=[]
     points_induc=[]
+    model_sel_error=False
     toy_data = json.loads(request.POST['point_set'])
     for pt in toy_data:
         if int(pt['label'])==1:
@@ -176,9 +183,12 @@ def _read_toy_data(request):
     try:
         learn = request.POST["learn"]
     except:
-        raise ValueError("Argument Error")      
+        raise ValueError("Argument Error")
 
-    return (feat_train, labels, noise_level, scale, kernel, domain, learn, feat_train_induc, inf)
+    if int(feat_train.get_num_vectors()) > 100 and learn == "ML2":
+        model_sel_error=True
+
+    return (feat_train, labels, noise_level, scale, kernel, domain, learn, feat_train_induc, inf), model_sel_error
 
 def _process(feat_train, labels, noise_level, scale, kernel, domain, learn, feat_induc, inf_select, return_values=False):
     n_dimensions = 1

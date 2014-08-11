@@ -119,12 +119,16 @@ def classify(request):
         learn = request.POST["learn"]
     except ValueError as e:
         return HttpResponse(json.dumps({"status": e.message}))
+    
+    if int(features.get_num_vectors()) > 100 and learn == "GridSearch":
+        return HttpResponse(json.dumps({"status": ("Model Selection " 
+            "allowed only for less than 100 samples due to computational costs")}))
 
     if kernel.get_name() == 'PolyKernel' and learn == "GridSearch":
         value.append(int(request.POST["polygrid1"]))
         value.append(int(request.POST["polygrid2"]))
         if value[1] <= value[0]:
-            return HttpResponse(json.dumps({"status": "Bad values"}))
+            return HttpResponse(json.dumps({"status": "Bad values for degree"}))
 
     try:
         C = float(request.POST["C"])

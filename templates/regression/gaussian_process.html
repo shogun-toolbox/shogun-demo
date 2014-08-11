@@ -52,12 +52,17 @@ function plotMean(data)
         .attr("class", "area")
         .attr("d", area_end(json))
         .style("fill", "rgba(128, 128, 128, 0.25)");
-    $("#TrainGP").attr('disabled', false);
 }
 
 function TrainGP(data)
 {
+    $("#TrainGP").attr('disabled', false);
     svg.selectAll(".heatmap").remove();
+    json = $.parseJSON(data);
+    if (json.hasOwnProperty('status')){
+        alert(json['status']);
+	return;
+    }
     plotMean(data)    
 }
 
@@ -67,6 +72,12 @@ function plot_predictive(raw_data)
     $('#plot_predictive').attr('disabled', false);
 
     data = JSON.parse(raw_data);
+    if (data.hasOwnProperty('status')){
+        alert(data['status']);
+	return;
+    }
+
+
     if (data[0]['status'] != 'ok'){
         alert(data[0]['status']);
         return;
