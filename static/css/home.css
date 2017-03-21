@@ -1,0 +1,30 @@
+.page-header {
+    background-color: #393432;
+    margin-top: 0;
+    padding: 40px;
+}
+
+.page-header h1, .page-header h1 a, .page-header h1 a:visited, .page-header h1 a:active {
+    color: #ffffff;
+    font-size: 36pt;
+    text-decoration: none;
+}
+
+.content {
+    margin-left: 40px;
+}
+
+.top-menu, .top-menu:hover, .top-menu:visited {
+    color: #ffffff;
+    float: right;
+    font-size: 20pt;
+    margin-right: 20px;
+}
+
+.demo {
+    margin-bottom: 10px;
+}
+
+.demo h1 a, .demo h1 a:visited {
+    color: #000000;
+}
