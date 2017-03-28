@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>Shogun Web Demos</title>
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href='/static/css/home.css'>
+</head>
+<body>
+<div class="page-header">
+    <h1><a href="/">Shogun Web Demos</a></h1>
+</div>
+<div class="content container">
+    <div class="row">
+        <div class="col-md-8">
+            {% for demo in demos %}
+                <div class="demo">
+                    <h1><a href={{ demo.url }}>{{ demo.title }}</a></h1>
+                    {% autoescape off %}
+                        <p>{{ demo.description|linebreaksbr }}</p>
+                    {% endautoescape %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>

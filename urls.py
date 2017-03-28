@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('demos',
+    url(r'^$', 'home.index'),
+
     url(r'^clustering/kmeans/', 'clustering.kmeans.handler'),
     
     url(r'^regression/svr/', 'regression.svr.handler'),
