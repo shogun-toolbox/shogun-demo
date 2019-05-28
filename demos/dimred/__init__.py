@@ -1,4 +1,4 @@
-import modshogun as sg
+import shogun as sg
 import numpy as np
 import difflib
 import settings

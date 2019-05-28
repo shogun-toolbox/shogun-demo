@@ -6,7 +6,7 @@ from common.fetch_data import get_binary_features
 from demos.classifier import svm
 from util import read_demo_description
 
-import modshogun as sg
+import shogun as sg
 import numpy as np
 import json
 

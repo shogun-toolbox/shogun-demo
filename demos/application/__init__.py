@@ -1,5 +1,5 @@
-from Ai import Ai
-from LanguageClassifier import LanguageClassifier
+from .Ai import Ai
+from .LanguageClassifier import LanguageClassifier
 import settings
 
 ai = Ai()

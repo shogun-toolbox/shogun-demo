@@ -1,5 +1,5 @@
 import numpy as np
-import modshogun as sg
+import shogun as sg
 
 def classify_gp(features, labels, kernel, domain, lik, learn, scale, returnValues=True):
     mean = sg.ZeroMean()

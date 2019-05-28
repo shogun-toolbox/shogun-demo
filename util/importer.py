@@ -1,7 +1,7 @@
 from django.http import HttpResponse, Http404
 import settings
 import h5py, json
-import modshogun as sg
+import shogun as sg
 
 TOY_DATA_DIR = settings.DATA_PATH+'/toy/'
 REGRESS_DATA_DIR = settings.DATA_PATH+'/multiclass/categorical_dataset/'

@@ -3,7 +3,7 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from util import read_demo_description
 
-import modshogun as sg
+import shogun as sg
 import numpy as np
 import json
 

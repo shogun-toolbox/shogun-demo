@@ -1,5 +1,5 @@
 import numpy as np
-import modshogun as sg
+import shogun as sg
 import json
 def get_binary_features(request):
     try:

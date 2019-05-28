@@ -4,7 +4,7 @@ import numpy.random as rnd
 import json
 
 def generate_checkboard_data(request):
-    from modshogun import DataGenerator
+    from shogun import DataGenerator
     n = 40
     try:
         num_classes = int(float(request.POST['num_classes']))
@@ -50,7 +50,7 @@ def generate_regression_data(request):
     return HttpResponse(json.dumps(toy_data))
 
 def generate_gmm_classification_data(request):
-    from modshogun import GMM, Math
+    from shogun import GMM, Math
 
     num_classes = int(request.POST['num_classes'])
     gmm = GMM(num_classes)

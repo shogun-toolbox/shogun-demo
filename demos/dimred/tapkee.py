@@ -5,7 +5,7 @@ from demos import dimred
 from util import read_demo_description
 
 import difflib
-import modshogun as sg
+import shogun as sg
 import numpy as np
 import json
 

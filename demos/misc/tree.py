@@ -2,7 +2,7 @@ from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 
-import modshogun as sg
+import shogun as sg
 import numpy as np
 import json
 

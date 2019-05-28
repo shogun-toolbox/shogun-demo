@@ -1,5 +1,5 @@
 import numpy as np
-import modshogun as sg
+import shogun as sg
 def classify_svm(classifier, features, labels, kernel, domain, learn, value, C=1, returnValues=True):
     if learn == 'GridSearch':
         svm = classifier()  

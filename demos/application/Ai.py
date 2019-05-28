@@ -1,6 +1,6 @@
-from modshogun import RealFeatures, MulticlassLabels
-from modshogun import GaussianKernel
-from modshogun import GMNPSVM
+from shogun import RealFeatures, MulticlassLabels
+from shogun import GaussianKernel
+from shogun import GMNPSVM
 
 import numpy as np
 import gzip as gz
@@ -58,9 +58,13 @@ class Ai:
         gz_stream.close()
 
     def read_classifier(self, fname=TRAIN_SVM_FNAME_GZ):
-        gz_stream = gz.open(fname, 'rb')
-        self.svm = pkl.load(gz_stream)
-        gz_stream.close()
+        with gz.open(fname, 'rb') as gz_stream:
+            try:
+                self.svm = pkl.load(gz_stream)
+            except ImportError as error:
+                print("error loading model %s" % fname)
+            except Exception as exception:
+                print("error loading model %s" % fname)
 
     def enable_validation(self, train_frac):
         x = self.x

@@ -1,4 +1,4 @@
-from modshogun import MulticlassLibLinear
+from shogun import MulticlassLibLinear
 from numpy import array
 
 import json
@@ -16,12 +16,16 @@ class LanguageClassifier:
 		self.svm = None
 
 	def load_classifier(self, fname=DEFAULT_FILEPATH):
-		gz_stream = gz.open(fname, 'rb')
-		self.svm = pkl.load(gz_stream)
-		gz_stream.close()
+            with gz.open(fname, 'rb') as gz_stream:
+                try:
+                    self.svm = pkl.load(gz_stream)
+                except ImportError as error:
+                    print("error loading model %s" % fname)
+                except Exception as exception:
+                    print("error loading model %s" % fname)
 
 	def load_svm(self, filepath):
-		from modshogun import SerializableAsciiFile
+		from shogun import SerializableAsciiFile
 	
 		print("Attempting to load a multiclass liblinear svm from \"" +
 					filepath +"\"")	
@@ -32,10 +36,10 @@ class LanguageClassifier:
 
 
 	def classify_doc(self, doc):
-		from modshogun import StringCharFeatures, RAWBYTE
-		from modshogun import HashedDocDotFeatures
-		from modshogun import NGramTokenizer
-		from modshogun import MulticlassLabels
+		from shogun import StringCharFeatures, RAWBYTE
+		from shogun import HashedDocDotFeatures
+		from shogun import NGramTokenizer
+		from shogun import MulticlassLabels
 	
 		docs = [doc]
 		string_feats = StringCharFeatures(docs, RAWBYTE)

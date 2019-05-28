@@ -1,4 +1,4 @@
-import modshogun as sg
+import shogun as sg
 
 def get_likelihood(request):
     try:
